@@ -101,7 +101,7 @@ class OptionsState extends MusicBeatState
 			}
 		}
 	}
-	
+
 	function changeSelection(change:Int = 0) {
 		curSelected += change;
 		if (curSelected < 0)
@@ -533,7 +533,7 @@ class ControlsSubstate extends MusicBeatSubstate {
 		}
 		super.update(elapsed);
 	}
-	
+
 	function changeSelection(change:Int = 0) {
 		do {
 			curSelected += change;
@@ -664,7 +664,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 	private static var curSelected:Int = 0;
 	static var unselectableOptions:Array<String> = [
 		'GRAPHICS',
-		'GAMEPLAY'
+		'GAMEPLAY',
+		'MODIFIERS'
 	];
 	static var noCheckbox:Array<String> = [
 		'Framerate',
@@ -688,10 +689,12 @@ class PreferencesSubstate extends MusicBeatSubstate
 		'Hide HUD',
 		'Hide Song Length',
 		'Flashing Lights',
-		'Camera Zooms'
+		'Camera Zooms',
 		#if !mobile
-		,'FPS Counter'
+		'FPS Counter',
 		#end
+		'MODIFIERS',
+		'Dad Notes Do Damage'
 	];
 
 	private var grpOptions:FlxTypedGroup<Alphabet>;
@@ -873,9 +876,12 @@ class PreferencesSubstate extends MusicBeatSubstate
 					case 'Persistent Cached Data':
 						ClientPrefs.imagesPersist = !ClientPrefs.imagesPersist;
 						FlxGraphic.defaultPersist = ClientPrefs.imagesPersist;
-					
+
 					case 'Hide Song Length':
 						ClientPrefs.hideTime = !ClientPrefs.hideTime;
+
+					case 'Dad Notes Do Damage':
+						ClientPrefs.dadNotesDoDamage = !ClientPrefs.dadNotesDoDamage;
 				}
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				reloadValues();
@@ -924,7 +930,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 		}
 		super.update(elapsed);
 	}
-	
+
 	function changeSelection(change:Int = 0)
 	{
 		do {
@@ -969,6 +975,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 				daText = "If checked, hides most HUD elements.";
 			case 'Hide Song Length':
 				daText = "If checked, the bar showing how much time is left\nwill be hidden.";
+			case 'Dad Notes Do Damage':
+				daText = "If checked, dad notes will do 1% of damage per note";
 		}
 		descText.text = daText;
 
@@ -1041,6 +1049,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daValue = ClientPrefs.imagesPersist;
 					case 'Hide Song Length':
 						daValue = ClientPrefs.hideTime;
+					case 'Dad Notes Do Damage':
+						daValue = ClientPrefs.dadNotesDoDamage;
 				}
 				checkbox.daValue = daValue;
 			}

@@ -94,7 +94,7 @@ class FunkinLua {
 		// Camera poo
 		set('cameraX', 0);
 		set('cameraY', 0);
-		
+
 		// Screen stuff
 		set('screenWidth', FlxG.width);
 		set('screenHeight', FlxG.height);
@@ -110,7 +110,7 @@ class FunkinLua {
 
 		set('rating', 0);
 		set('ratingName', '');
-		
+
 		set('inGameOver', false);
 		set('mustHitSection', false);
 		set('botPlay', PlayState.cpuControlled);
@@ -414,7 +414,7 @@ class FunkinLua {
 				return Reflect.setProperty(leClass, variables[variables.length-1], value);
 			}
 		});*/
-		
+
 		//stupid bietch ass functions
 		Lua_helper.add_callback(lua, "addScore", function(value:Int = 0) {
 			lePlayState.songScore += value;
@@ -440,7 +440,7 @@ class FunkinLua {
 			lePlayState.songHits = value;
 			lePlayState.RecalculateRating();
 		});
-		
+
 		Lua_helper.add_callback(lua, "getColorFromHex", function(color:String) {
 			if(!color.startsWith('0x')) color = '0xff' + color;
 			return Std.parseInt(color);
@@ -607,7 +607,7 @@ class FunkinLua {
 				case 'gf' | 'girlfriend':
 					if(lePlayState.gf.animOffsets.exists(anim))
 						lePlayState.gf.playAnim(anim, forced);
-				default: 
+				default:
 					if(lePlayState.boyfriend.animOffsets.exists(anim))
 						lePlayState.boyfriend.playAnim(anim, forced);
 			}
@@ -676,7 +676,7 @@ class FunkinLua {
 				lePlayState.modchartSprites.get(tag).animation.play(name, forced);
 			}
 		});
-		
+
 		Lua_helper.add_callback(lua, "setLuaSpriteScrollFactor", function(tag:String, scrollX:Float, scrollY:Float) {
 			if(lePlayState.modchartSprites.exists(tag)) {
 				lePlayState.modchartSprites.get(tag).scrollFactor.set(scrollX, scrollY);
@@ -751,7 +751,7 @@ class FunkinLua {
 			if(!lePlayState.modchartSprites.exists(tag)) {
 				return;
 			}
-			
+
 			var pee:ModchartSprite = lePlayState.modchartSprites.get(tag);
 			if(destroy) {
 				pee.kill();
@@ -812,7 +812,7 @@ class FunkinLua {
 			}
 			#end
 		});
-		
+
 		Lua_helper.add_callback(lua, "playMusic", function(sound:String, volume:Float = 1, loop:Bool = false) {
 			FlxG.sound.playMusic(Paths.music(sound), volume, loop);
 		});
@@ -852,7 +852,7 @@ class FunkinLua {
 			} else if(lePlayState.modchartSounds.exists(tag)) {
 				lePlayState.modchartSounds.get(tag).fadeIn(duration, fromValue, toValue);
 			}
-			
+
 		});
 		Lua_helper.add_callback(lua, "soundFadeOut", function(tag:String, duration:Float, toValue:Float = 0) {
 			if(tag == null || tag.length < 1) {
@@ -930,7 +930,7 @@ class FunkinLua {
 			}
 			gonnaClose = true;
 		});
-		
+
 
 		// DEPRECATED, DONT MESS WITH THESE SHITS, ITS JUST THERE FOR BACKWARD COMPATIBILITY
 		Lua_helper.add_callback(lua, "scaleLuaSprite", function(tag:String, x:Float, y:Float) {
@@ -988,7 +988,7 @@ class FunkinLua {
 		if(!lePlayState.modchartSprites.exists(tag)) {
 			return;
 		}
-		
+
 		var pee:ModchartSprite = lePlayState.modchartSprites.get(tag);
 		pee.kill();
 		if(pee.wasAdded) {
@@ -1091,7 +1091,7 @@ class FunkinLua {
 		}
 		#end
 	}
-	
+
 	public function call(event:String, args:Array<Dynamic>):Dynamic {
 		#if LUA_ALLOWED
 		if(lua == null) {
@@ -1186,7 +1186,7 @@ class ModchartSprite extends FlxSprite
 class DebugLuaText extends FlxText
 {
 	private var disableTime:Float = 6;
-	public var parentGroup:FlxTypedGroup<DebugLuaText>; 
+	public var parentGroup:FlxTypedGroup<DebugLuaText>;
 	public function new(text:String, parentGroup:FlxTypedGroup<DebugLuaText>) {
 		this.parentGroup = parentGroup;
 		super(10, 10, 0, text, 16);
