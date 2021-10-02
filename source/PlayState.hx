@@ -61,16 +61,14 @@ class PlayState extends MusicBeatState
 	public static var STRUM_X_MIDDLESCROLL = -278;
 
 	public static var ratingStuff:Array<Dynamic> = [
-		['You Suck!', 0.2], //From 0% to 19%
-		['Shit', 0.4], //From 20% to 39%
-		['Bad', 0.5], //From 40% to 49%
-		['Bruh', 0.6], //From 50% to 59%
-		['Meh', 0.69], //From 60% to 68%
-		['Nice', 0.7], //69%
-		['Good', 0.8], //From 70% to 79%
-		['Great', 0.9], //From 80% to 89%
-		['Sick!', 1], //From 90% to 99%
-		['Perfect!!', 1] //The value on this one isn't used actually, since Perfect is always "1"
+		['F', 0.4], //From 20% to 39%
+		['E', 0.5], //From 40% to 49%
+		['D', 0.6], //From 50% to 59%
+		['C', 0.7], //From 60% to 68%
+		['B', 0.8], //From 70% to 79%
+		['A', 0.9], //From 80% to 89%
+		['S', 1], //From 90% to 99%
+		['SFC', 1] //The value on this one isn't used actually, since Perfect is always "1"
 	];
 
 	#if (haxe >= "4.0.0")
@@ -146,6 +144,7 @@ class PlayState extends MusicBeatState
 
 	public var gfSpeed:Int = 1;
 	public var health:Float = 1;
+	public var healthPercentage:Float = 50;
 	public var combo:Int = 0;
 
 	private var healthBarBG:AttachedSprite;
@@ -2008,16 +2007,14 @@ class PlayState extends MusicBeatState
 		}
 
 		super.update(elapsed);
-
 		var fc:String = '(Clear) ';
-		if (songMisses == 0) fc = '(FC) ';
 		if (songMisses < 10) fc = '(SDCB) ';
+		if (songMisses == 0) fc = '(FC) ';
 		if(ratingString == '?') {
-			scoreTxt.text = 'Score: ' + songScore + ' // Misses: ' + songMisses + ' // Accuracy: ?' + ' // Rating: ?' + ' // ProjectFNF ' + MainMenuState.projectFnfVersion + ' (Psych Engine ' + MainMenuState.psychEngineVersion + ')';
+			scoreTxt.text = 'Score: ' + songScore + ' // Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '% // Misses: ' + songMisses + ' // Accuracy: ?' + ' // Rating: ?' + '\nProjectFNF ' + MainMenuState.projectFnfVersion + ' (Psych Engine ' + MainMenuState.psychEngineVersion + ')';
 		} else {
-			scoreTxt.text = 'Score: ' + songScore + ' // Misses: ' + songMisses + ' // Accuracy: ' + ratingPercent * 100 + '%' + ' // Rating: ' + fc + ratingString + ' // ProjectFNF ' + MainMenuState.projectFnfVersion + ' (Psych Engine ' + MainMenuState.psychEngineVersion + ')';
+			scoreTxt.text = 'Score: ' + songScore + ' // Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '% // Misses: ' + songMisses + ' // Accuracy: ' + FlxMath.roundDecimal(ratingPercent * 100, 2) + '% // Rating: ' + fc + ratingString + '\nProjectFNF ' + MainMenuState.projectFnfVersion + ' (Psych Engine ' + MainMenuState.psychEngineVersion + ')';
 		}
-
 		if(cpuControlled) {
 			botplaySine += 180 * elapsed;
 			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
@@ -2079,18 +2076,20 @@ class PlayState extends MusicBeatState
 
 		var iconOffset:Int = 26;
 
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
-		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentage, 0, 100, 100, 0) * 0.01) - iconOffset);
+		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentage, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
 
 		if (health > 2)
 			health = 2;
 
-		if (healthBar.percent < 20)
+		healthPercentage = health / 0.02;
+
+		if (healthPercentage < 20)
 			iconP1.animation.curAnim.curFrame = 1;
 		else
 			iconP1.animation.curAnim.curFrame = 0;
 
-		if (healthBar.percent > 80)
+		if (healthPercentage > 80)
 			iconP2.animation.curAnim.curFrame = 1;
 		else
 			iconP2.animation.curAnim.curFrame = 0;
@@ -2315,6 +2314,10 @@ class PlayState extends MusicBeatState
 								animToPlay = 'singRIGHT';
 						}
 						dad.playAnim(animToPlay + altAnim, true);
+					}
+
+					if (ClientPrefs.dadNotesDoDamage) {
+						health -= 0.02;
 					}
 
 					dad.holdTimer = 0;
@@ -3106,13 +3109,15 @@ class PlayState extends MusicBeatState
 			if(scoreTxtTween != null) {
 				scoreTxtTween.cancel();
 			}
-			scoreTxt.scale.x = 1.1;
-			scoreTxt.scale.y = 1.1;
-			scoreTxtTween = FlxTween.tween(scoreTxt.scale, {x: 1, y: 1}, 0.2, {
-				onComplete: function(twn:FlxTween) {
-					scoreTxtTween = null;
-				}
-			});
+			scoreTxt.scale.x = 1;
+			scoreTxt.scale.y = 1;
+			if (ClientPrefs.infoBarBounces) {
+				scoreTxtTween = FlxTween.tween(scoreTxt.scale, {x: 0.9, y: 0.9}, 0.2, {
+					onComplete: function(twn:FlxTween) {
+						scoreTxtTween = null;
+					}
+				});
+			}
 		}
 
 		/* if (combo > 60)

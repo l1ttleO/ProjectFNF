@@ -24,8 +24,9 @@ class ClientPrefs {
 	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
 	public static var imagesPersist:Bool = false;
 	public static var ghostTapping:Bool = true;
-	public static var hideTime:Bool = false;
+	public static var hideTime:Bool = true;
 	public static var dadNotesDoDamage:Bool = false;
+	public static var infoBarBounces:Bool = false; // setting to false until i add an option for it
 
 	public static var defaultKeys:Array<FlxKey> = [
 		A, LEFT,			//Note Left
@@ -82,6 +83,7 @@ class ClientPrefs {
 		FlxG.save.data.ghostTapping = ghostTapping;
 		FlxG.save.data.hideTime = hideTime;
 		FlxG.save.data.dadNotesDoDamage = dadNotesDoDamage;
+		FlxG.save.data.infoBarBounces = infoBarBounces;
 
 		var achieves:Array<String> = [];
 		for (i in 0...Achievements.achievementsUnlocked.length) {

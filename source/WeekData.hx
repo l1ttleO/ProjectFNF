@@ -30,7 +30,7 @@ class WeekData {
 	public static var weeksLoaded:Map<String, WeekData> = new Map<String, WeekData>();
 	public static var weeksList:Array<String> = [];
 	public var folder:String = '';
-	
+
 	// JSON variables
 	public var songs:Array<Dynamic>;
 	public var weekCharacters:Array<String>;
@@ -102,10 +102,13 @@ class WeekData {
 					var week:WeekFile = getWeekFile(fileToCheck);
 					if(week != null) {
 						var weekFile:WeekData = new WeekData(week);
+
+						#if MODS_ALLOWED
 						if(j >= originalLength) {
 							weekFile.folder = directories[j].substring(Paths.mods().length, directories[j].length-1);
 						}
-
+						#end
+						
 						if(weekFile != null && (isStoryMode == null || (isStoryMode && !weekFile.hideStoryMode) || (!isStoryMode && !weekFile.hideFreeplay))) {
 							weeksLoaded.set(sexList[i], weekFile);
 							weeksList.push(sexList[i]);
