@@ -2316,8 +2316,8 @@ class PlayState extends MusicBeatState
 						dad.playAnim(animToPlay + altAnim, true);
 					}
 
-					if (ClientPrefs.dadNotesDoDamage) {
-						health -= 0.02;
+					if (ClientPrefs.dadNotesDoDamage && (!(health - ClientPrefs.damageFromDadNotes / 10 * 0.02 < 0.001) || ClientPrefs.dadNotesCanKill)) {
+						health -= ClientPrefs.damageFromDadNotes / 10 * 0.02;
 					}
 
 					dad.holdTimer = 0;
