@@ -101,7 +101,7 @@ class OptionsState extends MusicBeatState
 			}
 		}
 	}
-
+	
 	function changeSelection(change:Int = 0) {
 		curSelected += change;
 		if (curSelected < 0)
@@ -533,7 +533,7 @@ class ControlsSubstate extends MusicBeatSubstate {
 		}
 		super.update(elapsed);
 	}
-
+	
 	function changeSelection(change:Int = 0) {
 		do {
 			curSelected += change;
@@ -664,13 +664,11 @@ class PreferencesSubstate extends MusicBeatSubstate
 	private static var curSelected:Int = 0;
 	static var unselectableOptions:Array<String> = [
 		'GRAPHICS',
-		'GAMEPLAY',
-		'MODIFIERS'
+		'GAMEPLAY'
 	];
 	static var noCheckbox:Array<String> = [
 		'Framerate',
-		'Note Delay',
-		'Damage from Dad Notes'
+		'Note Delay'
 	];
 
 	static var options:Array<String> = [
@@ -690,15 +688,10 @@ class PreferencesSubstate extends MusicBeatSubstate
 		'Hide HUD',
 		'Hide Song Length',
 		'Flashing Lights',
-		'Camera Zooms',
+		'Camera Zooms'
 		#if !mobile
-		'FPS Counter',
+		,'FPS Counter'
 		#end
-		'Info Bar Bounces',
-		'MODIFIERS',
-		'Dad Notes Do Damage',
-		'Dad Notes Can Kill',
-		'Damage from Dad Notes'
 	];
 
 	private var grpOptions:FlxTypedGroup<Alphabet>;
@@ -880,18 +873,9 @@ class PreferencesSubstate extends MusicBeatSubstate
 					case 'Persistent Cached Data':
 						ClientPrefs.imagesPersist = !ClientPrefs.imagesPersist;
 						FlxGraphic.defaultPersist = ClientPrefs.imagesPersist;
-
+					
 					case 'Hide Song Length':
 						ClientPrefs.hideTime = !ClientPrefs.hideTime;
-
-					case 'Dad Notes Do Damage':
-						ClientPrefs.dadNotesDoDamage = !ClientPrefs.dadNotesDoDamage;
-
-					case 'Info Bar Bounces':
-						ClientPrefs.infoBarBounces = !ClientPrefs.infoBarBounces;
-
-					case 'Dad Notes Can Kill':
-						ClientPrefs.dadNotesCanKill = !ClientPrefs.dadNotesCanKill;
 				}
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				reloadValues();
@@ -921,14 +905,6 @@ class PreferencesSubstate extends MusicBeatSubstate
 						ClientPrefs.noteOffset += add * mult;
 						if(ClientPrefs.noteOffset < 0) ClientPrefs.noteOffset = 0;
 						else if(ClientPrefs.noteOffset > 500) ClientPrefs.noteOffset = 500;
-					case 'Damage from Dad Notes':
-						var mult:Int = 5;
-						if(holdTime > 1.5) {
-							mult = 10;
-						}
-						ClientPrefs.damageFromDadNotes += add * mult;
-						if(ClientPrefs.damageFromDadNotes < 5) ClientPrefs.damageFromDadNotes = 5;
-						else if(ClientPrefs.damageFromDadNotes > 100) ClientPrefs.damageFromDadNotes = 100;
 				}
 				reloadValues();
 
@@ -948,7 +924,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 		}
 		super.update(elapsed);
 	}
-
+	
 	function changeSelection(change:Int = 0)
 	{
 		do {
@@ -993,14 +969,6 @@ class PreferencesSubstate extends MusicBeatSubstate
 				daText = "If checked, hides most HUD elements.";
 			case 'Hide Song Length':
 				daText = "If checked, the bar showing how much time is left\nwill be hidden.";
-			case 'Dad Notes Do Damage':
-				daText = "If checked, dad notes will do 1% of damage per note";
-			case 'Info Bar Bounces':
-				daText = "If checked, info bar will bounce when you hit a note";
-			case 'Dad Notes Can Kill':
-				daText = "If checked and 'Dad Notes Do Damage' is enabled, \ndad notes will be able to kill you";
-			case 'Damage from Dad Notes':
-				daText = "Changes how much damage dad notes deal in %\nRequires 'Dad Notes Do Damage' to be checked";
 		}
 		descText.text = daText;
 
@@ -1073,12 +1041,6 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daValue = ClientPrefs.imagesPersist;
 					case 'Hide Song Length':
 						daValue = ClientPrefs.hideTime;
-					case 'Dad Notes Do Damage':
-						daValue = ClientPrefs.dadNotesDoDamage;
-					case 'Info Bar Bounces':
-						daValue = ClientPrefs.infoBarBounces;
-					case 'Dad Notes Can Kill':
-						daValue = ClientPrefs.dadNotesCanKill;
 				}
 				checkbox.daValue = daValue;
 			}
@@ -1092,8 +1054,6 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daText = '' + ClientPrefs.framerate;
 					case 'Note Delay':
 						daText = ClientPrefs.noteOffset + 'ms';
-					case 'Damage from Dad Notes':
-						daText = ClientPrefs.damageFromDadNotes / 10 + '%';
 				}
 				var lastTracker:FlxSprite = text.sprTracker;
 				text.sprTracker = null;

@@ -27,19 +27,19 @@ class DiscordClient
 
 		DiscordRpc.shutdown();
 	}
-
+	
 	public static function shutdown()
 	{
 		DiscordRpc.shutdown();
 	}
-
+	
 	static function onReady()
 	{
 		DiscordRpc.presence({
 			details: "In the Menus",
 			state: null,
 			largeImageKey: 'icon',
-			largeImageText: "ProjectFNF"
+			largeImageText: "Psych Engine"
 		});
 	}
 
@@ -75,7 +75,7 @@ class DiscordClient
 			details: details,
 			state: state,
 			largeImageKey: 'icon',
-			largeImageText: "ProjectFNF Version: " + MainMenuState.projectFnfVersion,
+			largeImageText: "Engine Version: " + MainMenuState.psychEngineVersion,
 			smallImageKey : smallImageKey,
 			// Obtained times are in milliseconds so they are divided so Discord can use it
 			startTimestamp : Std.int(startTimestamp / 1000),

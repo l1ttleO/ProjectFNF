@@ -48,7 +48,7 @@ class FreeplayState extends MusicBeatState
 	override function create()
 	{
 		#if MODS_ALLOWED
-		Paths.destroyLoadedImages(true);
+		Paths.destroyLoadedImages();
 		#end
 		WeekData.reloadWeekFiles(false);
 		#if desktop
@@ -318,8 +318,8 @@ class FreeplayState extends MusicBeatState
 		curDifficulty += change;
 
 		if (curDifficulty < 0)
-			curDifficulty = CoolUtil.difficultyStuff.length-1;
-		if (curDifficulty >= CoolUtil.difficultyStuff.length)
+			curDifficulty = 2;
+		if (curDifficulty > 2)
 			curDifficulty = 0;
 
 		#if !switch
