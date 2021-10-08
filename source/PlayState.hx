@@ -3318,7 +3318,7 @@ class PlayState extends MusicBeatState
 		});
 
 		health -= daNote.missHealth; //For testing purposes
-		trace(daNote.missHealth);
+		//trace(daNote.missHealth);
 		songMisses++;
 		vocals.volume = 0;
 		RecalculateRating();
@@ -3336,6 +3336,13 @@ class PlayState extends MusicBeatState
 				animToPlay = 'singRIGHTmiss';
 		}
 
+		boyfriend.stunned = true;
+
+		new FlxTimer().start(1.25, function(tmr:FlxTimer)
+		{
+			boyfriend.stunned = false;
+		});
+
 		if(daNote.noteType == 'GF Sing') {
 			gf.playAnim(animToPlay, true);
 		} else {
@@ -3344,6 +3351,8 @@ class PlayState extends MusicBeatState
 
 			boyfriend.playAnim(animToPlay + daAlt, true);
 		}
+		if (ClientPrefs.shakeOnMiss)
+			FlxG.camera.shake(0.0075, 0.1, null, true, X);
 		callOnLuas('noteMiss', [notes.members.indexOf(daNote), daNote.noteData, daNote.noteType, daNote.isSustainNote]);
 	}
 
@@ -3388,6 +3397,8 @@ class PlayState extends MusicBeatState
 				case 3:
 					boyfriend.playAnim('singRIGHTmiss', true);
 			}
+			if (ClientPrefs.shakeOnMiss)
+				FlxG.camera.shake(0.0075, 0.1, null, true, X);
 			vocals.volume = 0;
 		}
 	}
@@ -3396,7 +3407,7 @@ class PlayState extends MusicBeatState
 	{
 		if (!note.wasGoodHit)
 		{
-			if(cpuControlled && (note.ignoreNote || note.hitCausesMiss)) return;
+			if((cpuControlled && (note.ignoreNote || note.hitCausesMiss)) || (ClientPrefs.stunsBlockInputs && boyfriend.stunned)) return;
 
 			if(note.hitCausesMiss) {
 				noteMiss(note);

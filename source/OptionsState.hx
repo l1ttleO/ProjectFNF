@@ -692,6 +692,16 @@ class PreferencesSubstate extends MusicBeatSubstate
 		#if !mobile
 		,'FPS Counter'
 		#end
+		'Info Bar Bounces',
+		'Shake On Miss',
+		'MODIFIERS',
+		'Dad Notes Do Damage',
+		'Dad Notes Can Kill',
+		'Damage from Dad Notes',
+		'No Health Gain',
+		'Dad Notes Visible',
+		'BF Notes Visible',
+		'Stuns Block Inputs'
 	];
 
 	private var grpOptions:FlxTypedGroup<Alphabet>;
@@ -876,6 +886,27 @@ class PreferencesSubstate extends MusicBeatSubstate
 					
 					case 'Hide Song Length':
 						ClientPrefs.hideTime = !ClientPrefs.hideTime;
+
+					case 'Dad Notes Do Damage':
+						ClientPrefs.dadNotesDoDamage = !ClientPrefs.dadNotesDoDamage;
+
+					case 'Info Bar Bounces':
+						ClientPrefs.infoBarBounces = !ClientPrefs.infoBarBounces;
+
+					case 'Dad Notes Can Kill':
+						ClientPrefs.dadNotesCanKill = !ClientPrefs.dadNotesCanKill;
+
+					case 'Dad Notes Visible':
+						ClientPrefs.dadNotesVisible = !ClientPrefs.dadNotesVisible;
+
+					case 'BF Notes Visible':
+						ClientPrefs.bfNotesVisible = !ClientPrefs.bfNotesVisible;
+
+					case 'Stuns Block Inputs':
+						ClientPrefs.stunsBlockInputs = !ClientPrefs.stunsBlockInputs;
+
+					case 'Shake On Miss':
+						ClientPrefs.shakeOnMiss = !ClientPrefs.shakeOnMiss;
 				}
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				reloadValues();
@@ -969,6 +1000,24 @@ class PreferencesSubstate extends MusicBeatSubstate
 				daText = "If checked, hides most HUD elements.";
 			case 'Hide Song Length':
 				daText = "If checked, the bar showing how much time is left\nwill be hidden.";
+			case 'Dad Notes Do Damage':
+				daText = "If checked, dad notes will do 1% of damage per note";
+			case 'Info Bar Bounces':
+				daText = "If checked, info bar will bounce when you hit a note";
+			case 'Dad Notes Can Kill':
+				daText = "If checked and 'Dad Notes Do Damage' is enabled, \ndad notes will be able to kill you";
+			case 'Damage from Dad Notes':
+				daText = "Changes how much damage dad notes deal in %\nRequires 'Dad Notes Do Damage' to be checked";
+			case 'No Health Gain':
+				daText = "You will not gain health by hitting notes\nThe value represents your starting health in %";
+			case 'Dad Notes Visible':
+				daText = "If unchecked, dad notes will not be shown";
+			case 'BF Notes Visible':
+				daText = "If unchecked, boyfriend's notes will not be shown";
+			case 'Stuns Block Inputs':
+				daText = "Pretty self-explanatory";
+			case 'Shake On Miss':
+				daText = "If checked, the camera will shake when you miss";
 		}
 		descText.text = daText;
 
@@ -1041,6 +1090,20 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daValue = ClientPrefs.imagesPersist;
 					case 'Hide Song Length':
 						daValue = ClientPrefs.hideTime;
+					case 'Dad Notes Do Damage':
+						daValue = ClientPrefs.dadNotesDoDamage;
+					case 'Info Bar Bounces':
+						daValue = ClientPrefs.infoBarBounces;
+					case 'Dad Notes Can Kill':
+						daValue = ClientPrefs.dadNotesCanKill;
+					case 'Dad Notes Visible':
+						daValue = ClientPrefs.dadNotesVisible;
+					case 'BF Notes Visible':
+						daValue = ClientPrefs.bfNotesVisible;
+					case 'Stuns Block Inputs':
+						daValue = ClientPrefs.stunsBlockInputs;
+					case 'Shake On Miss':
+						daValue = ClientPrefs.shakeOnMiss;
 				}
 				checkbox.daValue = daValue;
 			}
