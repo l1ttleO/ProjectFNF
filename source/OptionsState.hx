@@ -679,6 +679,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 		#if !html5
 		'Framerate', //Apparently 120FPS isn't correctly supported on Browser? Probably it has some V-Sync shit enabled by default, idk
 		#end
+		'Max Optimization',
 		'GAMEPLAY',
 		'Downscroll',
 		'Middlescroll',
@@ -915,6 +916,9 @@ class PreferencesSubstate extends MusicBeatSubstate
 
 					case 'Play Hit Sounds':
 						ClientPrefs.playHitSounds = !ClientPrefs.playHitSounds;
+
+					case 'Max Optimization':
+						ClientPrefs.maxOptimization = !ClientPrefs.maxOptimization;
 				}
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				reloadValues();
@@ -1030,6 +1034,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 				daText = "If unchecked, no miss animation will play";
 			case 'Play Hit Sounds':
 				daText = "Pretty self-explanatory";
+			case 'Max Optimization':
+				daText = "If checked, hides everything except the UI";
 		}
 		descText.text = daText;
 
@@ -1120,6 +1126,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daValue = ClientPrefs.playMissAnimations;
 					case 'Play Hit Sounds':
 						daValue = ClientPrefs.playHitSounds;
+					case 'Max Optimization':
+						daValue = ClientPrefs.maxOptimization;
 				}
 				checkbox.daValue = daValue;
 			}

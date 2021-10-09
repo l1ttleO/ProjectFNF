@@ -352,6 +352,7 @@ class PlayState extends MusicBeatState
 		dadGroup = new FlxSpriteGroup(DAD_X, DAD_Y);
 		gfGroup = new FlxSpriteGroup(GF_X, GF_Y);
 
+		if (!ClientPrefs.maxOptimization) {
 		switch (curStage)
 		{
 			case 'stage': //Week 1
@@ -626,7 +627,7 @@ class PlayState extends MusicBeatState
 					add(bg);
 				}
 		}
-
+		}
 		if(isPixelStage) {
 			introSoundsSuffix = '-pixel';
 		}
@@ -1029,6 +1030,14 @@ class PlayState extends MusicBeatState
 		// Updating Discord Rich Presence.
 		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
 		#end
+		if (ClientPrefs.maxOptimization) {
+			remove(boyfriend);
+			remove(boyfriendGroup);
+			remove(dad);
+			remove(dadGroup);
+			remove(gf);
+			remove(gfGroup);
+		}
 		super.create();
 	}
 
