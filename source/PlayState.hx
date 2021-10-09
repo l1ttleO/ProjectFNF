@@ -1022,6 +1022,9 @@ class PlayState extends MusicBeatState
 		CoolUtil.precacheSound('missnote2');
 		CoolUtil.precacheSound('missnote3');
 
+		// Precache hit sound
+		CoolUtil.precacheSound('hitsound');
+
 		#if desktop
 		// Updating Discord Rich Presence.
 		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
@@ -3343,13 +3346,15 @@ class PlayState extends MusicBeatState
 			boyfriend.stunned = false;
 		});
 
-		if(daNote.noteType == 'GF Sing') {
-			gf.playAnim(animToPlay, true);
-		} else {
-			var daAlt = '';
-			if(daNote.noteType == 'Alt Animation') daAlt = '-alt';
+		if (ClientPrefs.playMissAnimations) {
+			if(daNote.noteType == 'GF Sing') {
+				gf.playAnim(animToPlay, true);
+			} else {
+				var daAlt = '';
+				if(daNote.noteType == 'Alt Animation') daAlt = '-alt';
 
-			boyfriend.playAnim(animToPlay + daAlt, true);
+				boyfriend.playAnim(animToPlay + daAlt, true);
+			}
 		}
 		if (ClientPrefs.shakeOnMiss)
 			FlxG.camera.shake(0.0075, 0.1, null, true, X);
@@ -3384,18 +3389,19 @@ class PlayState extends MusicBeatState
 			new FlxTimer().start(1 / 60, function(tmr:FlxTimer)
 			{
 				boyfriend.stunned = false;
-			});*/
-
-			switch (direction)
-			{
-				case 0:
-					boyfriend.playAnim('singLEFTmiss', true);
-				case 1:
-					boyfriend.playAnim('singDOWNmiss', true);
-				case 2:
-					boyfriend.playAnim('singUPmiss', true);
-				case 3:
-					boyfriend.playAnim('singRIGHTmiss', true);
+			});
+			if (ClientPrefs.playMissAnimations) {
+				switch (direction)
+				{
+					case 0:
+						boyfriend.playAnim('singLEFTmiss', true);
+					case 1:
+						boyfriend.playAnim('singDOWNmiss', true);
+					case 2:
+						boyfriend.playAnim('singUPmiss', true);
+					case 3:
+						boyfriend.playAnim('singRIGHTmiss', true);
+				}
 			}
 			if (ClientPrefs.shakeOnMiss)
 				FlxG.camera.shake(0.0075, 0.1, null, true, X);
@@ -3510,6 +3516,8 @@ class PlayState extends MusicBeatState
 				notes.remove(note, true);
 				note.destroy();
 			}
+			if (ClientPrefs.playHitSounds)
+				FlxG.sound.play(Paths.sound('hitsound'));
 		}
 	}
 

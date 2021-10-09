@@ -34,6 +34,8 @@ class ClientPrefs {
 	public static var bfNotesVisible:Bool = true;
 	public static var stunsBlockInputs:Bool = false;
 	public static var shakeOnMiss:Bool = false;
+	public static var playMissAnimations:Bool = true;
+	public static var playHitSounds:Bool = false;
 
 	public static var defaultKeys:Array<FlxKey> = [
 		A, LEFT,			//Note Left
@@ -98,6 +100,8 @@ class ClientPrefs {
 		FlxG.save.data.bfNotesVisible = bfNotesVisible;
 		FlxG.save.data.stunsBlockInputs = stunsBlockInputs;
 		FlxG.save.data.shakeOnMiss = shakeOnMiss;
+		FlxG.save.data.playMissAnimations = playMissAnimations;
+		FlxG.save.data.playHitSounds = playHitSounds;
 
 		var achieves:Array<String> = [];
 		for (i in 0...Achievements.achievementsUnlocked.length) {
@@ -205,6 +209,12 @@ class ClientPrefs {
 		}
 		if(FlxG.save.data.shakeOnMiss != null) {
 			shakeOnMiss = FlxG.save.data.shakeOnMiss;
+		}
+		if(FlxG.save.data.playMissAnimations != null) {
+			playMissAnimations = FlxG.save.data.playMissAnimations;
+		}
+		if(FlxG.save.data.playHitSounds != null) {
+			playHitSounds = FlxG.save.data.playHitSounds;
 		}
 
 		var save:FlxSave = new FlxSave();
