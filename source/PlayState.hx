@@ -3372,7 +3372,7 @@ class PlayState extends MusicBeatState
 
 	function noteMissPress(direction:Int = 1, ?ghostMiss:Bool = false):Void //You pressed a key when there was no notes to press for this key
 	{
-		if (!boyfriend.stunned)
+		if (!ClientPrefs.stunsBlockInputs || !boyfriend.stunned)
 		{
 			health -= 0.04;
 			if (combo > 5 && gf.animOffsets.exists('sad'))
