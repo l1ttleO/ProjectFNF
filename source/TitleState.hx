@@ -422,7 +422,7 @@ class TitleState extends MusicBeatState
 					createCoolText(['Psych Engine by'], 45);
 				// credTextShit.visible = true;
 				case 3:
-					addMoreText('L1ttleO', 45);
+					addMoreText('l1ttleO', 45);
 					addMoreText('aflacc', 45);
 				// credTextShit.text += '\npresent...';
 				// credTextShit.addText();
