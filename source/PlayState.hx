@@ -1968,7 +1968,7 @@ class PlayState extends MusicBeatState
 		if(ratingString == '?') {
 			scoreTxt.text = 'Score: ' + songScore + ' // Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '% // Misses: ' + songMisses + ' // Accuracy: ?' + ' // Rating: ?';
 		} else {
-			scoreTxt.text = 'Score: ' + songScore + ' // Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '% // Misses: ' + songMisses + ' // Accuracy: ' + FlxMath.roundDecimal(ratingPercent * 100, 2) + '% // Rating: ' + fc + ratingString + '\nProjectFNF ' + MainMenuState.projectFnfVersion;
+			scoreTxt.text = 'Score: ' + songScore + ' // Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '% // Misses: ' + songMisses + ' // Accuracy: ' + FlxMath.roundDecimal(ratingPercent * 100, 2) + '% // Rating: ' + fc + ratingString;
 		}
 		if(cpuControlled) {
 			botplaySine += 180 * elapsed;
