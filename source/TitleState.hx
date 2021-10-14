@@ -63,7 +63,7 @@ class TitleState extends MusicBeatState
 					folders.push(file);
 				}
 			}
-			if (folders.length > 0) {
+			if(folders.length > 0) {
 				polymod.Polymod.init({modRoot: "mods", dirs: folders});
 			}
 		}
