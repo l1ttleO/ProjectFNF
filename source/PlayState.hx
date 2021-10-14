@@ -1962,14 +1962,23 @@ class PlayState extends MusicBeatState
 		}
 
 		super.update(elapsed);
-		var fc:String = '(Clear) ';
+		var fc:String = '';
 		if (songMisses < 10) fc = '(SDCB) ';
 		if (songMisses == 0) fc = '(FC) ';
-		if(ratingString == '?') {
-			scoreTxt.text = 'Score: ' + songScore + ' // Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '% // Misses: ' + songMisses + ' // Accuracy: ?' + ' // Rating: ?';
+		if(!ClientPrefs.advancedScoreTxt) {
+			if(ratingString == '?') {
+				scoreTxt.text = 'Score: ' + songScore + ' | Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '% | Misses: ' + songMisses + ' | Accuracy: ?' + ' | Rating: ?';
+			} else {
+				scoreTxt.text = 'Score: ' + songScore + ' | Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '% | Misses: ' + songMisses + ' | Accuracy: ' + FlxMath.roundDecimal(ratingPercent * 100, 2) + '% | Rating: ' + fc + ratingString;
+			}
 		} else {
-			scoreTxt.text = 'Score: ' + songScore + ' // Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '% // Misses: ' + songMisses + ' // Accuracy: ' + FlxMath.roundDecimal(ratingPercent * 100, 2) + '% // Rating: ' + fc + ratingString;
+			if(ratingString == '?') {
+				scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + songMisses + ' | Rating: ?';
+			} else {
+				scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + songMisses + ' | Rating: ' + fc + ratingString;
+			}
 		}
+		
 		if(cpuControlled) {
 			botplaySine += 180 * elapsed;
 			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
