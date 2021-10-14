@@ -1966,7 +1966,7 @@ class PlayState extends MusicBeatState
 		if (songMisses < 10) fc = '(SDCB) ';
 		if (songMisses == 0) fc = '(FC) ';
 		if(ratingString == '?') {
-			scoreTxt.text = 'Score: ' + songScore + ' // Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '% // Misses: ' + songMisses + ' // Accuracy: ?' + ' // Rating: ?' + '\nProjectFNF ' + MainMenuState.projectFnfVersion;
+			scoreTxt.text = 'Score: ' + songScore + ' // Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '% // Misses: ' + songMisses + ' // Accuracy: ?' + ' // Rating: ?';
 		} else {
 			scoreTxt.text = 'Score: ' + songScore + ' // Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '% // Misses: ' + songMisses + ' // Accuracy: ' + FlxMath.roundDecimal(ratingPercent * 100, 2) + '% // Rating: ' + fc + ratingString + '\nProjectFNF ' + MainMenuState.projectFnfVersion;
 		}
