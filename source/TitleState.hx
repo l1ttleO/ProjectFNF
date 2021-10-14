@@ -128,8 +128,7 @@ class TitleState extends MusicBeatState
 	{
 		if (!initialized)
 		{
-			if (FlxG.sound.music == null)
-			{
+			if(FlxG.sound.music == null) {
 				FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 
 				FlxG.sound.music.fadeIn(4, 0, 0.7);
@@ -362,7 +361,7 @@ class TitleState extends MusicBeatState
 				// credTextShit.text = 'In association \nwith';
 				// credTextShit.screenCenter();
 				case 5:
-					createCoolText(['Presents a mod to'], -60);
+					createCoolText(['Present a mod to'], -60);
 				case 7:
 					addMoreText('This game right below', -60);
 					logoSpr.visible = true;
