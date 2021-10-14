@@ -375,7 +375,7 @@ class TitleState extends MusicBeatState
 				// credTextShit.text = 'In association \nwith';
 				// credTextShit.screenCenter();
 				case 5:
-					createCoolText(['Presents a mod to'], -60);
+					createCoolText(['Present a mod to'], -60);
 				case 7:
 					addMoreText('This game right below', -60);
 					logoSpr.visible = true;
