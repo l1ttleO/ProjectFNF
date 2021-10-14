@@ -58,8 +58,7 @@ class TitleState extends MusicBeatState
 			var folders:Array<String> = [];
 			for (file in sys.FileSystem.readDirectory('mods/')) {
 				var path = haxe.io.Path.join(['mods/', file]);
-				if (sys.FileSystem.isDirectory(path))
-				{
+				if (sys.FileSystem.isDirectory(path)) {
 					folders.push(file);
 				}
 			}
