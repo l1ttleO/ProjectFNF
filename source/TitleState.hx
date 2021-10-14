@@ -103,8 +103,7 @@ class TitleState extends MusicBeatState
 			FlxTransitionableState.skipNextTransIn = true;
 			FlxTransitionableState.skipNextTransOut = true;
 			MusicBeatState.switchState(new FlashingState());
-		}
-		else {
+		} else {
 			#if desktop
 			DiscordClient.initialize();
 			Application.current.onExit.add(function(exitCode) {
