@@ -344,7 +344,7 @@ class TitleState extends MusicBeatState
 				gfDance.animation.play('danceLeft');
 		}
 
-		if (!closedState) {
+		if(!closedState) {
 			switch (curBeat)
 			{
 				case 1:
