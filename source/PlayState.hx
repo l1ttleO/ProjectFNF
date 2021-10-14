@@ -215,7 +215,7 @@ class PlayState extends MusicBeatState
 	var timeTxt:FlxText;
 	var scoreTxtTween:FlxTween;
 
-    var versionTxt:FlxText;
+	var versionTxt:FlxText;
 
 	public static var campaignScore:Int = 0;
 	public static var campaignMisses:Int = 0;
@@ -898,9 +898,9 @@ class PlayState extends MusicBeatState
 		scoreTxt.visible = !ClientPrefs.hideHud;
 		add(scoreTxt);
 
-        versionTxt = new FlxText(0, FlxG.height - 24, 0, SONG.song + " - " + 
-            CoolUtil.difficultyString(false) + " | ProjectFNF " + 
-            MainMenuState.projectFnfVersion, 16);
+		versionTxt = new FlxText(0, FlxG.height - 24, 0, SONG.song + " - " + 
+			CoolUtil.difficultyString(false) + " | ProjectFNF " + 
+			MainMenuState.projectFnfVersion, 16);
 		versionTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		versionTxt.scrollFactor.set();
 		versionTxt.visible = !ClientPrefs.hideHud;
@@ -924,7 +924,7 @@ class PlayState extends MusicBeatState
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
-        versionTxt.cameras = [camHUD];
+		versionTxt.cameras = [camHUD];
 		botplayTxt.cameras = [camHUD];
 		timeBar.cameras = [camHUD];
 		timeBarBG.cameras = [camHUD];
