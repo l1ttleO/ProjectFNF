@@ -695,6 +695,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 		#if !mobile
 		'FPS Counter',
 		#end
+		'Advanced Info Bar',
 		'Info Bar Bounces',
 		'Shake On Miss',
 		'Play Miss Animations',
@@ -895,6 +896,9 @@ class PreferencesSubstate extends MusicBeatSubstate
 					case 'Dad Notes Do Damage':
 						ClientPrefs.dadNotesDoDamage = !ClientPrefs.dadNotesDoDamage;
 
+					case 'Advanced Info Bar':
+						ClientPrefs.advancedScoreTxt = !ClientPrefs.advancedScoreTxt;
+	
 					case 'Info Bar Bounces':
 						ClientPrefs.infoBarBounces = !ClientPrefs.infoBarBounces;
 
@@ -1031,6 +1035,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 				daText = "If checked, the bar showing how much time is left\nwill be hidden.";
 			case 'Dad Notes Do Damage':
 				daText = "If checked, dad notes will do 1% of damage per note";
+			case 'Advanced Info Bar':
+				daText = "If checked, the info bar showing more details.";
 			case 'Info Bar Bounces':
 				daText = "If checked, info bar will bounce when you hit a note";
 			case 'Dad Notes Can Kill':
@@ -1125,6 +1131,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daValue = ClientPrefs.imagesPersist;
 					case 'Hide Song Length':
 						daValue = ClientPrefs.hideTime;
+					case 'Advanced Info Bar':
+						daValue = ClientPrefs.advancedScoreTxt;
 					case 'Dad Notes Do Damage':
 						daValue = ClientPrefs.dadNotesDoDamage;
 					case 'Info Bar Bounces':

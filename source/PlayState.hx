@@ -215,6 +215,8 @@ class PlayState extends MusicBeatState
 	var timeTxt:FlxText;
 	var scoreTxtTween:FlxTween;
 
+    var versionTxt:FlxText;
+
 	public static var campaignScore:Int = 0;
 	public static var campaignMisses:Int = 0;
 	public static var seenCutscene:Bool = false;
@@ -896,6 +898,14 @@ class PlayState extends MusicBeatState
 		scoreTxt.visible = !ClientPrefs.hideHud;
 		add(scoreTxt);
 
+        versionTxt = new FlxText(0, FlxG.height - 24, 0, SONG.song + " - " + 
+            CoolUtil.difficultyString(false) + " | ProjectFNF " + 
+            MainMenuState.projectFnfVersion, 16);
+		versionTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		versionTxt.scrollFactor.set();
+		versionTxt.visible = !ClientPrefs.hideHud;
+		add(versionTxt);
+
 		botplayTxt = new FlxText(400, timeBarBG.y + 55, FlxG.width - 800, "BOTPLAY", 32);
 		botplayTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		botplayTxt.scrollFactor.set();
@@ -914,6 +924,7 @@ class PlayState extends MusicBeatState
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
+        versionTxt.cameras = [camHUD];
 		botplayTxt.cameras = [camHUD];
 		timeBar.cameras = [camHUD];
 		timeBarBG.cameras = [camHUD];
