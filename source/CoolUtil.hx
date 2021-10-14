@@ -23,13 +23,9 @@ class CoolUtil
 		['Hard', '-hard']
 	];
 
-	public static function difficultyString(upper:Bool=true):String
+	public static function difficultyString():String
 	{
-		if (upper) {
-			return difficultyStuff[PlayState.storyDifficulty][0].toUpperCase();
-		} else {
-			return difficultyStuff[PlayState.storyDifficulty][0];
-		}
+		return difficultyStuff[PlayState.storyDifficulty][0].toUpperCase();
 	}
 
 	public static function boundTo(value:Float, min:Float, max:Float):Float {
