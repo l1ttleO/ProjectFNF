@@ -1965,7 +1965,7 @@ class PlayState extends MusicBeatState
 		var fc:String = '';
 		if (songMisses < 10) fc = '(SDCB) ';
 		if (songMisses == 0) fc = '(FC) ';
-		if(!ClientPrefs.advancedScoreTxt) {
+		if(ClientPrefs.advancedScoreTxt) {
 			if(ratingString == '?') {
 				scoreTxt.text = 'Score: ' + songScore + ' | Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '% | Misses: ' + songMisses + ' | Accuracy: ?' + ' | Rating: ?';
 			} else {
