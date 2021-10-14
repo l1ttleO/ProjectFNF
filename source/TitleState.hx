@@ -335,7 +335,7 @@ class TitleState extends MusicBeatState
 			FlxTween.tween(logo, {'scale.x': 1, 'scale.y': 1}, 0.1, {ease: FlxEase.bounceIn});
 		}
 
-		if (gfDance != null) {
+		if(gfDance != null) {
 			danceLeft = !danceLeft;
 
 			if (danceLeft)
