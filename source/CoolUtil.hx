@@ -18,9 +18,13 @@ class CoolUtil
 {
 	public static var difficultyArray:Array<String> = ['EASY', "NORMAL", "HARD"];
 
-	public static function difficultyString():String
+	public static function difficultyString(upper:Bool=true):String
 	{
-		return difficultyArray[PlayState.storyDifficulty];
+		if (upper) {
+			return difficultyStuff[PlayState.storyDifficulty][0].toUpperCase();
+		} else {
+			return difficultyStuff[PlayState.storyDifficulty][0];
+		}
 	}
 
 	public static function boundTo(value:Float, min:Float, max:Float):Float {
