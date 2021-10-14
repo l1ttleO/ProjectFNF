@@ -52,27 +52,23 @@ class TitleState extends MusicBeatState
 	var easterEggKeyCombination:Array<FlxKey> = [FlxKey.B, FlxKey.B]; // bb stands for bbpanzu cuz he wanted this lmao
 	var lastKeysPressed:Array<FlxKey> = [];
 
-	override public function create():Void
-	{
+	override public function create():Void {
 		#if (polymod && !html5)
-		if (sys.FileSystem.exists('mods/'))
-		{
+		if (sys.FileSystem.exists('mods/')) {
 			var folders:Array<String> = [];
-			for (file in sys.FileSystem.readDirectory('mods/'))
-			{
+			for (file in sys.FileSystem.readDirectory('mods/')) {
 				var path = haxe.io.Path.join(['mods/', file]);
 				if (sys.FileSystem.isDirectory(path))
 				{
 					folders.push(file);
 				}
 			}
-			if (folders.length > 0)
-			{
+			if (folders.length > 0) {
 				polymod.Polymod.init({modRoot: "mods", dirs: folders});
 			}
 		}
 
-		// Gonna finish this later, probably
+		//Gonna finish this later, probably
 		#end
 		FlxG.game.focusLostFramerate = 60;
 		FlxG.sound.muteKeys = muteKeys;
@@ -103,23 +99,19 @@ class TitleState extends MusicBeatState
 		#elseif CHARTING
 		MusicBeatState.switchState(new ChartingState());
 		#else
-		if (FlxG.save.data.flashing == null && !FlashingState.leftState)
-		{
+		if (FlxG.save.data.flashing == null && !FlashingState.leftState) {
 			FlxTransitionableState.skipNextTransIn = true;
 			FlxTransitionableState.skipNextTransOut = true;
 			MusicBeatState.switchState(new FlashingState());
 		}
-		else
-		{
+		else {
 			#if desktop
 			DiscordClient.initialize();
-			Application.current.onExit.add(function(exitCode)
-			{
+			Application.current.onExit.add(function(exitCode) {
 				DiscordClient.shutdown();
 			});
 			#end
-			new FlxTimer().start(1, function(tmr:FlxTimer)
-			{
+			new FlxTimer().start(1, function(tmr:FlxTimer) {
 				startIntro();
 			});
 		}
@@ -274,10 +266,8 @@ class TitleState extends MusicBeatState
 
 		if (!transitioning && skippedIntro)
 		{
-			if (pressedEnter)
-			{
-				if (titleText != null)
-					titleText.animation.play('press');
+			if (pressedEnter) {
+				if (titleText != null) titleText.animation.play('press');
 
 				FlxG.camera.flash(FlxColor.WHITE, 1);
 				FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
@@ -316,8 +306,7 @@ class TitleState extends MusicBeatState
 
 	function addMoreText(text:String, ?offset:Float = 0)
 	{
-		if (textGroup != null)
-		{
+		if (textGroup != null) {
 			var coolText:Alphabet = new Alphabet(0, 0, text, true, false);
 			coolText.screenCenter(X);
 			coolText.y += (textGroup.length * 60) + 200 + offset;
@@ -347,8 +336,7 @@ class TitleState extends MusicBeatState
 			FlxTween.tween(logo, {'scale.x': 1, 'scale.y': 1}, 0.1, {ease: FlxEase.bounceIn});
 		}
 
-		if (gfDance != null)
-		{
+		if (gfDance != null) {
 			danceLeft = !danceLeft;
 
 			if (danceLeft)
@@ -357,8 +345,7 @@ class TitleState extends MusicBeatState
 				gfDance.animation.play('danceLeft');
 		}
 
-		if (!closedState)
-		{
+		if (!closedState) {
 			switch (curBeat)
 			{
 				case 1:
