@@ -1,84 +1,34 @@
-# Friday Night Funkin' - Psych Engine
-Engine originally used on [Mind Games Mod](https://gamebanana.com/mods/301107), intended to be a fix for the vanilla version's many issues while keeping the casual play aspect of it. Also aiming to be an easier alternative to newbie coders.
+# Friday Night Funkin' - ProjectFNF
 
 ## Installation:
+
+Go [here](https://github.com/l1ttleO/ProjectFNF/releases/latest) and download the appropriate version for your OS
+
+## Building: 
 Follow a Friday Night Funkin' source code compilation tutorial, after this you will need to install LuaJIT.
 
 You can do this with: `haxelib install linc_luajit` on a Command prompt/PowerShell
 
-...Or if you don't want your mod to be able to run .lua scripts, delete the "LUA_ALLOWED" line on Project.xml
-
 ## Credits:
-* Shadow Mario - Coding
-* RiverOaken - Arts and Animations
+* aflacc - Original maintainer of ProjectFNF
+* l1ttleO - Main developer of ProjectFNF 2.0
+* Shadow Mario - Coding for Psych Engine
+* RiverOaken - Arts and Animations for Psych Engine
 
 ### Special Thanks
-* Keoiki - Note Splash Animations
+* Keoiki - Note Splash Animations for Psych Engine
 
-WARNING: This engine is still very early in development! You can request new features though
+WARNING: This mod is still very early in development! You can request new features and report bugs though
 _____________________________________
 
 # Features
 
-## Attractive animated dialogue boxes:
-
-![](https://user-images.githubusercontent.com/44785097/127706669-71cd5cdb-5c2a-4ecc-871b-98a276ae8070.gif)
-
-
-## Atleast one change to every week:
-### Week 1:
-  * New Dad Left sing sprite 
-  * Unused stage lights are now used
-### Week 2:
-  * Both BF and Skid & Pump does "Hey!" animations
-  * Thunders does a quick light flash and zooms the camera in slightly
-  * Added a quick transition/cutscene to Monster
-### Week 3:
-  * BF does "Hey!" during Philly Nice
-  * Blammed has a cool new colors flash during that sick part of the song
-### Week 4:
-  * Better hair physics for Mom/Boyfriend (Maybe even slightly better than Week 7's :eyes:)
-  * Henchmen die during all songs. Yeah :(
-### Week 5:
-  * Bottom Boppers and GF does "Hey!" animations during Cocoa and Eggnog
-  * On Winter Horrorland, GF bops her head slower in some parts of the song.
-### Week 6:
-  * On Thorns, the HUD is hidden during the cutscene
-  * Also there's the Background girls being spooky during the "Hey!" parts of the Instrumental
-
-## Cool new Chart Editor changes and countless bug fixes
-![an](https://user-images.githubusercontent.com/44785097/130653801-3bdaf3e0-3499-4bc5-ba95-95225567c445.jpg)
-* You can now chart "Event" notes, which are bookmarks that trigger specific actions that usually were hardcoded on the vanilla version of the game.
-* Your song's BPM can now have decimal values
-* You can manually adjust a Note's strum time if you're really going for milisecond precision
-* You can change a note's type on the Editor, it comes with two example types:
-  * Alt Animation: Forces an alt animation to play, useful for songs like Ugh/Stress
-  * Hey: Forces a "Hey" animation instead of the base Sing animation, if Boyfriend hits this note, Girlfriend will do a "Hey!" too.
-  * Hurt Note: Hitting this note will make you take damage equivalent to 15% of your health (5% if it's a sustain note piece).
-
-## Character Editor menu (Press 8 during a song)
-![611204265433b](https://user-images.githubusercontent.com/44785097/130653956-3b15d82e-328c-4a59-8cf7-1d2b17c05f9a.jpg)
-
-
-## Story mode menu rework:
-![](https://i.imgur.com/UB2EKpV.png)
-* Added a different BG to every song (less Tutorial)
-* All menu characters are now in individual spritesheets, makes modding it easier.
-
-## Credits menu
-![](https://i.imgur.com/NdIQt3d.png)
-* You can add a head icon, name, description and a Redirect link for when the player presses Enter while the item is currently selected.
-
-## Awards/Achievements
-* The engine comes with 16 example achievements that you can mess with and learn how it works (Check Achievements.hx and search for "checkForAchievement" on PlayState.hx)
-
-## Options menu:
-* You can change Note colors, Controls and Preferences there.
- * On Preferences you can toggle Downscroll, Anti-Aliasing, Framerate, Low Quality, Note Splashes, Hide Hud elements, Flashing Lights, etc.
-
-## Other gameplay features:
-* When the enemy hits a note, it plays the note hit animation on their strum, just like when the player hits a note.
-* Lag doesn't impact the camera movement and player icon scaling anymore.
-* Some stuff based on Week 7's changes has been put in (Background colors on Freeplay, Note splashes)
-* You can reset your Score on Freeplay/Story Mode by pressing Reset button.
-* You can listen to a song on Freeplay by pressing Space once.
+* [All Psych Engine features](https://github.com/ShadowMario/FNF-PsychEngine/tree/0.4.2#features)
+* Modifiers and gameplay options to enhance your experience and test your skill
+* Optimization features for low-end PCs
+  
+# This isn't the true ProjectFNF repo!
+  
+A note on https://github.com/ProjectFNF/ProjectFNF  
+So here's the story in a nutshell:  
+There was [ProjectFNF 1.0](https://github.com/aflacc/ProjectFNF) (which was mostly developed by [Zeptos](https://github.com/MagnusStrom), then I decided to create ProjectFNF 2.0 using Psych Engine and [aflac](https://github.com/aflacc) agreed. Then, aflac gave permission to [east](https://github.com/EastDeveloper) to turn the ProjectFNF Discord server into South Engine, which east claims is "just a rebrand" which I never agreed in the first place (they countered this argument by saying that aflac gave them permission, and I couldn't do anything about it). During this time, I wasn't in the server, so I joined *after* the changes were made. I got frustrated and left. East then turned the Discord server back into ProjectFNF. I took a glance at their repo, and saw that [their](https://user-images.githubusercontent.com/61277953/139134145-e878d519-c6a6-4a9f-9df1-eb301ca17ad9.png) [commit](https://user-images.githubusercontent.com/61277953/139134360-4e1edca7-aa93-4ffd-aec2-1bffeebd3f6d.png) history was a mess, filled with tons of "fix" and undescriptive commits. I decided to keep developing OG ProjectFNF 2.0 on my own
