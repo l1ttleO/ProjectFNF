@@ -262,6 +262,8 @@ class PlayState extends MusicBeatState
 		practiceMode = false;
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
+		if (ClientPrefs.maxOptimization)
+			camGame.visible = false;
 		camHUD = new FlxCamera();
 		camOther = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
@@ -354,7 +356,6 @@ class PlayState extends MusicBeatState
 		dadGroup = new FlxSpriteGroup(DAD_X, DAD_Y);
 		gfGroup = new FlxSpriteGroup(GF_X, GF_Y);
 
-		if (!ClientPrefs.maxOptimization) {
 		switch (curStage)
 		{
 			case 'stage': //Week 1
@@ -629,7 +630,7 @@ class PlayState extends MusicBeatState
 					add(bg);
 				}
 		}
-		}
+
 		if(isPixelStage) {
 			introSoundsSuffix = '-pixel';
 		}
@@ -900,8 +901,8 @@ class PlayState extends MusicBeatState
 		scoreTxt.visible = !ClientPrefs.hideHud;
 		add(scoreTxt);
 
-		versionTxt = new FlxText(0, FlxG.height - 24, 0, SONG.song + " - " + 
-			CoolUtil.difficultyString(false) + " | ProjectFNF " + 
+		versionTxt = new FlxText(0, FlxG.height - 24, 0, SONG.song + " - " +
+			CoolUtil.difficultyString(false) + " | ProjectFNF " +
 			MainMenuState.projectFnfVersion, 16);
 		versionTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		versionTxt.scrollFactor.set();
@@ -1041,14 +1042,6 @@ class PlayState extends MusicBeatState
 		// Updating Discord Rich Presence.
 		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
 		#end
-		if (ClientPrefs.maxOptimization) {
-			remove(boyfriend);
-			remove(boyfriendGroup);
-			remove(dad);
-			remove(dadGroup);
-			remove(gf);
-			remove(gfGroup);
-		}
 		super.create();
 	}
 
@@ -1983,7 +1976,7 @@ class PlayState extends MusicBeatState
 				scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + songMisses + ' | Rating: ' + fc + ratingString;
 			}
 		}
-		
+
 		if(cpuControlled) {
 			botplaySine += 180 * elapsed;
 			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);

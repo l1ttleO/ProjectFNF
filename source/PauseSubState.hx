@@ -13,14 +13,24 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.FlxCamera;
+import editors.ChartingState;
+import editors.DialogueCharacterEditorState;
 
 class PauseSubState extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
 	var menuItems:Array<String> = [];
-	var menuItemsOG:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'Toggle Practice Mode', 'Botplay', 'Exit to menu'];
-	var difficultyChoices = [];
+	var menuItemsOG:Array<String> = ['Resume', 'Restart Song', 'Settings', 'Exit to menu'];
+	var settingChoices:Array<String> = [
+		'Change Difficulty',
+		'Toggle Practice Mode',
+		'Quick Settings',
+		'Botplay',
+		'BACK'
+	];
+	var difficultyChoices = ['Easy', 'Normal', 'Hard', 'BACK'];
+	var quickSettings:Array<String> = ['Downscroll', 'Middlescroll', 'Info Bar Bounces', 'Max Optimization', 'BACK'];
 	var curSelected:Int = 0;
 
 	var pauseMusic:FlxSound;
@@ -33,6 +43,13 @@ class PauseSubState extends MusicBeatSubstate
 	{
 		super();
 		menuItems = menuItemsOG;
+
+		/*for (i in 0...CoolUtil.difficultyStuff.length) {
+				var diff:String = '' + CoolUtil.difficultyStuff[i][0];
+				difficultyChoices.push(diff);
+			}
+		difficultyChoices.push('BACK');*/
+		// this caused Linux crashes if you're wondering
 
 		pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
 		pauseMusic.volume = 0;
@@ -151,7 +168,7 @@ class PauseSubState extends MusicBeatSubstate
 
 			switch (daSelected)
 			{
-				case "Resume":
+				case 'Resume':
 					close();
 				case 'Change Difficulty':
 					menuItems = difficultyChoices;
@@ -160,7 +177,7 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.practiceMode = !PlayState.practiceMode;
 					PlayState.usedPractice = true;
 					practiceText.visible = PlayState.practiceMode;
-				case "Restart Song":
+				case 'Restart Song':
 					CustomFadeTransition.nextCamera = transCamera;
 					MusicBeatState.resetState();
 					FlxG.sound.music.volume = 0;
@@ -168,7 +185,25 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.cpuControlled = !PlayState.cpuControlled;
 					PlayState.usedPractice = true;
 					botplayText.visible = PlayState.cpuControlled;
-				case "Exit to menu":
+				case 'Settings':
+					menuItems = settingChoices;
+					regenMenu();
+				case 'Quick Settings':
+					menuItems = quickSettings;
+					regenMenu();
+				case 'Middlescroll':
+					ClientPrefs.middleScroll = !ClientPrefs.middleScroll;
+					MusicBeatState.switchState(new PlayState());
+				case 'Downscroll':
+					ClientPrefs.downScroll = !ClientPrefs.downScroll;
+					MusicBeatState.switchState(new PlayState());
+				case 'Info Bar Bounces':
+					ClientPrefs.infoBarBounces = !ClientPrefs.infoBarBounces;
+					MusicBeatState.switchState(new PlayState());
+				case 'Max Optimization':
+					ClientPrefs.maxOptimization = !ClientPrefs.maxOptimization;
+					MusicBeatState.switchState(new PlayState());
+				case 'Exit to menu':
 					PlayState.deathCounter = 0;
 					PlayState.seenCutscene = false;
 					CustomFadeTransition.nextCamera = transCamera;
@@ -181,15 +216,21 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.usedPractice = false;
 					PlayState.changedDifficulty = false;
 					PlayState.cpuControlled = false;
+				case 'Easy':
+					PlayState.SONG = Song.loadFromJson(PlayState.SONG.song.toLowerCase() + "-easy", PlayState.SONG.song.toLowerCase());
+					PlayState.storyDifficulty = 0;
 
-				case 'EASY' | 'NORMAL' | 'HARD':
-					var name:String = PlayState.SONG.song.toLowerCase();
-					var poop = Highscore.formatSong(name, curSelected);
-					PlayState.SONG = Song.loadFromJson(poop, name);
-					PlayState.storyDifficulty = curSelected;
-					FlxG.resetState();
-					FlxG.sound.music.volume = 0;
-					PlayState.changedDifficulty = true;
+					FlxG.switchState(new PlayState());
+				case 'Normal':
+					PlayState.SONG = Song.loadFromJson(PlayState.SONG.song.toLowerCase(), PlayState.SONG.song.toLowerCase());
+					PlayState.storyDifficulty = 1;
+
+					FlxG.switchState(new PlayState());
+				case 'Hard':
+					PlayState.SONG = Song.loadFromJson(PlayState.SONG.song.toLowerCase() + "-hard", PlayState.SONG.song.toLowerCase());
+					PlayState.storyDifficulty = 2;
+
+					FlxG.switchState(new PlayState());
 				case 'BACK':
 					menuItems = menuItemsOG;
 					regenMenu();
