@@ -268,6 +268,9 @@ class TitleState extends MusicBeatState
 
 				FlxG.camera.flash(FlxColor.WHITE, 1);
 				FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
+				FlxTween.tween(logo, {x: -1500}, 3.5, {ease: FlxEase.expoInOut});
+				FlxTween.tween(gfDance, {x: -1500}, 3.7, {ease: FlxEase.expoInOut});
+				FlxTween.tween(titleText, {y: 1500}, 3.7, {ease: FlxEase.expoInOut});
 
 				transitioning = true;
 				// FlxG.sound.music.stop();
@@ -346,7 +349,7 @@ class TitleState extends MusicBeatState
 			switch (curBeat)
 			{
 				case 1:
-					createCoolText(['Psych Engine by'], 45);
+					createCoolText(['ProjectFNF by'], 45);
 				// credTextShit.visible = true;
 				case 3:
 					addMoreText('l1ttleO', 45);
