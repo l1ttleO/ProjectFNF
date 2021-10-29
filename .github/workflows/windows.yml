@@ -54,5 +54,5 @@ jobs:
       - name: Publish Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: windowsBuild
+          name: ProjectFNF-Windows64
           path: export/release/windows/bin
