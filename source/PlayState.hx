@@ -1970,36 +1970,31 @@ class PlayState extends MusicBeatState
 		}
 
 		super.update(elapsed);
-		
+
 		var fc:String = '';
 		if (songMisses < 10) fc = '(SDCB) ';
 		if (songMisses == 0) fc = '(FC) ';
 
 		var suffix:String = '';
-		if (ratingString != '?') { // this looks so stupid lmao
-			var accuracyRounded:Float = FlxMath.roundDecimal(ratingPercent * 100, 0);
+		var accuracyPercentage = FlxMath.roundDecimal(ratingPercent * 100, 2);
+		if (Math.isNaN(accuracyPercentage)) accuracyPercentage = 100;
+		if (ratingString != '?') {
 			var thing:Float = FlxMath.roundDecimal(ratingPercent * 10, 0) * 10; // you can't do 'ratingPercent * 100', the number must be rounded before multiplying by 10
-			if (accuracyRounded - thing < 0) {
-				if (accuracyRounded - thing > -5)
+			if (accuracyPercentage - thing < 0) {
+				if (accuracyPercentage - thing > -5)
 					suffix = '+';
-				if (accuracyRounded - thing == -1)
+				if (accuracyPercentage - thing >= -1)
 					suffix = '++';
 			}
 		}
 
-		if(ClientPrefs.advancedScoreTxt) {
-			if(ratingString == '?') {
-				scoreTxt.text = 'Score: ' + songScore + ' | Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '% | Misses: ' + songMisses + ' | Accuracy: ?' + ' | Rating: ?';
-			} else {
-				scoreTxt.text = 'Score: ' + songScore + ' | Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '% | Misses: ' + songMisses + ' | Accuracy: ' + FlxMath.roundDecimal(ratingPercent * 100, 2) + '% | Rating: ' + fc + ratingString + suffix;
-			}
-		} else {
-			if(ratingString == '?') {
-				scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + songMisses + ' | Rating: ?';
-			} else {
-				scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + songMisses + ' | Rating: ' + fc + ratingString + suffix;
-			}
+		var healthTxt = '';
+		var accuracyTxt = '';
+		if (ClientPrefs.advancedScoreTxt) {
+			healthTxt = ' | Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '%';
+			accuracyTxt = ' | Accuracy: ' + accuracyPercentage + '%';
 		}
+		scoreTxt.text = 'Score: ' + songScore + healthTxt + ' | Misses: ' + songMisses + accuracyTxt + ' | Rating: ' + fc + ratingString + suffix;
 
 		if(cpuControlled) {
 			botplaySine += 180 * elapsed;
