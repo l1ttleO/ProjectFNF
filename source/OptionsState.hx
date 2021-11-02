@@ -684,28 +684,29 @@ class PreferencesSubstate extends MusicBeatSubstate
 		'Downscroll',
 		'Middlescroll',
 		'Ghost Tapping',
+		'Info Bar Bounces',
 		'Note Delay',
 		'Note Splashes',
-		'Hide HUD',
 		'Hide Song Length',
+		'Advanced Info Bar',
+		'Shake On Miss',
+		'Hide HUD',
+		'Play Miss Animations',
 		'Flashing Lights',
 		'Camera Zooms'
 		#if !mobile
 		,'FPS Counter'
 		#end
-		'Advanced Info Bar',
-		'Info Bar Bounces',
-		'Shake On Miss',
-		'Play Miss Animations',
 		'Play Hit Sounds',
 		'MODIFIERS',
 		'Dad Notes Do Damage',
 		'Dad Notes Can Kill',
 		'Damage from Dad Notes',
+		'Stuns Block Inputs',
+		'Misses Lower Max Health',
 		'No Health Gain',
 		'Dad Notes Visible',
-		'BF Notes Visible',
-		'Stuns Block Inputs'
+		'BF Notes Visible'
 	];
 
 	private var grpOptions:FlxTypedGroup<Alphabet>;
@@ -896,7 +897,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 
 					case 'Advanced Info Bar':
 						ClientPrefs.advancedScoreTxt = !ClientPrefs.advancedScoreTxt;
-	
+
 					case 'Info Bar Bounces':
 						ClientPrefs.infoBarBounces = !ClientPrefs.infoBarBounces;
 
@@ -923,6 +924,9 @@ class PreferencesSubstate extends MusicBeatSubstate
 
 					case 'Max Optimization':
 						ClientPrefs.maxOptimization = !ClientPrefs.maxOptimization;
+
+					case 'Misses Lower Max Health':
+						ClientPrefs.missesLowerMaxHealth = !ClientPrefs.missesLowerMaxHealth;
 				}
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				reloadValues();
@@ -1041,7 +1045,9 @@ class PreferencesSubstate extends MusicBeatSubstate
 			case 'Play Hit Sounds':
 				daText = "Pretty self-explanatory";
 			case 'Max Optimization':
-				daText = "If checked, hides everything except the UI";
+				daText = "If checked, everything except the UI will be hidden";
+			case 'Misses Lower Max Health':
+				daText = "If checked, missing a note will lower your maximum health";
 		}
 		descText.text = daText;
 
@@ -1136,6 +1142,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daValue = ClientPrefs.playHitSounds;
 					case 'Max Optimization':
 						daValue = ClientPrefs.maxOptimization;
+					case 'Misses Lower Max Health':
+						daValue = ClientPrefs.missesLowerMaxHealth;
 				}
 				checkbox.daValue = daValue;
 			}

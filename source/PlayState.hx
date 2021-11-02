@@ -145,7 +145,9 @@ class PlayState extends MusicBeatState
 	private var curSong:String = "";
 
 	public var gfSpeed:Int = 1;
-	public var health:Float = 1;
+	public var health:Float;
+	public var healthPercentage:Float;
+	public var maxHealth:Float;
 	public var combo:Int = 0;
 
 	private var healthBarBG:AttachedSprite;
@@ -1971,13 +1973,16 @@ class PlayState extends MusicBeatState
 
 		super.update(elapsed);
 
-		var fc:String = '';
-		if (songMisses < 10) fc = '(SDCB) ';
-		if (songMisses == 0) fc = '(FC) ';
-
-		var suffix:String = '';
 		var accuracyPercentage = FlxMath.roundDecimal(ratingPercent * 100, 2);
 		if (Math.isNaN(accuracyPercentage)) accuracyPercentage = 100;
+
+		var fc:String = '';
+		if (songHits > 0 && accuracyPercentage != 100) { // no '(FC) SFC', yes 'SFC'
+			if (songMisses < 10) fc = '(SDCB) ';
+			if (songMisses == 0) fc = '(FC) ';
+		}
+
+		var suffix:String = '';
 		if (ratingString != '?') {
 			var thing:Float = FlxMath.roundDecimal(ratingPercent * 10, 0) * 10; // you can't do 'ratingPercent * 100', the number must be rounded before multiplying by 10
 			if (accuracyPercentage - thing < 0) {
@@ -2059,11 +2064,11 @@ class PlayState extends MusicBeatState
 
 		var iconOffset:Int = 26;
 
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
-		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentage > 100 ? 100 : healthPercentage, 0, 100, 100, 0) * 0.01) - iconOffset);
+		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentage > 100 ? 100 : healthPercentage, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
 
-		if (health > 2)
-			health = 2;
+		if (health > maxHealth)
+			health = maxHealth;
 
 		if (healthBar.percent < 20)
 			iconP1.animation.curAnim.curFrame = 1;
@@ -3365,6 +3370,8 @@ class PlayState extends MusicBeatState
 
 		health -= daNote.missHealth; //For testing purposes
 		//trace(daNote.missHealth);
+		if (ClientPrefs.missesLowerMaxHealth)
+			maxHealth -= daNote.missHealth;
 		songMisses++;
 		vocals.volume = 0;
 		RecalculateRating();
@@ -3409,6 +3416,8 @@ class PlayState extends MusicBeatState
 		if (!ClientPrefs.stunsBlockInputs || !boyfriend.stunned)
 		{
 			health -= 0.04;
+			if (ClientPrefs.missesLowerMaxHealth)
+				maxHealth -= 0.04;
 			if (combo > 5 && gf.animOffsets.exists('sad'))
 			{
 				gf.playAnim('sad');
