@@ -9,6 +9,9 @@ Follow a Friday Night Funkin' source code compilation tutorial, after this you w
 
 You can do this with: `haxelib install linc_luajit` on a Command prompt/PowerShell
 
+## Discord server
+https://discord.gg/BUgn9dGgB2
+
 ## Credits:
 * aflacc - Original maintainer of ProjectFNF
 * l1ttleO - Main developer of ProjectFNF 2.0
