@@ -147,7 +147,7 @@ class PlayState extends MusicBeatState
 	public var gfSpeed:Int = 1;
 	public var health:Float;
 	public var healthPercentage:Float;
-	public var maxHealth:Float;
+	public var maxHealth:Float = 2;
 	public var combo:Int = 0;
 
 	private var healthBarBG:AttachedSprite;
