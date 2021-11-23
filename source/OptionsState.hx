@@ -893,7 +893,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 						ClientPrefs.hideTime = !ClientPrefs.hideTime;
 
 					case 'Dad Notes Do Damage':
-						ClientPrefs.dadNotesDoDamage = !ClientPrefs.dadNotesDoDamage;
+						if (!ClientPrefs.hardMode)
+							ClientPrefs.dadNotesDoDamage = !ClientPrefs.dadNotesDoDamage;
 
 					case 'Advanced Info Bar':
 						ClientPrefs.advancedScoreTxt = !ClientPrefs.advancedScoreTxt;
@@ -902,7 +903,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 						ClientPrefs.infoBarBounces = !ClientPrefs.infoBarBounces;
 
 					case 'Dad Notes Can Kill':
-						ClientPrefs.dadNotesCanKill = !ClientPrefs.dadNotesCanKill;
+						if (!ClientPrefs.hardMode)
+							ClientPrefs.dadNotesCanKill = !ClientPrefs.dadNotesCanKill;
 
 					case 'Dad Notes Visible':
 						ClientPrefs.dadNotesVisible = !ClientPrefs.dadNotesVisible;
@@ -926,7 +928,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 						ClientPrefs.maxOptimization = !ClientPrefs.maxOptimization;
 
 					case 'Misses Lower Max Health':
-						ClientPrefs.missesLowerMaxHealth = !ClientPrefs.missesLowerMaxHealth;
+						if (!ClientPrefs.hardMode)
+							ClientPrefs.missesLowerMaxHealth = !ClientPrefs.missesLowerMaxHealth;
 				}
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				reloadValues();
@@ -956,6 +959,30 @@ class PreferencesSubstate extends MusicBeatSubstate
 						ClientPrefs.noteOffset += add * mult;
 						if(ClientPrefs.noteOffset < 0) ClientPrefs.noteOffset = 0;
 						else if(ClientPrefs.noteOffset > 500) ClientPrefs.noteOffset = 500;
+					case 'Damage from Dad Notes':
+						var mult:Int = 5;
+						if(holdTime > 1.5) {
+							mult = 10;
+						}
+						ClientPrefs.damageFromDadNotes += add * mult;
+						if(ClientPrefs.damageFromDadNotes < 5) ClientPrefs.damageFromDadNotes = 5;
+						else if(ClientPrefs.damageFromDadNotes >= 100) {
+							ClientPrefs.dadNotesDoDamage = true;
+							ClientPrefs.dadNotesCanKill = true;
+							ClientPrefs.damageFromDadNotes = 100;
+							ClientPrefs.missesLowerMaxHealth = false;
+							ClientPrefs.hardMode = true;
+						}
+					case 'No Health Gain':
+						if (!ClientPrefs.hardMode) {
+							var mult:Int = 5;
+							if (holdTime > 1.5) {
+								mult = 10;
+							}
+							ClientPrefs.noHealthGain += add * mult;
+							if(ClientPrefs.noHealthGain < 0) ClientPrefs.noHealthGain = 0;
+							else if(ClientPrefs.noHealthGain > 100) ClientPrefs.noHealthGain = 100;
+						}
 				}
 				reloadValues();
 
@@ -989,7 +1016,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 		var daText:String = '';
 		switch(options[curSelected]) {
 			case 'Framerate':
-				daText = "Pretty self explanatory, isn't it?\nDefault value is 60.";
+				daText = "Pretty self explanatory, isn't it?\nDefault value is 120.";
 			case 'Note Delay':
 				daText = "Changes how late a note is spawned.\nUseful for preventing audio lag from wireless earphones.";
 			case 'FPS Counter':
@@ -1021,33 +1048,33 @@ class PreferencesSubstate extends MusicBeatSubstate
 			case 'Hide Song Length':
 				daText = "If checked, the bar showing how much time is left\nwill be hidden.";
 			case 'Dad Notes Do Damage':
-				daText = "If checked, dad notes will do 1% of damage per note";
+				daText = "If checked, dad notes will do 1% of damage per note.";
 			case 'Advanced Info Bar':
-				daText = "If checked, the info bar showing more details.";
+				daText = "If checked, the info bar will show more details.";
 			case 'Info Bar Bounces':
-				daText = "If checked, info bar will bounce when you hit a note";
+				daText = "If checked, info bar will bounce when you hit a note.";
 			case 'Dad Notes Can Kill':
-				daText = "If checked and 'Dad Notes Do Damage' is enabled, \ndad notes will be able to kill you";
+				daText = "If checked and 'Dad Notes Do Damage' is enabled, \ndad notes will be able to kill you.";
 			case 'Damage from Dad Notes':
-				daText = "Changes how much damage dad notes deal in %\nRequires 'Dad Notes Do Damage' to be checked";
+				daText = "Changes how much damage dad notes deal in %\nRequires 'Dad Notes Do Damage' to be checked.";
 			case 'No Health Gain':
-				daText = "You will not gain health by hitting notes\nThe value represents your starting health in %";
+				daText = "You will not gain health by hitting notes\nThe value represents your starting health in %.";
 			case 'Dad Notes Visible':
-				daText = "If unchecked, dad notes will not be shown";
+				daText = "If unchecked, dad notes will not be shown.";
 			case 'BF Notes Visible':
-				daText = "If unchecked, boyfriend's notes will not be shown";
+				daText = "If unchecked, boyfriend's notes will not be shown.";
 			case 'Stuns Block Inputs':
-				daText = "If checked, misses will block inputs for 1.25 seconds";
+				daText = "If checked, misses will block inputs for 1.25 seconds.";
 			case 'Shake On Miss':
-				daText = "If checked, the camera will shake when you miss";
+				daText = "If checked, the camera will shake when you miss.";
 			case 'Play Miss Animations':
-				daText = "If unchecked, no miss animation will play";
+				daText = "If unchecked, no miss animation will play.";
 			case 'Play Hit Sounds':
-				daText = "Pretty self-explanatory";
+				daText = "Pretty self-explanatory.";
 			case 'Max Optimization':
-				daText = "If checked, everything except the UI will be hidden";
+				daText = "If checked, everything except the UI will be hidden.";
 			case 'Misses Lower Max Health':
-				daText = "If checked, missing a note will lower your maximum health";
+				daText = "If checked, missing a note will lower your maximum health.";
 		}
 		descText.text = daText;
 
@@ -1157,6 +1184,10 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daText = '' + ClientPrefs.framerate;
 					case 'Note Delay':
 						daText = ClientPrefs.noteOffset + 'ms';
+					case 'Damage from Dad Notes':
+						daText = ClientPrefs.damageFromDadNotes < 100 ? ClientPrefs.damageFromDadNotes / 10 + '%' : "HARD MODE";
+					case 'No Health Gain':
+						daText = ClientPrefs.noHealthGain == 0 ? "OFF" : ClientPrefs.noHealthGain + '%';
 				}
 				var lastTracker:FlxSprite = text.sprTracker;
 				text.sprTracker = null;

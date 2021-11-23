@@ -39,6 +39,7 @@ class ClientPrefs {
 	public static var playHitSounds:Bool = false;
 	public static var maxOptimization:Bool = false;
 	public static var missesLowerMaxHealth:Bool = false;
+	public static var hardMode:Bool = false;
 
 	public static var defaultKeys:Array<FlxKey> = [
 		A, LEFT,			//Note Left
@@ -108,6 +109,7 @@ class ClientPrefs {
 		FlxG.save.data.playHitSounds = playHitSounds;
 		FlxG.save.data.maxOptimization = maxOptimization;
 		FlxG.save.data.missesLowerMaxHealth = missesLowerMaxHealth;
+		FlxG.save.data.hardMode = hardMode;
 
 		var achieves:Array<String> = [];
 		for (i in 0...Achievements.achievementsUnlocked.length) {
@@ -230,6 +232,9 @@ class ClientPrefs {
 		}
 		if(FlxG.save.data.missesLowerMaxHealth != null) {
 			missesLowerMaxHealth = FlxG.save.data.missesLowerMaxHealth;
+		}
+		if(FlxG.save.data.hardMode != null) {
+			hardMode = FlxG.save.data.hardMode;
 		}
 
 		var save:FlxSave = new FlxSave();

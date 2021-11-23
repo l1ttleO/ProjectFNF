@@ -147,7 +147,9 @@ class PlayState extends MusicBeatState
 	public var gfSpeed:Int = 1;
 	public var health:Float;
 	public var healthPercentage:Float;
+	public var healthDrained:Float;
 	public var maxHealth:Float = 2;
+	public var shouldDrain:Bool = false;
 	public var combo:Int = 0;
 
 	private var healthBarBG:AttachedSprite;
@@ -253,6 +255,11 @@ class PlayState extends MusicBeatState
 
 	override public function create()
 	{
+		health = ClientPrefs.noHealthGain == 0 ? 1 : ClientPrefs.noHealthGain * 0.02;
+		if (ClientPrefs.hardMode) {
+			health = 2;
+			maxHealth = 3;
+		}
 		#if MODS_ALLOWED
 		Paths.destroyLoadedImages(resetSpriteCache);
 		#end
@@ -2064,18 +2071,26 @@ class PlayState extends MusicBeatState
 
 		var iconOffset:Int = 26;
 
+		if (ClientPrefs.hardMode && health > 0.001 && shouldDrain) {
+			var toPassiveDrain:Float = 0.035 / FlxG.updateFramerate;
+			health -= toPassiveDrain;
+			healthDrained += toPassiveDrain;
+		}
+
+		healthPercentage = health / 0.02;
+
 		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentage > 100 ? 100 : healthPercentage, 0, 100, 100, 0) * 0.01) - iconOffset);
 		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentage > 100 ? 100 : healthPercentage, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
 
 		if (health > maxHealth)
 			health = maxHealth;
 
-		if (healthBar.percent < 20)
+		if (healthPercentage < (ClientPrefs.hardMode ? 30 : 20))
 			iconP1.animation.curAnim.curFrame = 1;
 		else
 			iconP1.animation.curAnim.curFrame = 0;
 
-		if (healthBar.percent > 80)
+		if (healthPercentage > (ClientPrefs.hardMode ? 100 : 80))
 			iconP2.animation.curAnim.curFrame = 1;
 		else
 			iconP2.animation.curAnim.curFrame = 0;
@@ -2300,8 +2315,13 @@ class PlayState extends MusicBeatState
 								animToPlay = 'singRIGHT';
 						}
 
-					if (ClientPrefs.dadNotesDoDamage && (health - ClientPrefs.damageFromDadNotes / 10 * 0.02 > 0.001 || ClientPrefs.dadNotesCanKill)) {
-						health -= ClientPrefs.damageFromDadNotes / 10 * 0.02;
+					var toDrain:Float = ClientPrefs.hardMode ? 0.0225 : ClientPrefs.damageFromDadNotes / 10 * 0.02;
+					if (ClientPrefs.dadNotesDoDamage && (health - toDrain > 0.001 || ClientPrefs.dadNotesCanKill)) {
+						if (!ClientPrefs.hardMode || healthDrained < 2 - (toDrain * 2)) {
+							shouldDrain = true;
+							health -= toDrain;
+							healthDrained += toDrain;
+						}
 					}
 
 					if (SONG.needsVoices)
@@ -3068,7 +3088,7 @@ class PlayState extends MusicBeatState
 
 		var coolText:FlxText = new FlxText(0, 0, 0, placement, 32);
 		coolText.screenCenter();
-		coolText.x = FlxG.width * 0.55;
+		coolText.x = FlxG.width * (ClientPrefs.middleScroll ? 0.125 : 0.41);
 		//
 
 		var rating:FlxSprite = new FlxSprite();
@@ -3178,7 +3198,7 @@ class PlayState extends MusicBeatState
 		{
 			var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'num' + Std.int(i) + pixelShitPart2));
 			numScore.screenCenter();
-			numScore.x = coolText.x + (43 * daLoop) - 90;
+			numScore.x = coolText.x + (43 * daLoop);
 			numScore.y += 80;
 
 			if (!PlayState.isPixelStage)
@@ -3411,7 +3431,7 @@ class PlayState extends MusicBeatState
 	{
 		if (!ClientPrefs.stunsBlockInputs || !boyfriend.stunned)
 		{
-			health -= 0.04;
+			health -= ClientPrefs.hardMode ? 0.08 : 0.04;
 			if (ClientPrefs.missesLowerMaxHealth)
 				maxHealth -= 0.04;
 			if (combo > 5 && gf.animOffsets.exists('sad'))
@@ -3495,6 +3515,8 @@ class PlayState extends MusicBeatState
 			}
 			health += note.hitHealth;
 
+
+			healthDrained -= note.hitHealth;
 			if(!note.noAnimation) {
 				var daAlt = '';
 				if(note.noteType == 'Alt Animation') daAlt = '-alt';
