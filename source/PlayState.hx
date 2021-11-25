@@ -255,10 +255,13 @@ class PlayState extends MusicBeatState
 
 	override public function create()
 	{
-		health = ClientPrefs.noHealthGain == 0 ? 1 : ClientPrefs.noHealthGain * 0.02;
+		var startingHealth:Float = ClientPrefs.noHealthGain == 0 ? 1 : ClientPrefs.noHealthGain * 0.02;
+		health = startingHealth;
+		healthDrained = startingHealth;
 		if (ClientPrefs.hardMode) {
 			health = 2;
 			maxHealth = 3;
+			healthDrained = 0;
 		}
 		#if MODS_ALLOWED
 		Paths.destroyLoadedImages(resetSpriteCache);
@@ -2077,13 +2080,16 @@ class PlayState extends MusicBeatState
 			healthDrained += toPassiveDrain;
 		}
 
+		if (health > maxHealth)
+			health = maxHealth;
+
+		if (healthDrained < -1)
+			healthDrained = -1;
+
 		healthPercentage = health / 0.02;
 
 		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentage > 100 ? 100 : healthPercentage, 0, 100, 100, 0) * 0.01) - iconOffset);
 		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentage > 100 ? 100 : healthPercentage, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
-
-		if (health > maxHealth)
-			health = maxHealth;
 
 		if (healthPercentage < (ClientPrefs.hardMode ? 30 : 20))
 			iconP1.animation.curAnim.curFrame = 1;
@@ -2316,12 +2322,10 @@ class PlayState extends MusicBeatState
 						}
 
 					var toDrain:Float = ClientPrefs.hardMode ? 0.0225 : ClientPrefs.damageFromDadNotes / 10 * 0.02;
-					if (ClientPrefs.dadNotesDoDamage && (health - toDrain > 0.001 || ClientPrefs.dadNotesCanKill)) {
-						if (!ClientPrefs.hardMode || healthDrained < 2 - (toDrain * 2)) {
-							shouldDrain = true;
-							health -= toDrain;
-							healthDrained += toDrain;
-						}
+					if (ClientPrefs.dadNotesDoDamage && (health - toDrain > 0.001 || ClientPrefs.dadNotesCanKill) && healthDrained < 2 - (toDrain * 2)) {
+						shouldDrain = true;
+						health -= toDrain;
+						healthDrained += toDrain;
 					}
 
 					if (SONG.needsVoices)

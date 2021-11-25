@@ -972,6 +972,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 							ClientPrefs.damageFromDadNotes = 100;
 							ClientPrefs.missesLowerMaxHealth = false;
 							ClientPrefs.hardMode = true;
+						} else {
+							ClientPrefs.hardMode = false;
 						}
 					case 'No Health Gain':
 						if (!ClientPrefs.hardMode) {
