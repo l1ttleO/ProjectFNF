@@ -146,10 +146,11 @@ class PlayState extends MusicBeatState
 
 	public var gfSpeed:Int = 1;
 	public var health:Float;
+	public var maxHealth:Float = 2;
 	public var healthPercentage:Float;
 	public var healthDrained:Float;
-	public var maxHealth:Float = 2;
-	public var shouldDrain:Bool = false;
+	public var minDrained:Float = 0;
+	public var shouldPassiveDrain:Bool = false;
 	public var combo:Int = 0;
 
 	private var healthBarBG:AttachedSprite;
@@ -262,6 +263,7 @@ class PlayState extends MusicBeatState
 			health = 2;
 			maxHealth = 3;
 			healthDrained = 0;
+			minDrained = -1;
 		}
 		#if MODS_ALLOWED
 		Paths.destroyLoadedImages(resetSpriteCache);
@@ -2074,7 +2076,7 @@ class PlayState extends MusicBeatState
 
 		var iconOffset:Int = 26;
 
-		if (ClientPrefs.hardMode && health > 0.001 && shouldDrain) {
+		if (ClientPrefs.hardMode && health > 0.001 && shouldPassiveDrain) {
 			var toPassiveDrain:Float = 0.035 / FlxG.updateFramerate;
 			health -= toPassiveDrain;
 			healthDrained += toPassiveDrain;
@@ -2083,8 +2085,8 @@ class PlayState extends MusicBeatState
 		if (health > maxHealth)
 			health = maxHealth;
 
-		if (healthDrained < -1)
-			healthDrained = -1;
+		if (healthDrained < minDrained)
+			healthDrained = minDrained;
 
 		healthPercentage = health / 0.02;
 
@@ -2323,7 +2325,7 @@ class PlayState extends MusicBeatState
 
 					var toDrain:Float = ClientPrefs.hardMode ? 0.0225 : ClientPrefs.damageFromDadNotes / 10 * 0.02;
 					if (ClientPrefs.dadNotesDoDamage && (health - toDrain > 0.001 || ClientPrefs.dadNotesCanKill) && healthDrained < 2 - (toDrain * 2)) {
-						shouldDrain = true;
+						shouldPassiveDrain = true;
 						health -= toDrain;
 						healthDrained += toDrain;
 					}
