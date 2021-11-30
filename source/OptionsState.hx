@@ -668,7 +668,10 @@ class PreferencesSubstate extends MusicBeatSubstate
 	];
 	static var noCheckbox:Array<String> = [
 		'Framerate',
-		'Note Delay'
+		'Note Delay',
+		'Damage from Dad Notes',
+		'No Health Gain',
+		'Custom Scroll Speed'
 	];
 
 	static var options:Array<String> = [
@@ -686,6 +689,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 		'Ghost Tapping',
 		'Info Bar Bounces',
 		'Note Delay',
+		'Custom Scroll Speed',
 		'Note Splashes',
 		'Hide Song Length',
 		'Advanced Info Bar',
@@ -985,6 +989,14 @@ class PreferencesSubstate extends MusicBeatSubstate
 							if(ClientPrefs.noHealthGain < 0) ClientPrefs.noHealthGain = 0;
 							else if(ClientPrefs.noHealthGain > 100) ClientPrefs.noHealthGain = 100;
 						}
+					case 'Custom Scroll Speed':
+						var mult:Int = 5;
+						if (holdTime > 1.5) {
+							mult = 10;
+						}
+						ClientPrefs.customScrollSpeed += add * mult;
+						if(ClientPrefs.customScrollSpeed < 0) ClientPrefs.customScrollSpeed = 0;
+						else if(ClientPrefs.customScrollSpeed > 50) ClientPrefs.customScrollSpeed = 50;
 				}
 				reloadValues();
 
@@ -1077,6 +1089,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 				daText = "If checked, everything except the UI will be hidden.";
 			case 'Misses Lower Max Health':
 				daText = "If checked, missing a note will lower your maximum health.";
+			case 'Custom Scroll Speed':
+				daText = "If enabled, all songs will have the selected note scroll speed.";
 		}
 		descText.text = daText;
 
@@ -1190,6 +1204,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daText = ClientPrefs.damageFromDadNotes < 100 ? ClientPrefs.damageFromDadNotes / 10 + '%' : "HARD MODE";
 					case 'No Health Gain':
 						daText = ClientPrefs.noHealthGain == 0 ? "OFF" : ClientPrefs.noHealthGain + '%';
+					case 'Custom Scroll Speed':
+						daText = ClientPrefs.customScrollSpeed == 0 ? "OFF" : '' + ClientPrefs.customScrollSpeed / 10;
 				}
 				var lastTracker:FlxSprite = text.sprTracker;
 				text.sprTracker = null;
