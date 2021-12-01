@@ -694,7 +694,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 		'Hide Song Length',
 		'Advanced Info Bar',
 		'Shake On Miss',
-		'Move Camera On Note Hit',
+		'Move Camera In Note Direction',
 		'Hide HUD',
 		'Play Miss Animations',
 		'Flashing Lights',
@@ -936,7 +936,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 						if (!ClientPrefs.hardMode)
 							ClientPrefs.missesLowerMaxHealth = !ClientPrefs.missesLowerMaxHealth;
 
-					case 'Move Camera On Note Hit':
+					case 'Move Camera In Note Direction':
 						ClientPrefs.moveCameraOnNoteHit = !ClientPrefs.moveCameraOnNoteHit;
 				}
 				FlxG.sound.play(Paths.sound('scrollMenu'));
@@ -1095,7 +1095,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 				daText = "If checked, missing a note will lower your maximum health.";
 			case 'Custom Scroll Speed':
 				daText = "If enabled, all songs will have the selected note scroll speed.";
-			case 'Move Camera On Note Hit':
+			case 'Move Camera In Note Direction':
 				daText = "If checked, the camera will move in the note's direction.";
 		}
 		descText.text = daText;
@@ -1193,7 +1193,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daValue = ClientPrefs.maxOptimization;
 					case 'Misses Lower Max Health':
 						daValue = ClientPrefs.missesLowerMaxHealth;
-					case 'Move Camera On Note Hit':
+					case 'Move Camera In Note Direction':
 						daValue = ClientPrefs.moveCameraOnNoteHit;
 				}
 				checkbox.daValue = daValue;
