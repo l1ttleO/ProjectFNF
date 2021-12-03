@@ -41,7 +41,7 @@ class ClientPrefs {
 	public static var missesLowerMaxHealth:Bool = false;
 	public static var hardMode:Bool = false;
 	public static var customScrollSpeed:Float = 0;
-	public static var moveCameraOnNoteHit:Bool = false;
+	public static var moveCameraInNoteDirection:Bool = false;
 
 	public static var defaultKeys:Array<FlxKey> = [
 		A, LEFT,			//Note Left
@@ -113,7 +113,7 @@ class ClientPrefs {
 		FlxG.save.data.missesLowerMaxHealth = missesLowerMaxHealth;
 		FlxG.save.data.hardMode = hardMode;
 		FlxG.save.data.customScrollSpeed = customScrollSpeed;
-		FlxG.save.data.moveCameraOnNoteHit = moveCameraOnNoteHit;
+		FlxG.save.data.moveCameraInNoteDirection = moveCameraInNoteDirection;
 
 		var achieves:Array<String> = [];
 		for (i in 0...Achievements.achievementsUnlocked.length) {
@@ -243,8 +243,8 @@ class ClientPrefs {
 		if(FlxG.save.data.customScrollSpeed != null) {
 			customScrollSpeed = FlxG.save.data.customScrollSpeed;
 		}
-		if(FlxG.save.data.moveCameraOnNoteHit != null) {
-			moveCameraOnNoteHit = FlxG.save.data.moveCameraOnNoteHit;
+		if(FlxG.save.data.moveCameraInNoteDirection != null) {
+			moveCameraInNoteDirection = FlxG.save.data.moveCameraInNoteDirection;
 		}
 
 		var save:FlxSave = new FlxSave();

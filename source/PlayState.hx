@@ -2847,18 +2847,20 @@ class PlayState extends MusicBeatState
 
 	var cameraTwn:FlxTween;
 	public function moveCamera(isDad:Bool, ?direction:String = null) {
-		if (ClientPrefs.moveCameraOnNoteHit && direction == null) return;
+		if (ClientPrefs.moveCameraInNoteDirection && direction == null) return;
 		var noteHitX:Float = 0;
 		var noteHitY:Float = 0;
-		switch (direction) {
-			case 'UP':
-				noteHitY -= 80;
-			case 'DOWN':
-				noteHitY += 80;
-			case 'LEFT':
-				noteHitX -= 80;
-			case 'RIGHT':
-				noteHitX += 80;
+		if (ClientPrefs.moveCameraInNoteDirection) {
+			switch (direction) {
+				case 'UP':
+					noteHitY -= 80;
+				case 'DOWN':
+					noteHitY += 80;
+				case 'LEFT':
+					noteHitX -= 80;
+				case 'RIGHT':
+					noteHitX += 80;
+			}
 		}
 		if(isDad) {
 			camFollow.set(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);

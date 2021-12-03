@@ -937,7 +937,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 							ClientPrefs.missesLowerMaxHealth = !ClientPrefs.missesLowerMaxHealth;
 
 					case 'Move Camera In Note Direction':
-						ClientPrefs.moveCameraOnNoteHit = !ClientPrefs.moveCameraOnNoteHit;
+						ClientPrefs.moveCameraInNoteDirection = !ClientPrefs.moveCameraInNoteDirection;
 				}
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				reloadValues();
@@ -1194,7 +1194,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 					case 'Misses Lower Max Health':
 						daValue = ClientPrefs.missesLowerMaxHealth;
 					case 'Move Camera In Note Direction':
-						daValue = ClientPrefs.moveCameraOnNoteHit;
+						daValue = ClientPrefs.moveCameraInNoteDirection;
 				}
 				checkbox.daValue = daValue;
 			}
