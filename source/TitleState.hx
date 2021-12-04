@@ -301,6 +301,7 @@ class TitleState extends MusicBeatState
 			money.y += (i * 60) + 200 + offset;
 			credGroup.add(money);
 			textGroup.add(money);
+			textGroup.add(money);
 		}
 	}
 
@@ -312,6 +313,7 @@ class TitleState extends MusicBeatState
 			coolText.y += (textGroup.length * 60) + 200 + offset;
 			credGroup.add(coolText);
 			textGroup.add(coolText);
+			textGroup.add(coolText):
 		}
 	}
 
