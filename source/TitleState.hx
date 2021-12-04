@@ -170,7 +170,7 @@ class TitleState extends MusicBeatState
 		// titleText.screenCenter(X);
 		add(titleText);
 
-		logo = new FlxSprite().loadGraphic(Paths.image('projectfnf'));
+		logo = new FlxSprite().loadGraphic(Paths.image('titlelogo'));
 		logo.x = 100;
 		logo.y = 50;
 		logo.antialiasing = ClientPrefs.globalAntialiasing;
