@@ -190,7 +190,7 @@ class TitleState extends MusicBeatState
 
 		credTextShit.visible = false;
 
-		logoSpr = new FlxSprite(0, FlxG.height * 0.4).loadGraphic(Paths.image('titlelogo'));
+		logoSpr = new FlxSprite(0, FlxG.height * 0.4).loadGraphic(Paths.image('titlelogo_og'));
 		add(logoSpr);
 		logoSpr.visible = false;
 		logoSpr.setGraphicSize(Std.int(logoSpr.width * 0.55));
@@ -335,7 +335,7 @@ class TitleState extends MusicBeatState
 		if (logo != null)
 		{
 			logo.scale.set(1.05, 1.05);
-			FlxTween.tween(logo, {'scale.x': 1, 'scale.y': 1}, 0.1, {ease: FlxEase.bounceIn});
+			FlxTween.tween(logo, {'scale.x': 0.95, 'scale.y': 0.95}, 0.1, {ease: FlxEase.bounceIn});
 		}
 
 		if(gfDance != null) {
