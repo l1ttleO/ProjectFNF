@@ -696,7 +696,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 		'Shake On Miss',
 		'Move Camera In Note Direction',
 		'Hide HUD',
-		'Play Miss Animations',
+		'Play Miss Anims and Sounds',
 		'Flashing Lights',
 		'Camera Zooms'
 		#if !mobile
@@ -923,7 +923,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 					case 'Shake On Miss':
 						ClientPrefs.shakeOnMiss = !ClientPrefs.shakeOnMiss;
 
-					case 'Play Miss Animations':
+					case 'Play Miss Anims and Sounds':
 						ClientPrefs.playMissAnimations = !ClientPrefs.playMissAnimations;
 
 					case 'Play Hit Sounds':
@@ -1085,8 +1085,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 				daText = "If checked, misses will block inputs for 1.25 seconds.";
 			case 'Shake On Miss':
 				daText = "If checked, the camera will shake when you miss.";
-			case 'Play Miss Animations':
-				daText = "If unchecked, no miss animation will play.";
+			case 'Play Miss Anims and Sounds':
+				daText = "If unchecked, no miss animation or sound will play.";
 			case 'Play Hit Sounds':
 				daText = "Pretty self-explanatory.";
 			case 'Max Optimization':
@@ -1185,7 +1185,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daValue = ClientPrefs.stunsBlockInputs;
 					case 'Shake On Miss':
 						daValue = ClientPrefs.shakeOnMiss;
-					case 'Play Miss Animations':
+					case 'Play Miss Anims and Sounds':
 						daValue = ClientPrefs.playMissAnimations;
 					case 'Play Hit Sounds':
 						daValue = ClientPrefs.playHitSounds;

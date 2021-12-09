@@ -3313,7 +3313,7 @@ class PlayState extends MusicBeatState
 		var controlHoldArray:Array<Bool> = [left, down, up, right];
 
 		// FlxG.watch.addQuick('asdfa', upP);
-		if ((!ClientPrefs.stunsBlockInputs || !boyfriend.stunned) && generatedMusic)
+		if (!boyfriend.stunned && generatedMusic)
 		{
 			// rewritten inputs???
 			notes.forEachAlive(function(daNote:Note)
@@ -3441,12 +3441,14 @@ class PlayState extends MusicBeatState
 				animToPlay = 'singRIGHTmiss';
 		}
 
-		boyfriend.stunned = true;
+		if (ClientPrefs.stunsBlockInputs) {
+			boyfriend.stunned = true;
 
-		new FlxTimer().start(1.25, function(tmr:FlxTimer)
-		{
-			boyfriend.stunned = false;
-		});
+			new FlxTimer().start(1.25, function(tmr:FlxTimer)
+			{
+				boyfriend.stunned = false;
+			});
+		}
 
 		if (ClientPrefs.playMissAnimations) {
 			if(daNote.noteType == 'GF Sing') {
@@ -3465,7 +3467,7 @@ class PlayState extends MusicBeatState
 
 	function noteMissPress(direction:Int = 1, ?ghostMiss:Bool = false):Void //You pressed a key when there was no notes to press for this key
 	{
-		if (!ClientPrefs.stunsBlockInputs || !boyfriend.stunned)
+		if (!boyfriend.stunned)
 		{
 			health -= ClientPrefs.hardMode ? 0.08 : 0.04;
 			if (ClientPrefs.missesLowerMaxHealth)
@@ -3483,17 +3485,20 @@ class PlayState extends MusicBeatState
 			}
 			RecalculateRating();
 
-			FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
+			if (ClientPrefs.playMissAnimations)
+				FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
 			// FlxG.log.add('played imss note');
 
-			/*boyfriend.stunned = true;
+			if (ClientPrefs.stunsBlockInputs) {
+				boyfriend.stunned = true;
 
-			// get stunned for 1/60 of a second, makes you able to
-			new FlxTimer().start(1 / 60, function(tmr:FlxTimer)
-			{
-				boyfriend.stunned = false;
-			});
+				new FlxTimer().start(1.25, function(tmr:FlxTimer)
+				{
+					boyfriend.stunned = false;
+				});
+			}
+
 			if (ClientPrefs.playMissAnimations) {
 				switch (direction)
 				{
