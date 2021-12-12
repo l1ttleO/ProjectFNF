@@ -59,8 +59,8 @@ class Note extends FlxSprite
 	public var copyAngle:Bool = true;
 	public var copyAlpha:Bool = true;
 
-	public var hitHealth:Float = ClientPrefs.hardMode ? 0.0368 : 0.023;
-	public var missHealth:Float = ClientPrefs.hardMode ? 0.1425 : 0.0475;
+	public var hitHealth:Float = 0.023;
+	public var missHealth:Float = 0.0475;
 
 	public var texture(default, set):String = null;
 
@@ -96,7 +96,6 @@ class Note extends FlxSprite
 					} else {
 						missHealth = 0.3;
 					}
-					if (ClientPrefs.hardMode) missHealth *= 1.75;
 					hitCausesMiss = true;
 				case 'No Animation':
 					noAnimation = true;

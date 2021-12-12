@@ -33,7 +33,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 	{
 		title = 'Gameplay Settings';
 		rpcTitle = 'Gameplay Settings Menu'; //for Discord Rich Presence
-		
+
 		var option:Option = new Option('Controller Mode',
 			'Check this if you want to play with\na controller instead of using your Keyboard.',
 			'controllerMode',
@@ -134,6 +134,23 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.minValue = 2;
 		option.maxValue = 10;
 		option.changeValue = 0.1;
+		addOption(option);
+
+		var option:Option = new Option('Advanced Score Text', "If checked, you will see Health and Accuracy", 'advancedScoreTxt', 'bool', false);
+		addOption(option);
+
+		var option:Option = new Option('Play Miss Anims and Sounds', "If unchecked, you will not see miss anims or hear miss sounds", 'playMissAnimations',
+			'bool', true);
+		addOption(option);
+
+		var option:Option = new Option('Play Hit Sounds', "If checked, hitting a note will play a sound", 'playHitSounds', 'bool', false);
+		addOption(option);
+
+		var option:Option = new Option('Misses Lower Max Health', "If checked, missing will decrease your max health", 'missesLowerMaxHealth', 'bool', false);
+		addOption(option);
+
+		var option:Option = new Option('Move Camera in Note Direction', "If checked, the camera will move in note's direction", 'moveCameraInNoteDirection',
+			'bool', false);
 		addOption(option);
 
 		super();

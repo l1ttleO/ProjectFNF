@@ -44,6 +44,7 @@ class GameOverSubstate extends MusicBeatSubstate
 	public function new(x:Float, y:Float, camX:Float, camY:Float)
 	{
 		super();
+		PlayState.instance.camGame.visible = true;
 
 		PlayState.instance.setOnLuas('inGameOver', true);
 
@@ -52,7 +53,6 @@ class GameOverSubstate extends MusicBeatSubstate
 		boyfriend = new Boyfriend(x, y, characterName);
 		boyfriend.x += boyfriend.positionArray[0];
 		boyfriend.y += boyfriend.positionArray[1];
-		boyfriend.cameras = [lePlayState.camOther];
 		add(boyfriend);
 
 		camFollow = new FlxPoint(boyfriend.getGraphicMidpoint().x, boyfriend.getGraphicMidpoint().y);

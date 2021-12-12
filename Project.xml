@@ -95,13 +95,8 @@
 	<assets path='example_mods' rename='mods' embed='false' if="MODS_ALLOWED"/>
 	<assets path='art/readme.txt' rename='do NOT readme.txt' />
 	<!-- <template path='mods' /> -->
-<<<<<<< HEAD
-	
-	<!-- assets path="CHANGELOG.md" rename='changelog.txt' -->
-=======
 
-	<!-- assets path="CHANGELOG.md" rename='changelog.txt' --/>
->>>>>>> main
+	<!-- assets path="CHANGELOG.md" rename='changelog.txt' -->
 
 	<!-- NOTE FOR FUTURE SELF SINCE FONTS ARE ALWAYS FUCKY
 		TO FIX ONE OF THEM, I CONVERTED IT TO OTF. DUNNO IF YOU NEED TO
