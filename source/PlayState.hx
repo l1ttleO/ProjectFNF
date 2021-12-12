@@ -3472,7 +3472,7 @@ class PlayState extends MusicBeatState
 	{
 		if (!boyfriend.stunned)
 		{
-			health -= ClientPrefs.hardMode ? 0.08 : 0.04;
+			health -= ClientPrefs.hardMode ? 0.12 : 0.04;
 			if (ClientPrefs.missesLowerMaxHealth)
 				maxHealth -= 0.04;
 			if (combo > 5 && gf.animOffsets.exists('sad'))
