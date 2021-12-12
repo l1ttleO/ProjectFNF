@@ -1,16 +1,24 @@
-# Friday Night Funkin' - Psych Engine
-Engine originally used on [Mind Games Mod](https://gamebanana.com/mods/301107), intended to be a fix for the vanilla version's many issues while keeping the casual play aspect of it. Also aiming to be an easier alternative to newbie coders.
+# Friday Night Funkin' - ProjectFNF
 
 ## Installation:
+<<<<<<< HEAD
 You must have [the most up-to-date version of Haxe](https://haxe.org/download/), seriously, stop using 4.1.5, it misses some stuff.
 
+=======
+
+Go [here](https://github.com/l1ttleO/ProjectFNF/releases/latest) and download the appropriate version for your OS
+
+## Building: 
+>>>>>>> main
 Follow a Friday Night Funkin' source code compilation tutorial, after this you will need to install LuaJIT.
 
 To install LuaJIT do this: `haxelib install linc_luajit` on a Command prompt/PowerShell
 
-...Or if you don't want your mod to be able to run .lua scripts, delete the "LUA_ALLOWED" line on Project.xml
+## Discord server
+https://discord.gg/BUgn9dGgB2
 
 ## Credits:
+<<<<<<< HEAD
 * Shadow Mario - Coding
 * RiverOaken - Arts and Animations
 * bbpanzu - Assistant Coding
@@ -21,10 +29,22 @@ To install LuaJIT do this: `haxelib install linc_luajit` on a Command prompt/Pow
 * Delay/Combo Menu Song Composer + Dialogue Sounds
 * PolybiusProxy - .MP4 Loader Extension
 * Keoiki - Note Splash Animations
+=======
+* aflacc - Original maintainer of ProjectFNF
+* l1ttleO - Main developer of ProjectFNF 2.0
+* Shadow Mario - Coding for Psych Engine
+* RiverOaken - Arts and Animations for Psych Engine
+
+### Special Thanks
+* Keoiki - Note Splash Animations for Psych Engine
+
+WARNING: This mod is still very early in development! You can request new features and report bugs though
+>>>>>>> main
 _____________________________________
 
 # Features
 
+<<<<<<< HEAD
 ## Attractive animated dialogue boxes:
 
 ![](https://user-images.githubusercontent.com/44785097/127706669-71cd5cdb-5c2a-4ecc-871b-98a276ae8070.gif)
@@ -91,3 +111,15 @@ _____________________________________
 * Some stuff based on Week 7's changes has been put in (Background colors on Freeplay, Note splashes)
 * You can reset your Score on Freeplay/Story Mode by pressing Reset button.
 * You can listen to a song or adjust Scroll Speed/Damage taken/etc. on Freeplay by pressing Space.
+=======
+* [All Psych Engine features](https://github.com/ShadowMario/FNF-PsychEngine/tree/0.4.2#features)
+* Modifiers and gameplay options to enhance your experience and test your skill
+* Optimization features for low-end PCs
+  
+# This isn't the true ProjectFNF repo!
+  
+A note on https://github.com/ProjectFNF/ProjectFNF  
+So here's the story in a nutshell:  
+There was [ProjectFNF 1.0](https://github.com/aflacc/ProjectFNF) (which was mostly developed by [Zeptos](https://github.com/MagnusStrom)), then I decided to create ProjectFNF 2.0 using Psych Engine and [aflac](https://github.com/aflacc) agreed. Then, aflac gave permission to [east](https://github.com/EastDeveloper) to turn the ProjectFNF Discord server into South Engine, which east claims is "just a rebrand" which I never agreed in the first place (they countered this argument by saying that aflac gave them permission, and I couldn't do anything about it). During this time, I wasn't in the server, so I joined *after* the changes were made. I got frustrated and left. East then turned the Discord server back into ProjectFNF. I took a glance at their repo, and saw that [their](https://user-images.githubusercontent.com/61277953/139134145-e878d519-c6a6-4a9f-9df1-eb301ca17ad9.png) [commit](https://user-images.githubusercontent.com/61277953/139134360-4e1edca7-aa93-4ffd-aec2-1bffeebd3f6d.png) [history](https://user-images.githubusercontent.com/61277953/139279406-e0275609-a95a-4d55-867f-c3ad8bcc3aff.png)
+was a mess, filled with tons of "fix" and undescriptive commits. I decided to keep developing OG ProjectFNF 2.0 on my own
+>>>>>>> main

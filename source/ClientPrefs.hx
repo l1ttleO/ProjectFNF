@@ -9,12 +9,13 @@ import Controls;
 class ClientPrefs {
 	public static var downScroll:Bool = false;
 	public static var middleScroll:Bool = false;
-	public static var showFPS:Bool = true;
+	public static var advancedScoreTxt:Bool = false;
+	public static var showFPS:Bool = false;
 	public static var flashing:Bool = true;
 	public static var globalAntialiasing:Bool = true;
 	public static var noteSplashes:Bool = true;
 	public static var lowQuality:Bool = false;
-	public static var framerate:Int = 60;
+	public static var framerate:Int = 120;
 	public static var cursing:Bool = true;
 	public static var violence:Bool = true;
 	public static var camZooms:Bool = true;
@@ -41,7 +42,7 @@ class ClientPrefs {
 
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
 	public static var keSustains:Bool = false; //i was bored, okay?
-	
+
 	public static var ratingOffset:Int = 0;
 	public static var sickWindow:Int = 45;
 	public static var goodWindow:Int = 90;
@@ -55,21 +56,21 @@ class ClientPrefs {
 		'note_down'		=> [S, DOWN],
 		'note_up'		=> [W, UP],
 		'note_right'	=> [D, RIGHT],
-		
+
 		'ui_left'		=> [A, LEFT],
 		'ui_down'		=> [S, DOWN],
 		'ui_up'			=> [W, UP],
 		'ui_right'		=> [D, RIGHT],
-		
+
 		'accept'		=> [SPACE, ENTER],
 		'back'			=> [BACKSPACE, ESCAPE],
 		'pause'			=> [ENTER, ESCAPE],
 		'reset'			=> [R, NONE],
-		
+
 		'volume_mute'	=> [ZERO, NONE],
 		'volume_up'		=> [NUMPADPLUS, PLUS],
 		'volume_down'	=> [NUMPADMINUS, MINUS],
-		
+
 		'debug_1'		=> [SEVEN, NONE],
 		'debug_2'		=> [EIGHT, NONE]
 	];
@@ -83,6 +84,7 @@ class ClientPrefs {
 	public static function saveSettings() {
 		FlxG.save.data.downScroll = downScroll;
 		FlxG.save.data.middleScroll = middleScroll;
+		FlxG.save.data.advancedScoreTxt = advancedScoreTxt;
 		FlxG.save.data.showFPS = showFPS;
 		FlxG.save.data.flashing = flashing;
 		FlxG.save.data.globalAntialiasing = globalAntialiasing;
@@ -105,6 +107,23 @@ class ClientPrefs {
 		FlxG.save.data.achievementsMap = Achievements.achievementsMap;
 		FlxG.save.data.henchmenDeath = Achievements.henchmenDeath;
 
+		FlxG.save.data.dadNotesDoDamage = dadNotesDoDamage;
+		FlxG.save.data.infoBarBounces = infoBarBounces;
+		FlxG.save.data.dadNotesCanKill = dadNotesCanKill;
+		FlxG.save.data.damageFromDadNotes = damageFromDadNotes;
+		FlxG.save.data.noHealthGain = noHealthGain;
+		FlxG.save.data.dadNotesVisible = dadNotesVisible;
+		FlxG.save.data.bfNotesVisible = bfNotesVisible;
+		FlxG.save.data.stunsBlockInputs = stunsBlockInputs;
+		FlxG.save.data.shakeOnMiss = shakeOnMiss;
+		FlxG.save.data.playMissAnimations = playMissAnimations;
+		FlxG.save.data.playHitSounds = playHitSounds;
+		FlxG.save.data.maxOptimization = maxOptimization;
+		FlxG.save.data.missesLowerMaxHealth = missesLowerMaxHealth;
+		FlxG.save.data.hardMode = hardMode;
+		FlxG.save.data.customScrollSpeed = customScrollSpeed;
+		FlxG.save.data.moveCameraInNoteDirection = moveCameraInNoteDirection;
+
 		FlxG.save.data.ratingOffset = ratingOffset;
 		FlxG.save.data.sickWindow = sickWindow;
 		FlxG.save.data.goodWindow = goodWindow;
@@ -112,7 +131,7 @@ class ClientPrefs {
 		FlxG.save.data.safeFrames = safeFrames;
 		FlxG.save.data.gameplaySettings = gameplaySettings;
 		FlxG.save.data.controllerMode = controllerMode;
-	
+
 		FlxG.save.flush();
 
 		var save:FlxSave = new FlxSave();
@@ -128,6 +147,9 @@ class ClientPrefs {
 		}
 		if(FlxG.save.data.middleScroll != null) {
 			middleScroll = FlxG.save.data.middleScroll;
+		}
+		if(FlxG.save.data.advancedScoreTxt != null) {
+			advancedScoreTxt = FlxG.save.data.advancedScoreTxt;
 		}
 		if(FlxG.save.data.showFPS != null) {
 			showFPS = FlxG.save.data.showFPS;
@@ -197,7 +219,7 @@ class ClientPrefs {
 		if(FlxG.save.data.comboOffset != null) {
 			comboOffset = FlxG.save.data.comboOffset;
 		}
-		
+
 		if(FlxG.save.data.ratingOffset != null) {
 			ratingOffset = FlxG.save.data.ratingOffset;
 		}
@@ -224,7 +246,7 @@ class ClientPrefs {
 				gameplaySettings.set(name, value);
 			}
 		}
-		
+
 		// flixel automatically saves your volume!
 		if(FlxG.save.data.volume != null)
 		{
@@ -233,6 +255,54 @@ class ClientPrefs {
 		if (FlxG.save.data.mute != null)
 		{
 			FlxG.sound.muted = FlxG.save.data.mute;
+		}
+		if(FlxG.save.data.dadNotesDoDamage != null) {
+			dadNotesDoDamage = FlxG.save.data.dadNotesDoDamage;
+		}
+		if(FlxG.save.data.infoBarBounces != null) {
+			infoBarBounces = FlxG.save.data.infoBarBounces;
+		}
+		if(FlxG.save.data.dadNotesCanKill != null) {
+			dadNotesCanKill = FlxG.save.data.dadNotesCanKill;
+		}
+		if(FlxG.save.data.damageFromDadNotes != null) {
+			damageFromDadNotes = FlxG.save.data.damageFromDadNotes;
+		}
+		if(FlxG.save.data.noHealthGain != null) {
+			noHealthGain = FlxG.save.data.noHealthGain;
+		}
+		if(FlxG.save.data.dadNotesVisible != null) {
+			dadNotesVisible = FlxG.save.data.dadNotesVisible;
+		}
+		if(FlxG.save.data.bfNotesVisible != null) {
+			bfNotesVisible = FlxG.save.data.bfNotesVisible;
+		}
+		if(FlxG.save.data.stunsBlockInputs != null) {
+			stunsBlockInputs = FlxG.save.data.stunsBlockInputs;
+		}
+		if(FlxG.save.data.shakeOnMiss != null) {
+			shakeOnMiss = FlxG.save.data.shakeOnMiss;
+		}
+		if(FlxG.save.data.playMissAnimations != null) {
+			playMissAnimations = FlxG.save.data.playMissAnimations;
+		}
+		if(FlxG.save.data.playHitSounds != null) {
+			playHitSounds = FlxG.save.data.playHitSounds;
+		}
+		if(FlxG.save.data.maxOptimization != null) {
+			maxOptimization = FlxG.save.data.maxOptimization;
+		}
+		if(FlxG.save.data.missesLowerMaxHealth != null) {
+			missesLowerMaxHealth = FlxG.save.data.missesLowerMaxHealth;
+		}
+		if(FlxG.save.data.hardMode != null) {
+			hardMode = FlxG.save.data.hardMode;
+		}
+		if(FlxG.save.data.customScrollSpeed != null) {
+			customScrollSpeed = FlxG.save.data.customScrollSpeed;
+		}
+		if(FlxG.save.data.moveCameraInNoteDirection != null) {
+			moveCameraInNoteDirection = FlxG.save.data.moveCameraInNoteDirection;
 		}
 
 		var save:FlxSave = new FlxSave();

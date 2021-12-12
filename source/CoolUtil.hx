@@ -41,7 +41,7 @@ class CoolUtil
 		return Paths.formatToSongPath(fileSuffix);
 	}
 
-	public static function difficultyString():String
+	public static function difficultyString(upper:Bool=true):String
 	{
 		return difficulties[PlayState.storyDifficulty].toUpperCase();
 	}

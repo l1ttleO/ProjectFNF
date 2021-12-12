@@ -157,7 +157,7 @@ class Paths
 		#end
 		return getPath('sounds/$key.$SOUND_EXT', SOUND, library);
 	}
-	
+
 	inline static public function soundRandom(key:String, min:Int, max:Int, ?library:String)
 	{
 		return sound(key + FlxG.random.int(min, max), library);
@@ -230,7 +230,7 @@ class Paths
 		#end
 		return getPath('images/$key.png', IMAGE, library);
 	}
-	
+
 	static public function getTextFromFile(key:String, ?ignoreMods:Bool = false):String
 	{
 		#if sys
@@ -277,7 +277,7 @@ class Paths
 			return true;
 		}
 		#end
-		
+
 		if(OpenFlAssets.exists(Paths.getPath(key, type))) {
 			return true;
 		}
@@ -317,7 +317,7 @@ class Paths
 	inline static public function formatToSongPath(path:String) {
 		return path.toLowerCase().replace(' ', '-');
 	}
-	
+
 	#if MODS_ALLOWED
 	static public function addCustomGraphic(key:String):FlxGraphic {
 		if(FileSystem.exists(modsImages(key))) {
