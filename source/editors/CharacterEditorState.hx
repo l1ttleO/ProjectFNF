@@ -79,7 +79,7 @@ class CharacterEditorState extends MusicBeatState
 
 	override function create()
 	{
-		FlxG.sound.playMusic(Paths.music('breakfast'), 0.5);
+		//FlxG.sound.playMusic(Paths.music('breakfast'), 0.5);
 
 		camEditor = new FlxCamera();
 		camHUD = new FlxCamera();
@@ -144,10 +144,10 @@ class CharacterEditorState extends MusicBeatState
 		var tipText:FlxText = new FlxText(FlxG.width - 20, FlxG.height, 0,
 			"E/Q - Camera Zoom In/Out
 			\nJKLI - Move Camera
-			
 			\nW/S - Previous/Next Animation
 			\nSpace - Play Animation
 			\nArrow Keys - Move Character Offset
+			\nZ - Reset Current Offset
 			\nHold Shift to Move 10x faster\n", 12);
 		tipText.cameras = [camHUD];
 		tipText.setFormat(null, 12, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -400,6 +400,17 @@ class CharacterEditorState extends MusicBeatState
 			}
 		});
 
+		var decideIconColor:FlxButton = new FlxButton(reloadImage.x, reloadImage.y + 30, "Get Icon Color", function()
+			{
+				var coolColor = FlxColor.fromInt(CoolUtil.dominantColor(leHealthIcon));
+				healthColorStepperR.value = coolColor.red;
+				healthColorStepperG.value = coolColor.green;
+				healthColorStepperB.value = coolColor.blue;
+				getEvent(FlxUINumericStepper.CHANGE_EVENT, healthColorStepperR, null);
+				getEvent(FlxUINumericStepper.CHANGE_EVENT, healthColorStepperG, null);
+				getEvent(FlxUINumericStepper.CHANGE_EVENT, healthColorStepperB, null);
+			});
+
 		healthIconInputText = new FlxUIInputText(15, imageInputText.y + 35, 75, leHealthIcon.getCharacter(), 8);
 
 		singDurationStepper = new FlxUINumericStepper(15, healthIconInputText.y + 45, 0.1, 4, 0, 999, 1);
@@ -450,6 +461,7 @@ class CharacterEditorState extends MusicBeatState
 		tab_group.add(new FlxText(healthColorStepperR.x, healthColorStepperR.y - 18, 0, 'Health bar R/G/B:'));
 		tab_group.add(imageInputText);
 		tab_group.add(reloadImage);
+		tab_group.add(decideIconColor);
 		tab_group.add(healthIconInputText);
 		tab_group.add(singDurationStepper);
 		tab_group.add(scaleStepper);
@@ -1038,7 +1050,22 @@ class CharacterEditorState extends MusicBeatState
 					genBoyOffsets();
 				}
 
+				if (FlxG.keys.justPressed.R)
+				{
+					if(FlxG.keys.pressed.CONTROL) //Center
+					{
+						char.animationsArray[curAnim].offsets = [0, 0];
+
+						char.addOffset(char.animationsArray[curAnim].anim, char.animationsArray[curAnim].offsets[0], char.animationsArray[curAnim].offsets[1]);
+						ghostChar.addOffset(char.animationsArray[curAnim].anim, char.animationsArray[curAnim].offsets[0], char.animationsArray[curAnim].offsets[1]);
+						genBoyOffsets();
+					}
+				}
+
 				var controlArray:Array<Bool> = [FlxG.keys.justPressed.LEFT, FlxG.keys.justPressed.RIGHT, FlxG.keys.justPressed.UP, FlxG.keys.justPressed.DOWN];
+
+
+
 				for (i in 0...controlArray.length) {
 					if(controlArray[i]) {
 						var holdShift = FlxG.keys.pressed.SHIFT;

@@ -59,13 +59,14 @@ class Note extends FlxSprite
 	public var copyAngle:Bool = true;
 	public var copyAlpha:Bool = true;
 
-	public var hitHealth:Float = ClientPrefs.hardMode ? 0.0368 : 0.023;
-	public var missHealth:Float = ClientPrefs.hardMode ? 0.1425 : 0.0475;
+	public var hitHealth:Float = 0.023;
+	public var missHealth:Float = 0.0475;
 
 	public var texture(default, set):String = null;
 
 	public var noAnimation:Bool = false;
 	public var hitCausesMiss:Bool = false;
+	public var distance:Float = 2000;//plan on doing scroll directions soon -bb
 
 	private function set_texture(value:String):String {
 		if(texture != value) {
@@ -95,7 +96,6 @@ class Note extends FlxSprite
 					} else {
 						missHealth = 0.3;
 					}
-					if (ClientPrefs.hardMode) missHealth *= 1.75;
 					hitCausesMiss = true;
 				case 'No Animation':
 					noAnimation = true;
@@ -194,7 +194,12 @@ class Note extends FlxSprite
 						prevNote.animation.play('redhold');
 				}
 
-				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.05 * PlayState.SONG.speed;
+				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.05;
+				if(PlayState.instance != null)
+				{
+					prevNote.scale.y *= PlayState.instance.songSpeed;
+				}
+
 				if(PlayState.isPixelStage) {
 					prevNote.scale.y *= 1.19;
 				}
@@ -257,6 +262,9 @@ class Note extends FlxSprite
 		}
 		if(isSustainNote) {
 			scale.y = lastScaleY;
+			if(ClientPrefs.keSustains) {
+				scale.y *= 0.75;
+			}
 		}
 		updateHitbox();
 
@@ -335,7 +343,7 @@ class Note extends FlxSprite
 				wasGoodHit = true;
 		}
 
-		if (tooLate)
+		if (tooLate && !inEditor)
 		{
 			if (alpha > 0.3)
 				alpha = 0.3;

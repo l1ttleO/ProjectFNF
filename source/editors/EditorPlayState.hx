@@ -49,6 +49,9 @@ class EditorPlayState extends MusicBeatState
 	}
 
 	var scoreTxt:FlxText;
+	var stepTxt:FlxText;
+	var beatTxt:FlxText;
+	
 	var timerToStart:Float = 0;
 	private var noteTypeMap:Map<String, Bool> = new Map<String, Bool>();
 	override function create()
@@ -112,6 +115,18 @@ class EditorPlayState extends MusicBeatState
 		scoreTxt.borderSize = 1.25;
 		scoreTxt.visible = !ClientPrefs.hideHud;
 		add(scoreTxt);
+		
+		beatTxt = new FlxText(10, 610, FlxG.width, "Beat: 0", 20);
+		beatTxt.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		beatTxt.scrollFactor.set();
+		beatTxt.borderSize = 1.25;
+		add(beatTxt);
+
+		stepTxt = new FlxText(10, 640, FlxG.width, "Step: 0", 20);
+		stepTxt.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		stepTxt.scrollFactor.set();
+		stepTxt.borderSize = 1.25;
+		add(stepTxt);
 
 		var tipText:FlxText = new FlxText(10, FlxG.height - 24, 0, 'Press ESC to Go Back to Chart Editor', 16);
 		tipText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -146,7 +161,6 @@ class EditorPlayState extends MusicBeatState
 	//var songScore:Int = 0;
 	var songHits:Int = 0;
 	var songMisses:Int = 0;
-	var ghostMisses:Int = 0;
 	var startingSong:Bool = true;
 	private function generateSong(dataPath:String):Void
 	{
@@ -442,7 +456,23 @@ class EditorPlayState extends MusicBeatState
 
 		keyShit();
 		scoreTxt.text = 'Hits: ' + songHits + ' | Misses: ' + songMisses;
+		beatTxt.text = 'Beat: ' + curBeat;
+		stepTxt.text = 'Step: ' + curStep;
 		super.update(elapsed);
+	}
+	
+	override public function onFocus():Void
+	{
+		vocals.play();
+
+		super.onFocus();
+	}
+	
+	override public function onFocusLost():Void
+	{
+		vocals.pause();
+
+		super.onFocusLost();
 	}
 
 	override function beatHit()
@@ -550,7 +580,7 @@ class EditorPlayState extends MusicBeatState
 							}
 						}
 						else if (canMiss && controlArray[i]) 
-							noteMiss(i, true);
+							noteMiss(i);
 					}
 				}
 			}
@@ -624,12 +654,11 @@ class EditorPlayState extends MusicBeatState
 		}
 	}
 
-	function noteMiss(direction:Int = 1, ?ghostMiss:Bool = false):Void
+	function noteMiss(direction:Int = 1):Void
 	{
 		combo = 0;
 
 		//songScore -= 10;
-		if(ghostMiss) ghostMisses++;
 		songMisses++;
 
 		FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
