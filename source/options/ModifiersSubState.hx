@@ -34,18 +34,19 @@ class ModifiersSubState extends BaseOptionsMenu
 		title = 'Modifiers';
 		rpcTitle = 'Modifiers Menu'; // for Discord Rich Presence
 
-		var option:Option = new Option('Dad Notes Do Damage', 'If checked, you will lose health when the opponent will hit notes',
-			'dadNotesDoDamage', 'bool', false);
+		var option:Option = new Option('Opponent Notes Do Damage', 'If checked, you will lose health when the opponent hits notes',
+			'opponentNotesDoDamage', 'bool', false);
 		addOption(option);
 
-		var option:Option = new Option('Dad Notes Can Kill',
+		var option:Option = new Option('Opponent Notes Can Kill',
 			'If checked, you can die when losing health from opponent notes',
-			'downScroll',
+			'opponentNotesCanKill',
 			'bool',
 			false);
 		addOption(option);
 
-		var option:Option = new Option('Damage from Dad Notes', 'Set how much health you lose from opponent notes', 'damageFromDadNotes', 'float', 1);
+		var option:Option = new Option('Damage from Opponent Notes', 'Set how much health you lose from opponent notes', 'damageFromOpponentNotes', 'float',
+			1);
         option.displayFormat = option.getValue() < 10 ? '%v%' : "HARD MODE";
 		option.changeValue = 0.5;
 		option.scrollSpeed = 1;

@@ -81,6 +81,20 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.maxValue = 500;
 		addOption(option);*/
 
+		var option:Option = new Option('Play Miss Anims and Sounds', "If unchecked, you will not see miss anims or hear miss sounds", 'playMissAnimations',
+			'bool', true);
+		addOption(option);
+
+		var option:Option = new Option('Play Hit Sounds', "If checked, hitting a note will play a sound", 'playHitSounds', 'bool', false);
+		addOption(option);
+
+		var option:Option = new Option('Misses Lower Max Health', "If checked, missing will decrease your max health", 'missesLowerMaxHealth', 'bool', false);
+		addOption(option);
+
+		var option:Option = new Option('Move Camera in Note Direction', "If checked, the camera will move in note's direction", 'moveCameraInNoteDirection',
+			'bool', false);
+		addOption(option);
+
 		var option:Option = new Option('Rating Offset',
 			'Changes how late/early you have to hit for a "Sick!"\nHigher values mean you have to hit later.',
 			'ratingOffset',
@@ -134,23 +148,6 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.minValue = 2;
 		option.maxValue = 10;
 		option.changeValue = 0.1;
-		addOption(option);
-
-		var option:Option = new Option('Advanced Score Text', "If checked, you will see Health and Accuracy", 'advancedScoreTxt', 'bool', false);
-		addOption(option);
-
-		var option:Option = new Option('Play Miss Anims and Sounds', "If unchecked, you will not see miss anims or hear miss sounds", 'playMissAnimations',
-			'bool', true);
-		addOption(option);
-
-		var option:Option = new Option('Play Hit Sounds', "If checked, hitting a note will play a sound", 'playHitSounds', 'bool', false);
-		addOption(option);
-
-		var option:Option = new Option('Misses Lower Max Health', "If checked, missing will decrease your max health", 'missesLowerMaxHealth', 'bool', false);
-		addOption(option);
-
-		var option:Option = new Option('Move Camera in Note Direction', "If checked, the camera will move in note's direction", 'moveCameraInNoteDirection',
-			'bool', false);
 		addOption(option);
 
 		super();

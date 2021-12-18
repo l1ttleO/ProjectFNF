@@ -149,7 +149,7 @@ class PlayState extends MusicBeatState
 	public var minDrained:Float = 0;
 	public var shouldPassiveDrain:Bool = false;
 	public var toPassiveDrain:Float = 0.035;
-	public var toDrain:Float = ClientPrefs.damageFromDadNotes * 0.02;
+	public var toDrain:Float = ClientPrefs.damageFromOpponentNotes * 0.02;
 	public var combo:Int = 0;
 
 	private var healthBarBG:AttachedSprite;
@@ -304,21 +304,21 @@ class PlayState extends MusicBeatState
 		practiceMode = ClientPrefs.getGameplaySetting('practice', false);
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
 
-		if (ClientPrefs.damageFromDadNotes == 10)
+		if (ClientPrefs.damageFromOpponentNotes == 10)
 			ClientPrefs.hardMode = true;
 		else
 			ClientPrefs.hardMode = false;
 
 		if (ClientPrefs.hardMode) {
-			ClientPrefs.dadNotesDoDamage = true;
-			ClientPrefs.dadNotesCanKill = true;
+			ClientPrefs.opponentNotesDoDamage = true;
+			ClientPrefs.opponentNotesCanKill = true;
 			health = 2;
 			maxHealth = 3;
 			healthDrained = 0;
 			minDrained = -1;
 			toDrain = 0.0225;
 			healthGain = 1.575;
-			healthLoss = 3;
+			healthLoss = 2.75;
 		}
 
 		// var gameCam:FlxCamera = FlxG.camera;
@@ -3753,8 +3753,6 @@ class PlayState extends MusicBeatState
 			var animToPlay:String = singAnimations[Std.int(Math.abs(daNote.noteData))] + 'miss' + daAlt;
 			char.playAnim('sing' + animToPlay, true);
 		}
-		if (ClientPrefs.playMissAnimations)
-			FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 
 		if (ClientPrefs.stunsBlockInputs) {
 			boyfriend.stunned = true;
@@ -3861,7 +3859,8 @@ class PlayState extends MusicBeatState
 			if (ClientPrefs.moveCameraInNoteDirection)
 				moveCamera(true, animToPlay);
 		}
-		if (ClientPrefs.dadNotesDoDamage && (health - toDrain > 0.001 || ClientPrefs.dadNotesCanKill) && healthDrained < 2 - toDrain) {
+		if (ClientPrefs.opponentNotesDoDamage && (health - toDrain > 0.001 || ClientPrefs.opponentNotesCanKill) && healthDrained < 2 - toDrain)
+		{
 			shouldPassiveDrain = true;
 			health -= toDrain;
 			healthDrained += toDrain;

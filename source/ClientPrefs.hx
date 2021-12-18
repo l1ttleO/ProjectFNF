@@ -40,9 +40,9 @@ class ClientPrefs
 		'opponentplay' => false
 	];
 
-	public static var dadNotesDoDamage:Bool = false;
-	public static var dadNotesCanKill:Bool = false;
-	public static var damageFromDadNotes:Float = 1;
+	public static var opponentNotesDoDamage:Bool = false;
+	public static var opponentNotesCanKill:Bool = false;
+	public static var damageFromOpponentNotes:Float = 1;
 	public static var stunsBlockInputs:Bool = false;
 	public static var shakeOnMiss:Bool = false;
 	public static var advancedScoreTxt:Bool = false;
@@ -125,9 +125,9 @@ class ClientPrefs
 		FlxG.save.data.gameplaySettings = gameplaySettings;
 		FlxG.save.data.controllerMode = controllerMode;
 
-		FlxG.save.data.dadNotesDoDamage = dadNotesDoDamage;
-		FlxG.save.data.dadNotesCanKill = dadNotesCanKill;
-		FlxG.save.data.damageFromDadNotes = damageFromDadNotes;
+		FlxG.save.data.opponentNotesDoDamage = opponentNotesDoDamage;
+		FlxG.save.data.opponentNotesCanKill = opponentNotesCanKill;
+		FlxG.save.data.damageFromOpponentNotes = damageFromOpponentNotes;
 		FlxG.save.data.stunsBlockInputs = stunsBlockInputs;
 		FlxG.save.data.shakeOnMiss = shakeOnMiss;
 		FlxG.save.data.advancedScoreTxt = advancedScoreTxt;
@@ -290,17 +290,17 @@ class ClientPrefs
 			FlxG.sound.muted = FlxG.save.data.mute;
 		}
 
-		if (FlxG.save.data.dadNotesDoDamage != null)
+		if (FlxG.save.data.opponentNotesDoDamage != null)
 		{
-			dadNotesDoDamage = FlxG.save.data.dadNotesDoDamage;
+			opponentNotesDoDamage = FlxG.save.data.opponentNotesDoDamage;
 		}
-		if (FlxG.save.data.dadNotesCanKill != null)
+		if (FlxG.save.data.opponentNotesCanKill != null)
 		{
-			dadNotesCanKill = FlxG.save.data.dadNotesCanKill;
+			opponentNotesCanKill = FlxG.save.data.opponentNotesCanKill;
 		}
-		if (FlxG.save.data.damageFromDadNotes != null)
+		if (FlxG.save.data.damageFromOpponentNotes != null)
 		{
-			damageFromDadNotes = FlxG.save.data.damageFromDadNotes;
+			damageFromOpponentNotes = FlxG.save.data.damageFromOpponentNotes;
 		}
 		if (FlxG.save.data.stunsBlockInputs != null)
 		{
