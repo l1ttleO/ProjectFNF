@@ -99,7 +99,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.onChange = onChangeFPSCounter;
 		#end
 
-		var option:Option = new Option('Advanced Score Text', "If checked, you will see Health and Accuracy", 'advancedScoreTxt', 'bool', false);
+		var option:Option = new Option('Advanced Score Text', "If checked, you will see health, accuracy and theoretical best score", 'advancedScoreTxt', 'bool', false);
 		addOption(option);
 
 		super();
