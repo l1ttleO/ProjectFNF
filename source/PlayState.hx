@@ -2312,8 +2312,15 @@ class PlayState extends MusicBeatState
 
 		healthPercentage = health / 0.02;
 
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentage > 100 ? 100 : healthPercentage, 0, 100, 100, 0) * 0.01) - iconOffset);
-		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentage > 100 ? 100 : healthPercentage, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentage, 0, 100, 100, 0) * 0.01) - iconOffset);
+		var oldP2 = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+		var newP2 = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentage, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+
+		iconP2.x = newP2;
+		if (healthPercentage > 100 || healthPercentage < 0) {
+			healthBar.offset.x = oldP2 - newP2;
+			healthBarBG.offset.x = oldP2 - newP2;
+		}
 
 		if (healthPercentage < (ClientPrefs.hardMode ? 30 : 20))
 			iconP1.animation.curAnim.curFrame = 1;
