@@ -327,11 +327,13 @@ class TitleState extends MusicBeatState
 		// titleText.screenCenter(X);
 		add(titleText);
 
-		logo = new FlxSprite().loadGraphic(Paths.image('titlelogo'));
-		logo.x = 100;
-		logo.y = 50;
-		logo.antialiasing = ClientPrefs.globalAntialiasing;
-		add(logo);
+		if (!shouldUseBl) {
+			logo = new FlxSprite().loadGraphic(Paths.image('titlelogo'));
+			logo.x = 100;
+			logo.y = 50;
+			logo.antialiasing = ClientPrefs.globalAntialiasing;
+			add(logo);
+		}
 
 		credGroup = new FlxGroup();
 		add(credGroup);

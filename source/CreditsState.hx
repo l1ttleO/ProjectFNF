@@ -80,7 +80,10 @@ class CreditsState extends MusicBeatState
 
 		var pisspoop:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
 			['ProjectFNF Team'],
-			['l1ttleO',             '',                 'Main Programmer of ProjectFNF',],
+			['l1ttleO',             'none',             'Main Programmer of ProjectFNF',                        'https://twitter.com/l1ttleO',          '00FFF7'],
+			['ProjectFNF Contributors'],
+			['OneShotSank',         'none',             'Main menu changes',                                    'https://twitter.com/Scridescriptive',  'EFB66C'],
+			['Stilic',              'none',             'Minor changes',                                        'https://github.com/Stilic',            'FF2D32'],
 			[''],
 			['Psych Engine Team'],
 			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',						'https://twitter.com/Shadow_Mario_',	'444444'],
@@ -112,7 +115,7 @@ class CreditsState extends MusicBeatState
 			optionText.isMenuItem = true;
 			optionText.screenCenter(X);
 			optionText.yAdd -= 70;
-			if(isSelectable) {
+			if (isSelectable && creditsStuff[i][1] != 'none') {
 				optionText.x -= 70;
 			}
 			optionText.forceX = optionText.x;
@@ -126,13 +129,15 @@ class CreditsState extends MusicBeatState
 					Paths.currentModDirectory = creditsStuff[i][5];
 				}
 
-				var icon:AttachedSprite = new AttachedSprite('credits/' + creditsStuff[i][1]);
-				icon.xAdd = optionText.width + 10;
-				icon.sprTracker = optionText;
+				if (creditsStuff[i][1] != 'none') {
+					var icon:AttachedSprite = new AttachedSprite('credits/' + creditsStuff[i][1]);
+					icon.xAdd = optionText.width + 10;
+					icon.sprTracker = optionText;
 
-				// using a FlxGroup is too much fuss!
-				iconArray.push(icon);
-				add(icon);
+					// using a FlxGroup is too much fuss!
+					iconArray.push(icon);
+					add(icon);
+				}
 				Paths.currentModDirectory = '';
 
 				if(curSelected == -1) curSelected = i;
