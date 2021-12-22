@@ -48,8 +48,6 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		PlayState.instance.setOnLuas('inGameOver', true);
 
-		PlayState.instance.setOnLuas('inGameOver', true);
-
 		Conductor.songPosition = 0;
 
 		boyfriend = new Boyfriend(x, y, characterName);

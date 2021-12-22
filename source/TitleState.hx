@@ -569,9 +569,9 @@ class TitleState extends MusicBeatState
 				// credTextShit.text = 'In association \nwith';
 				// credTextShit.screenCenter();
 				case 5:
-					createCoolText(['Present a mod to'], -60);
+					createCoolText(['Not associated with'], -60);
 				case 7:
-					addMoreText('This game right below', -60);
+					addMoreText('Newgrounds', -60);
 					ngSpr.visible = true;
 				// credTextShit.text += '\nNewgrounds';
 				case 8:
