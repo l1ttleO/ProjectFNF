@@ -44,6 +44,9 @@ class GameOverSubstate extends MusicBeatSubstate
 	public function new(x:Float, y:Float, camX:Float, camY:Float)
 	{
 		super();
+		PlayState.instance.camGame.visible = true;
+
+		PlayState.instance.setOnLuas('inGameOver', true);
 
 		PlayState.instance.setOnLuas('inGameOver', true);
 
