@@ -26,14 +26,14 @@ https://discord.gg/BUgn9dGgB2
 * bbpanzu - Assistant Coding
 * shubs - New Input System
 * SqirraRNG - Chart Editor's Sound Waveform base code
-* Delay/Combo Menu Song Composer + Dialogue Sounds
+* iFlicky - Delay/Combo Menu Song Composer + Dialogue Sounds
 * PolybiusProxy - .MP4 Loader Extension
 * Keoiki - Note Splash Animations
 _____________________________________
 
 # Features
 
-* [All Psych Engine features](https://github.com/ShadowMario/FNF-PsychEngine/tree/0.5#features)
+* [All Psych Engine features](https://github.com/ShadowMario/FNF-PsychEngine/tree/0.5.1#features)
 * Modifiers and gameplay options to enhance your experience and test your skill
 * Quality of Life improvements
 * Optimization features for low-end PCs

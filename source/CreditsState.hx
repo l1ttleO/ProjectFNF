@@ -62,12 +62,31 @@ class CreditsState extends MusicBeatState
 				}
 				creditsStuff.push(['']);
 			}
-		}
+		};
+		var folder = "";
+			var creditsFile:String = Paths.mods('data/credits.txt');
+			if (FileSystem.exists(creditsFile))
+			{
+				var firstarray:Array<String> = File.getContent(creditsFile).split('\n');
+				for(i in firstarray)
+				{
+					var arr:Array<String> = i.replace('\\n', '\n').split("::");
+					if(arr.length >= 5) arr.push(folder);
+					creditsStuff.push(arr);
+				}
+				creditsStuff.push(['']);
+			}
 		#end
 
 		var pisspoop:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
+			['ProjectFNF Team'],
+			['l1ttleO',             'none',             'Main Programmer of ProjectFNF',                        'https://twitter.com/l1ttleO',          '00FFF7'],
+			['ProjectFNF Contributors'],
+			['OneShotSank',         'none',             'Main menu changes',                                    'https://twitter.com/Scridescriptive',  'EFB66C'],
+			['Stilic',              'none',             'Minor changes',                                        'https://github.com/Stilic',            'FF2D32'],
+			[''],
 			['Psych Engine Team'],
-			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',						'https://twitter.com/Shadow_Mario_',	'FFDD33'],
+			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',						'https://twitter.com/Shadow_Mario_',	'444444'],
 			['RiverOaken',			'riveroaken',		'Main Artist/Animator of Psych Engine',					'https://twitter.com/river_oaken',		'C30085'],
 			['bb-panzu',			'bb-panzu',			'Additional Programmer of Psych Engine',				'https://twitter.com/bbsub3',			'389A58'],
 			[''],
@@ -84,11 +103,11 @@ class CreditsState extends MusicBeatState
 			['evilsk8r',			'evilsk8r',			"Artist of Friday Night Funkin'",						'https://twitter.com/evilsk8r',			'53E52C'],
 			['kawaisprite',			'kawaisprite',		"Composer of Friday Night Funkin'",						'https://twitter.com/kawaisprite',		'6475F3']
 		];
-		
+
 		for(i in pisspoop){
 			creditsStuff.push(i);
 		}
-	
+
 		for (i in 0...creditsStuff.length)
 		{
 			var isSelectable:Bool = !unselectableCheck(i);
@@ -96,7 +115,7 @@ class CreditsState extends MusicBeatState
 			optionText.isMenuItem = true;
 			optionText.screenCenter(X);
 			optionText.yAdd -= 70;
-			if(isSelectable) {
+			if (isSelectable && creditsStuff[i][1] != 'none') {
 				optionText.x -= 70;
 			}
 			optionText.forceX = optionText.x;
@@ -110,13 +129,15 @@ class CreditsState extends MusicBeatState
 					Paths.currentModDirectory = creditsStuff[i][5];
 				}
 
-				var icon:AttachedSprite = new AttachedSprite('credits/' + creditsStuff[i][1]);
-				icon.xAdd = optionText.width + 10;
-				icon.sprTracker = optionText;
-	
-				// using a FlxGroup is too much fuss!
-				iconArray.push(icon);
-				add(icon);
+				if (creditsStuff[i][1] != 'none') {
+					var icon:AttachedSprite = new AttachedSprite('credits/' + creditsStuff[i][1]);
+					icon.xAdd = optionText.width + 10;
+					icon.sprTracker = optionText;
+
+					// using a FlxGroup is too much fuss!
+					iconArray.push(icon);
+					add(icon);
+				}
 				Paths.currentModDirectory = '';
 
 				if(curSelected == -1) curSelected = i;

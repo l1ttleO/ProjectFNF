@@ -60,7 +60,7 @@ class TitleState extends MusicBeatState
 	var credGroup:FlxGroup;
 	var credTextShit:Alphabet;
 	var textGroup:FlxGroup;
-	var logoSpr:FlxSprite;
+	var ngSpr:FlxSprite;
 
 	var curWacky:Array<String> = [];
 
@@ -81,7 +81,6 @@ class TitleState extends MusicBeatState
 		#if MODS_ALLOWED
 		// Just to load a mod on start up if ya got one. For mods that change the menu music and bg
 		if (FileSystem.exists("modsList.txt")){
-
 			var list:Array<String> = CoolUtil.listFromString(File.getContent("modsList.txt"));
 			var foundTheTop = false;
 			for (i in list){
@@ -126,12 +125,10 @@ class TitleState extends MusicBeatState
 			}
 		}
 		#end
-
 		#if CHECK_FOR_UPDATES
 		if(!closedState) {
 			trace('checking for update');
 			var http = new haxe.Http("https://raw.githubusercontent.com/ShadowMario/FNF-PsychEngine/main/gitVersion.txt");
-
 			http.onData = function (data:String)
 			{
 				updateVersion = data.split('\n')[0].trim();
@@ -221,7 +218,6 @@ class TitleState extends MusicBeatState
 		persistentUpdate = true;
 
 		var bg:FlxSprite = new FlxSprite();
-
 		if (titleJSON.backgroundSprite != null && titleJSON.backgroundSprite.length > 0 && titleJSON.backgroundSprite != "none"){
 			bg.loadGraphic(Paths.image(titleJSON.backgroundSprite));
 		}else{
@@ -240,6 +236,7 @@ class TitleState extends MusicBeatState
 		logoBl = new FlxSprite(titleJSON.titlex, titleJSON.titley);
 
 
+		var shouldUseBl:Bool = true;
 		#if (desktop && MODS_ALLOWED)
 		var path = "mods/" + Paths.currentModDirectory + "/images/logoBumpin.png";
 		//trace(path, FileSystem.exists(path));
@@ -248,63 +245,78 @@ class TitleState extends MusicBeatState
 		}
 		//trace(path, FileSystem.exists(path));
 		if (!FileSystem.exists(path)){
-			path = "assets/images/logoBumpin.png";
+			shouldUseBl = false;
 		}
+		if (shouldUseBl) {
 		//trace(path, FileSystem.exists(path));
 		logoBl.frames = FlxAtlasFrames.fromSparrow(BitmapData.fromFile(path),File.getContent(StringTools.replace(path,".png",".xml")));
 		#else
-
 		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
 		#end
 
 		logoBl.antialiasing = ClientPrefs.globalAntialiasing;
-		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
+		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, false);
 		logoBl.animation.play('bump');
 		logoBl.updateHitbox();
 		// logoBl.screenCenter();
 		// logoBl.color = FlxColor.BLACK;
 
 		swagShader = new ColorSwap();
-			gfDance = new FlxSprite(titleJSON.gfx, titleJSON.gfy);
+
+		logoBl.antialiasing = ClientPrefs.globalAntialiasing;
+		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, false);
+		logoBl.animation.play('bump');
+		logoBl.updateHitbox();
+		// logoBl.screenCenter();
+		// logoBl.color = FlxColor.BLACK;
+		}
+
+		swagShader = new ColorSwap();
+		gfDance = new FlxSprite(titleJSON.gfx, titleJSON.gfy);
 
 		#if (desktop && MODS_ALLOWED)
 		var path = "mods/" + Paths.currentModDirectory + "/images/gfDanceTitle.png";
-		//trace(path, FileSystem.exists(path));
-		if (!FileSystem.exists(path)){
+		// trace(path, FileSystem.exists(path));
+		if (!FileSystem.exists(path))
+		{
 			path = "mods/images/gfDanceTitle.png";
-		//trace(path, FileSystem.exists(path));
+			// trace(path, FileSystem.exists(path));
 		}
-		if (!FileSystem.exists(path)){
+		if (!FileSystem.exists(path))
+		{
 			path = "assets/images/gfDanceTitle.png";
-		//trace(path, FileSystem.exists(path));
+			// trace(path, FileSystem.exists(path));
 		}
-		gfDance.frames = FlxAtlasFrames.fromSparrow(BitmapData.fromFile(path),File.getContent(StringTools.replace(path,".png",".xml")));
+		gfDance.frames = FlxAtlasFrames.fromSparrow(BitmapData.fromFile(path), File.getContent(StringTools.replace(path, ".png", ".xml")));
 		#else
-
 		gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
 		#end
-			gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
-			gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
 
 		gfDance.antialiasing = ClientPrefs.globalAntialiasing;
 		add(gfDance);
-		// add(logoBl);
+		gfDance.shader = swagShader.shader;
+		if (shouldUseBl)
+			add(logoBl);
+		// logoBl.shader = swagShader.shader;
 
 		titleText = new FlxSprite(titleJSON.startx, titleJSON.starty);
 		#if (desktop && MODS_ALLOWED)
 		var path = "mods/" + Paths.currentModDirectory + "/images/titleEnter.png";
-		//trace(path, FileSystem.exists(path));
-		if (!FileSystem.exists(path)){
+		// trace(path, FileSystem.exists(path));
+		if (!FileSystem.exists(path))
+		{
 			path = "mods/images/titleEnter.png";
 		}
-		//trace(path, FileSystem.exists(path));
-		if (!FileSystem.exists(path)){
+		// trace(path, FileSystem.exists(path));
+		if (!FileSystem.exists(path))
+		{
 			path = "assets/images/titleEnter.png";
 		}
-		//trace(path, FileSystem.exists(path));
-		titleText.frames = FlxAtlasFrames.fromSparrow(BitmapData.fromFile(path),File.getContent(StringTools.replace(path,".png",".xml")));
+		// trace(path, FileSystem.exists(path));
+		titleText.frames = FlxAtlasFrames.fromSparrow(BitmapData.fromFile(path), File.getContent(StringTools.replace(path, ".png", ".xml")));
 		#else
-
 		titleText.frames = Paths.getSparrowAtlas('titleEnter');
 		#end
 		titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
@@ -315,11 +327,13 @@ class TitleState extends MusicBeatState
 		// titleText.screenCenter(X);
 		add(titleText);
 
-		logo = new FlxSprite().loadGraphic(Paths.image('titlelogo'));
-		logo.x = 100;
-		logo.y = 50;
-		logo.antialiasing = ClientPrefs.globalAntialiasing;
-		add(logo);
+		if (!shouldUseBl) {
+			logo = new FlxSprite().loadGraphic(Paths.image('titlelogo'));
+			logo.x = 100;
+			logo.y = 50;
+			logo.antialiasing = ClientPrefs.globalAntialiasing;
+			add(logo);
+		}
 
 		credGroup = new FlxGroup();
 		add(credGroup);
@@ -335,13 +349,13 @@ class TitleState extends MusicBeatState
 
 		credTextShit.visible = false;
 
-		logoSpr = new FlxSprite(0, FlxG.height * 0.4).loadGraphic(Paths.image('titlelogo_og'));
-		add(logoSpr);
-		logoSpr.visible = false;
-		logoSpr.setGraphicSize(Std.int(logoSpr.width * 0.55));
-		logoSpr.updateHitbox();
-		logoSpr.screenCenter(X);
-		logoSpr.antialiasing = ClientPrefs.globalAntialiasing;
+		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('newgrounds_logo'));
+		add(ngSpr);
+		ngSpr.visible = false;
+		ngSpr.setGraphicSize(Std.int(ngSpr.width * 0.8));
+		ngSpr.updateHitbox();
+		ngSpr.screenCenter(X);
+		ngSpr.antialiasing = true;
 
 		FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
 
@@ -491,9 +505,9 @@ class TitleState extends MusicBeatState
 			var money:Alphabet = new Alphabet(0, 0, textArray[i], true, false);
 			money.screenCenter(X);
 			money.y += (i * 60) + 200 + offset;
-			if(credGroup != null && textGroup != null){
-			credGroup.add(money);
-			textGroup.add(money);
+			if(credGroup != null && textGroup != null) {
+				credGroup.add(money);
+				textGroup.add(money);
 			}
 		}
 	}
@@ -557,14 +571,14 @@ class TitleState extends MusicBeatState
 				// credTextShit.text = 'In association \nwith';
 				// credTextShit.screenCenter();
 				case 5:
-					createCoolText(['Present a mod to'], -60);
+					createCoolText(['Not associated with'], -60);
 				case 7:
-					addMoreText('This game right below', -60);
-					logoSpr.visible = true;
+					addMoreText('Newgrounds', -60);
+					ngSpr.visible = true;
 				// credTextShit.text += '\nNewgrounds';
 				case 8:
 					deleteCoolText();
-					logoSpr.visible = false;
+					ngSpr.visible = false;
 				// credTextShit.visible = false;
 
 				// credTextShit.text = 'Shoutouts Tom Fulp';
@@ -601,7 +615,7 @@ class TitleState extends MusicBeatState
 	{
 		if (!skippedIntro)
 		{
-			remove(logoSpr);
+			remove(ngSpr);
 
 			FlxG.camera.flash(FlxColor.WHITE, 4);
 			remove(credGroup);

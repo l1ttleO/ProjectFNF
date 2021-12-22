@@ -6,8 +6,7 @@ import flixel.input.keyboard.FlxKey;
 import flixel.graphics.FlxGraphic;
 import Controls;
 
-class ClientPrefs
-{
+class ClientPrefs {
 	public static var downScroll:Bool = false;
 	public static var middleScroll:Bool = false;
 	public static var showFPS:Bool = true;
@@ -62,33 +61,36 @@ class ClientPrefs
 	public static var badWindow:Int = 135;
 	public static var safeFrames:Float = 10;
 
-	// Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
 	public static var keyBinds:Map<String, Array<FlxKey>> = [
-		// Key Bind, Name for ControlsSubState
-		'note_left' => [A, LEFT],
-		'note_down' => [S, DOWN],
-		'note_up' => [W, UP],
-		'note_right' => [D, RIGHT],
-		'ui_left' => [A, LEFT],
-		'ui_down' => [S, DOWN],
-		'ui_up' => [W, UP],
-		'ui_right' => [D, RIGHT],
-		'accept' => [SPACE, ENTER],
-		'back' => [BACKSPACE, ESCAPE],
-		'pause' => [ENTER, ESCAPE],
-		'reset' => [R, NONE],
-		'volume_mute' => [ZERO, NONE],
-		'volume_up' => [NUMPADPLUS, PLUS],
-		'volume_down' => [NUMPADMINUS, MINUS],
-		'debug_1' => [SEVEN, NONE],
-		'debug_2' => [EIGHT, NONE]
+		//Key Bind, Name for ControlsSubState
+		'note_left'		=> [A, LEFT],
+		'note_down'		=> [S, DOWN],
+		'note_up'		=> [W, UP],
+		'note_right'	=> [D, RIGHT],
+
+		'ui_left'		=> [A, LEFT],
+		'ui_down'		=> [S, DOWN],
+		'ui_up'			=> [W, UP],
+		'ui_right'		=> [D, RIGHT],
+
+		'accept'		=> [SPACE, ENTER],
+		'back'			=> [BACKSPACE, ESCAPE],
+		'pause'			=> [ENTER, ESCAPE],
+		'reset'			=> [R, NONE],
+
+		'volume_mute'	=> [ZERO, NONE],
+		'volume_up'		=> [NUMPADPLUS, PLUS],
+		'volume_down'	=> [NUMPADMINUS, MINUS],
+
+		'debug_1'		=> [SEVEN, NONE],
+		'debug_2'		=> [EIGHT, NONE]
 	];
 	public static var defaultKeys:Map<String, Array<FlxKey>> = null;
 
-	public static function loadDefaultKeys()
-	{
+	public static function loadDefaultKeys() {
 		defaultKeys = keyBinds.copy();
-		// trace(defaultKeys);
+		//trace(defaultKeys);
 	}
 
 	public static function saveSettings()
@@ -101,8 +103,8 @@ class ClientPrefs
 		FlxG.save.data.noteSplashes = noteSplashes;
 		FlxG.save.data.lowQuality = lowQuality;
 		FlxG.save.data.framerate = framerate;
-		// FlxG.save.data.cursing = cursing;
-		// FlxG.save.data.violence = violence;
+		//FlxG.save.data.cursing = cursing;
+		//FlxG.save.data.violence = violence;
 		FlxG.save.data.camZooms = camZooms;
 		FlxG.save.data.noteOffset = noteOffset;
 		FlxG.save.data.hideHud = hideHud;
@@ -351,13 +353,11 @@ class ClientPrefs
 		}
 	}
 
-	inline public static function getGameplaySetting(name:String, defaultValue:Dynamic):Dynamic
-	{
+	inline public static function getGameplaySetting(name:String, defaultValue:Dynamic):Dynamic {
 		return /*PlayState.isStoryMode ? defaultValue : */ (gameplaySettings.exists(name) ? gameplaySettings.get(name) : defaultValue);
 	}
 
-	public static function reloadControls()
-	{
+	public static function reloadControls() {
 		PlayerSettings.player1.controls.setKeyboardScheme(KeyboardScheme.Solo);
 
 		TitleState.muteKeys = copyKey(keyBinds.get('volume_mute'));
@@ -368,16 +368,13 @@ class ClientPrefs
 		FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
 	}
 
-	public static function copyKey(arrayToCopy:Array<FlxKey>):Array<FlxKey>
-	{
+	public static function copyKey(arrayToCopy:Array<FlxKey>):Array<FlxKey> {
 		var copiedArray:Array<FlxKey> = arrayToCopy.copy();
 		var i:Int = 0;
 		var len:Int = copiedArray.length;
 
-		while (i < len)
-		{
-			if (copiedArray[i] == NONE)
-			{
+		while (i < len) {
+			if(copiedArray[i] == NONE) {
 				copiedArray.remove(NONE);
 				--i;
 			}

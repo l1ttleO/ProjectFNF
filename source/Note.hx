@@ -29,11 +29,13 @@ class Note extends FlxSprite
 	public var noteType(default, set):String = null;
 
 	public var eventName:String = '';
+	public var eventLength:Int = 0;
 	public var eventVal1:String = '';
 	public var eventVal2:String = '';
 
 	public var colorSwap:ColorSwap;
 	public var inEditor:Bool = false;
+	public var gfNote:Bool = false;
 	private var earlyHitMult:Float = 0.5;
 
 	public static var swagWidth:Float = 160 * 0.7;
@@ -85,7 +87,7 @@ class Note extends FlxSprite
 		if(noteData > -1 && noteType != value) {
 			switch(value) {
 				case 'Hurt Note':
-					ignoreNote = mustPress;
+					ignoreNote = false;
 					reloadNote('HURT');
 					noteSplashTexture = 'HURTnoteSplashes';
 					colorSwap.hue = 0;
@@ -99,6 +101,8 @@ class Note extends FlxSprite
 					hitCausesMiss = true;
 				case 'No Animation':
 					noAnimation = true;
+				case 'GF Sing':
+					gfNote = true;
 			}
 			noteType = value;
 		}
