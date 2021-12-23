@@ -2226,17 +2226,14 @@ class PlayState extends MusicBeatState
 		super.update(elapsed);
 
 		var accuracyPercentage = Highscore.floorDecimal(ratingPercent * 100, 2);
-		if (Math.isNaN(accuracyPercentage)) accuracyPercentage = 100;
 
 		var suffix:String = '';
-		if (ratingName != '?') {
-			var thing:Float = FlxMath.roundDecimal(ratingPercent * 10, 0) * 10; // you can't do 'ratingPercent * 100', the number must be rounded before multiplying by 10
-			if (accuracyPercentage - thing < 0) {
-				if (accuracyPercentage - thing > -5)
-					suffix = '+';
-				if (accuracyPercentage - thing >= -1)
-					suffix = '++';
-			}
+		var thing:Float = FlxMath.roundDecimal(ratingPercent * 10, 0) * 10; // you can't do 'ratingPercent * 100', the number must be rounded before multiplying by 10
+		if (accuracyPercentage - thing < 0) {
+			if (accuracyPercentage - thing > -5)
+				suffix = '+';
+			if (accuracyPercentage - thing >= -1)
+				suffix = '++';
 		}
 
 		var thScoreHealthTxt = '';
@@ -3365,7 +3362,7 @@ class PlayState extends MusicBeatState
 		{
 			case "shit": // shit
 				score = 50;
-				totalNotesHit += 0;
+				totalNotesHit += 0.25;
 				shits++;
 			case "bad": // bad
 				score = 100;
@@ -3435,7 +3432,6 @@ class PlayState extends MusicBeatState
 		rating.visible = !ClientPrefs.hideHud;
 		rating.x += ClientPrefs.comboOffset[0];
 		rating.y -= ClientPrefs.comboOffset[1];
-		rating.cameras = [camOther];
 
 		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'combo' + pixelShitPart2));
 		comboSpr.cameras = [camHUD];
@@ -3502,7 +3498,6 @@ class PlayState extends MusicBeatState
 			numScore.acceleration.y = FlxG.random.int(200, 300);
 			numScore.velocity.y -= FlxG.random.int(140, 160);
 			numScore.velocity.x = FlxG.random.float(-5, 5);
-			numScore.cameras = [camOther];
 
 			if (combo >= 10 || combo == 0)
 				insert(members.indexOf(strumLineNotes), numScore);
@@ -4444,39 +4439,35 @@ class PlayState extends MusicBeatState
 		if(ret != FunkinLua.Function_Stop)
 		{
 			if(totalPlayed < 1) //Prevent divide by 0
-				ratingName = '?';
+				ratingPercent = 1;
+			else
+				ratingPercent = Math.min(1, Math.max(0, totalNotesHit / totalPlayed));
+
+			// Rating Name
+			if(ratingPercent >= 1)
+			{
+				ratingName = ratingStuff[ratingStuff.length-1][0]; //Uses last string
+			}
 			else
 			{
-				// Rating Percent
-				ratingPercent = Math.min(1, Math.max(0, totalNotesHit / totalPlayed));
-				//trace((totalNotesHit / totalPlayed) + ', Total: ' + totalPlayed + ', notes hit: ' + totalNotesHit);
-
-				// Rating Name
-				if(ratingPercent >= 1)
+				for (i in 0...ratingStuff.length-1)
 				{
-					ratingName = ratingStuff[ratingStuff.length-1][0]; //Uses last string
-				}
-				else
-				{
-					for (i in 0...ratingStuff.length-1)
+					if(ratingPercent < ratingStuff[i][1])
 					{
-						if(ratingPercent < ratingStuff[i][1])
-						{
-							ratingName = ratingStuff[i][0];
-							break;
-						}
+						ratingName = ratingStuff[i][0];
+						break;
 					}
 				}
 			}
-
-			// Rating FC
-			ratingFC = "";
-			if (sicks > 0) ratingFC = "(SFC) ";
-			if (goods > 0) ratingFC = "(GFC) ";
-			if (bads > 0 || shits > 0) ratingFC = "(FC) ";
-			if (songMisses > 0 && songMisses < 10) ratingFC = "(SDCB) ";
-			else if (songMisses >= 10) ratingFC = "(Clear) ";
 		}
+
+		// Rating FC
+		ratingFC = "";
+		if (sicks > 0) ratingFC = "(SFC) ";
+		if (goods > 0) ratingFC = "(GFC) ";
+		if (bads > 0 || shits > 0) ratingFC = "(FC) ";
+		if (songMisses > 0 && songMisses < 10) ratingFC = "(SDCB) ";
+		else if (songMisses >= 10) ratingFC = "(Clear) ";
 		setOnLuas('rating', ratingPercent);
 		setOnLuas('ratingName', ratingName);
 		setOnLuas('ratingFC', ratingFC);
