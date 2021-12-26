@@ -3971,10 +3971,10 @@ class PlayState extends MusicBeatState
 					//}
 				//}else{
 					if(note.gfNote) {
-						gf.playAnim(animToPlay + daAlt, true);
+						gf.playAnim('sing' + animToPlay + daAlt, true);
 						gf.holdTimer = 0;
 					} else {
-						boyfriend.playAnim(animToPlay + daAlt, true);
+						boyfriend.playAnim('sing' + animToPlay + daAlt, true);
 						boyfriend.holdTimer = 0;
 					}
 				//}
@@ -4023,7 +4023,7 @@ class PlayState extends MusicBeatState
 				note.destroy();
 			}
 			if (ClientPrefs.playHitSounds)
-				FlxG.sound.play(Paths.sound('ChartingTick'));
+				FlxG.sound.play(Paths.sound('ChartingTick'), 0.125);
 		}
 	}
 
