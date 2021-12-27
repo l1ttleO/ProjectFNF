@@ -150,6 +150,8 @@ class PlayState extends MusicBeatState
 	public var toPassiveDrain:Float = 0.035;
 	public var toDrain:Float = ClientPrefs.damageFromOpponentNotes * 0.02;
 	public var combo:Int = 0;
+	
+	public var vignette:FlxSprite;
 
 	private var healthBarBG:AttachedSprite;
 	public var healthBar:FlxBar;
@@ -1042,6 +1044,16 @@ class PlayState extends MusicBeatState
 		if(ClientPrefs.downScroll) {
 			botplayTxt.y = timeBarBG.y - 78;
 		}
+		
+		vignette = new FlxSprite().loadGraphic(Paths.image('vignette'));
+		vignette.width = 1280;
+		vignette.height = 720;
+		vignette.x = 0;
+		vignette.y = 0;
+		vignette.updateHitbox();
+		vignette.alpha = 0;
+		if (ClientPrefs.enableVignette)
+			add(vignette);
 
 		strumLineNotes.cameras = [camOther];
 		grpNoteSplashes.cameras = [camOther];
@@ -1057,6 +1069,7 @@ class PlayState extends MusicBeatState
 		timeBarBG.cameras = [camHUD];
 		timeTxt.cameras = [camHUD];
 		doof.cameras = [camOther];
+		vignette.cameras = [camOther];
 
 		// if (SONG.song == 'South')
 		// FlxG.camera.alpha = 0.7;
@@ -2332,6 +2345,9 @@ class PlayState extends MusicBeatState
 			iconP2.animation.curAnim.curFrame = 1;
 		else
 			iconP2.animation.curAnim.curFrame = 0;
+		
+		if (ClientPrefs.enableVignette)
+			vignette.alpha = 0.9 - (health / maxHealth);
 
 		if (FlxG.keys.anyJustPressed(debugKeysCharacter) && !endingSong && !inCutscene) {
 			persistentUpdate = false;

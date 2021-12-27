@@ -77,8 +77,8 @@ class VisualsUISubState extends BaseOptionsMenu
 			true);
 		addOption(option);
 
-		var option:Option = new Option('Health Bar Transparency',
-			'How much transparent should the health bar and icons be.',
+		var option:Option = new Option('Health Bar Opacity',
+			'How much opaque should the health bar and icons be.',
 			'healthBarAlpha',
 			'percent',
 			1);
@@ -87,6 +87,10 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.maxValue = 1;
 		option.changeValue = 0.1;
 		option.decimals = 1;
+		addOption(option);
+		
+		var option:Option = new Option('Enable Vignette', "If checked, a vignette effect will appear and change depending on your health.", 'enableVignette',
+			'bool', false);
 		addOption(option);
 
 		#if !mobile
