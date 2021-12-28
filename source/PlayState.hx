@@ -3901,7 +3901,7 @@ class PlayState extends MusicBeatState
 			if (ClientPrefs.moveCameraInNoteDirection)
 				moveCamera(true, animToPlay);
 		}
-		if (ClientPrefs.opponentNotesDoDamage && (health - toDrain > 0.001 || ClientPrefs.opponentNotesCanKill) && healthDrained < maxHealth - toDrain) {
+		if (ClientPrefs.opponentNotesDoDamage && (health - toDrain > 0.001 || ClientPrefs.opponentNotesCanKill) && healthDrained < 2 - toDrain) {
 			shouldPassiveDrain = true;
 			health -= toDrain;
 			healthDrained += toDrain;
