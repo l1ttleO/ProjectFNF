@@ -3896,7 +3896,7 @@ class PlayState extends MusicBeatState
 				boyfriend.playAnim('sing' + animToPlay, true);
 				boyfriend.holdTimer = 0;
 			}
-			if(!opponentChart) {
+			else {
 			char.playAnim('sing' + animToPlay, true);
 			char.holdTimer = 0;
 			if (ClientPrefs.moveCameraInNoteDirection)
