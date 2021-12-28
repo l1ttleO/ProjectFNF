@@ -1770,13 +1770,13 @@ class PlayState extends MusicBeatState
 				var gottaHitNote:Bool = section.mustHitSection;
 
 				if (songNotes[1] > 3 && !opponentChart)
-					{
-						gottaHitNote = !section.mustHitSection;
-					}
-					else if (songNotes[1] <= 3 && opponentChart)
-					{
-						gottaHitNote = !section.mustHitSection;
-					}
+				{
+					gottaHitNote = !section.mustHitSection;
+				}
+				else if (songNotes[1] <= 3 && opponentChart)
+				{
+					gottaHitNote = !section.mustHitSection;
+				}
 	
 
 				var oldNote:Note;
