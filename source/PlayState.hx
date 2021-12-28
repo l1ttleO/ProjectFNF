@@ -2317,6 +2317,9 @@ class PlayState extends MusicBeatState
 		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
 		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
 
+		if (totalPlayed > 0)
+			shouldPassiveDrain = true;
+		
 		if (ClientPrefs.hardMode && health > 0.001 && shouldPassiveDrain) {
 			health -= toPassiveDrain / FlxG.updateFramerate;
 			healthDrained += toPassiveDrain / FlxG.updateFramerate;
