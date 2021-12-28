@@ -3897,12 +3897,12 @@ class PlayState extends MusicBeatState
 				boyfriend.holdTimer = 0;
 			}
 			else {
-			char.playAnim('sing' + animToPlay, true);
-			char.holdTimer = 0;
-			if (ClientPrefs.moveCameraInNoteDirection)
-				moveCamera(true, animToPlay);
+				char.playAnim('sing' + animToPlay, true);
+				char.holdTimer = 0;
+				if (ClientPrefs.moveCameraInNoteDirection)
+					moveCamera(true, animToPlay);
+			}
 		}
-	}
 		if (ClientPrefs.opponentNotesDoDamage && (health - toDrain > 0.001 || ClientPrefs.opponentNotesCanKill) && healthDrained < 2 - toDrain) {
 			shouldPassiveDrain = true;
 			health -= toDrain;
