@@ -3795,12 +3795,11 @@ class PlayState extends MusicBeatState
 		totalPlayed++;
 		RecalculateRating();
 
-		
 		var char:Character = boyfriend;
+		if (opponentChart) char = dad;
 		if(daNote.gfNote) {
 			char = gf;
 		}
-		if (opponentChart) char = dad; //this is here to avoid the "Unknown identifier : char" error
 
 		if(char.hasMissAnimations && ClientPrefs.playMissAnimations)
 		{
@@ -3866,7 +3865,7 @@ class PlayState extends MusicBeatState
 				boyfriend.stunned = false;
 			});
 
-			if(boyfriend.hasMissAnimations && ClientPrefs.playMissAnimations) {
+			if(boyfriend.hasMissAnimations && !opponentChart && ClientPrefs.playMissAnimations) {
 				boyfriend.playAnim('sing' + singAnimations[Std.int(Math.abs(direction))] + 'miss', true);
 			}
 
