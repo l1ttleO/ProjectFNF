@@ -1000,7 +1000,9 @@ class PlayState extends MusicBeatState
 		add(healthBarBG);
 		if(ClientPrefs.downScroll) healthBarBG.y = 0.11 * FlxG.height;
 
-		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
+		var leftright = RIGHT_TO_LEFT;
+		if (opponentChart) leftright = LEFT_TO_RIGHT;
+		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, leftright, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 			'health', 0, 2);
 		healthBar.scrollFactor.set();
 		// healthBar
@@ -1251,8 +1253,11 @@ class PlayState extends MusicBeatState
 	}
 
 	public function reloadHealthBarColors() {
-		healthBar.createFilledBar(FlxColor.fromRGB(dad.healthColorArray[0], dad.healthColorArray[1], dad.healthColorArray[2]),
+		if (!opponentChart) healthBar.createFilledBar(FlxColor.fromRGB(dad.healthColorArray[0], dad.healthColorArray[1], dad.healthColorArray[2]),
 			FlxColor.fromRGB(boyfriend.healthColorArray[0], boyfriend.healthColorArray[1], boyfriend.healthColorArray[2]));
+
+		else healthBar.createFilledBar(FlxColor.fromRGB(boyfriend.healthColorArray[0], boyfriend.healthColorArray[1], boyfriend.healthColorArray[2]),
+			FlxColor.fromRGB(dad.healthColorArray[0], dad.healthColorArray[1], dad.healthColorArray[2]));
 		healthBar.updateBar();
 	}
 
@@ -2313,9 +2318,14 @@ class PlayState extends MusicBeatState
 		iconP2.updateHitbox();
 
 		var iconOffset:Int = 26;
-
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
-		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
+		var offset:Float = 0;
+		var direction:Int = 1;
+		if (opponentChart) {
+			offset = -593;
+			direction = -1;
+		}
+		iconP1.x = offset + healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100 * direction, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
+		iconP2.x = offset + healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100 * direction, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
 
 		if (totalPlayed > 0)
 			shouldPassiveDrain = true;
@@ -2352,6 +2362,18 @@ class PlayState extends MusicBeatState
 			iconP2.animation.curAnim.curFrame = 1;
 		else
 			iconP2.animation.curAnim.curFrame = 0;
+
+		if (opponentChart) {
+			if (healthPercentage < (ClientPrefs.hardMode ? 30 : 20))
+				iconP2.animation.curAnim.curFrame = 1;
+			else
+				iconP2.animation.curAnim.curFrame = 0;
+
+			if (healthPercentage > (ClientPrefs.hardMode ? 100 : 80))
+				iconP1.animation.curAnim.curFrame = 1;
+			else
+				iconP1.animation.curAnim.curFrame = 0;
+		}
 		
 		if (ClientPrefs.enableVignette)
 			vignette.alpha = 0.9 - (health / maxHealth);
@@ -3773,11 +3795,12 @@ class PlayState extends MusicBeatState
 		totalPlayed++;
 		RecalculateRating();
 
+		
 		var char:Character = boyfriend;
 		if(daNote.gfNote) {
 			char = gf;
 		}
-		if (opponentChart) char = dad;
+		if (opponentChart) char = dad; //this is here to avoid the "Unknown identifier : char" error
 
 		if(char.hasMissAnimations && ClientPrefs.playMissAnimations)
 		{
@@ -3991,7 +4014,8 @@ class PlayState extends MusicBeatState
 					//	boyfriend.holdTimer = 0;
 					//}
 				//}else{
-					if(opponentChart) {
+					var char:Character = dad;
+					if(opponentChart && !note.gfNote) {
 						dad.playAnim('sing' + animToPlay + daAlt, true);
 						dad.holdTimer = 0;
 					}
