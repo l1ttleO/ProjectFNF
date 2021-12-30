@@ -3866,7 +3866,7 @@ class PlayState extends MusicBeatState
 				boyfriend.stunned = false;
 			});
 
-			if(boyfriend.hasMissAnimations && !opponentChart && ClientPrefs.playMissAnimations) {
+			if(boyfriend.hasMissAnimations && ClientPrefs.playMissAnimations) {
 				boyfriend.playAnim('sing' + singAnimations[Std.int(Math.abs(direction))] + 'miss', true);
 			}
 
