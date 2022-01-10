@@ -3991,7 +3991,7 @@ class PlayState extends MusicBeatState
 					//	boyfriend.holdTimer = 0;
 					//}
 				//}else{
-					if(opponentChart) {
+					if(opponentChart && !note.gfNote) {
 						dad.playAnim('sing' + animToPlay + daAlt, true);
 						dad.holdTimer = 0;
 					}
