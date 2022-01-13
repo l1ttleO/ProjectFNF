@@ -1773,7 +1773,7 @@ class PlayState extends MusicBeatState
 				{
 					gottaHitNote = !section.mustHitSection;
 				}
-				else if (songNotes[1] <= 3 && opponentChart)
+				else if (opponentChart)
 				{
 					gottaHitNote = !section.mustHitSection;
 				}
@@ -1944,7 +1944,7 @@ class PlayState extends MusicBeatState
 
 			if (player == 1)
 			{
-				if (!opponentChart || opponentChart && ClientPrefs.middleScroll) playerStrums.add(babyArrow);
+				if (!opponentChart || ClientPrefs.middleScroll) playerStrums.add(babyArrow);
 				else opponentStrums.add(babyArrow);
 			}
 			else
@@ -1956,7 +1956,7 @@ class PlayState extends MusicBeatState
 						babyArrow.x += FlxG.width / 2 + 25;
 					}
 				}
-				if (!opponentChart || opponentChart && ClientPrefs.middleScroll) opponentStrums.add(babyArrow);
+				if (!opponentChart || ClientPrefs.middleScroll) opponentStrums.add(babyArrow);
 				else playerStrums.add(babyArrow);
 			}
 
@@ -3895,6 +3895,8 @@ class PlayState extends MusicBeatState
 			if(opponentChart) {
 				boyfriend.playAnim('sing' + animToPlay, true);
 				boyfriend.holdTimer = 0;
+				if (ClientPrefs.moveCameraInNoteDirection)
+					moveCamera(false, animToPlay);
 			}
 			else {
 				char.playAnim('sing' + animToPlay, true);
@@ -3995,7 +3997,7 @@ class PlayState extends MusicBeatState
 						dad.playAnim('sing' + animToPlay + daAlt, true);
 						dad.holdTimer = 0;
 					}
-					if(note.gfNote) {
+					else if(note.gfNote) {
 						gf.playAnim('sing' + animToPlay + daAlt, true);
 						gf.holdTimer = 0;
 					} else {
