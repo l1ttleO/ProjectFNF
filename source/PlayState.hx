@@ -3997,7 +3997,7 @@ class PlayState extends MusicBeatState
 						dad.playAnim('sing' + animToPlay + daAlt, true);
 						dad.holdTimer = 0;
 					}
-					if(note.gfNote) {
+					else if(note.gfNote) {
 						gf.playAnim('sing' + animToPlay + daAlt, true);
 						gf.holdTimer = 0;
 					} else {
