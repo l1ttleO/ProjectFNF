@@ -1956,7 +1956,7 @@ class PlayState extends MusicBeatState
 						babyArrow.x += FlxG.width / 2 + 25;
 					}
 				}
-				if (!opponentChart || opponentChart && ClientPrefs.middleScroll) opponentStrums.add(babyArrow);
+				if (!opponentChart || ClientPrefs.middleScroll) opponentStrums.add(babyArrow);
 				else playerStrums.add(babyArrow);
 			}
 
