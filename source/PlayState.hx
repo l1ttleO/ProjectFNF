@@ -175,6 +175,7 @@ class PlayState extends MusicBeatState
 	public var healthLoss:Float = 1;
 	public var instakillOnMiss:Bool = false;
 	public var cpuControlled:Bool = false;
+	public var opponentChart:Bool = false;
 	public var practiceMode:Bool = false;
 
 	public var botplaySine:Float = 0;
@@ -302,6 +303,7 @@ class PlayState extends MusicBeatState
 		instakillOnMiss = ClientPrefs.getGameplaySetting('instakill', false);
 		practiceMode = ClientPrefs.getGameplaySetting('practice', false);
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
+		opponentChart = ClientPrefs.getGameplaySetting('opponentplay', false);
 
 		if (ClientPrefs.damageFromOpponentNotes == 10)
 			ClientPrefs.hardMode = true;
@@ -1767,10 +1769,15 @@ class PlayState extends MusicBeatState
 
 				var gottaHitNote:Bool = section.mustHitSection;
 
-				if (songNotes[1] > 3)
+				if (songNotes[1] > 3 && !opponentChart)
 				{
 					gottaHitNote = !section.mustHitSection;
 				}
+				else if (songNotes[1] <= 3 && opponentChart)
+				{
+					gottaHitNote = !section.mustHitSection;
+				}
+	
 
 				var oldNote:Note;
 				if (unspawnNotes.length > 0)
@@ -1937,7 +1944,8 @@ class PlayState extends MusicBeatState
 
 			if (player == 1)
 			{
-				playerStrums.add(babyArrow);
+				if (!opponentChart || opponentChart && ClientPrefs.middleScroll) playerStrums.add(babyArrow);
+				else opponentStrums.add(babyArrow);
 			}
 			else
 			{
@@ -1948,7 +1956,8 @@ class PlayState extends MusicBeatState
 						babyArrow.x += FlxG.width / 2 + 25;
 					}
 				}
-				opponentStrums.add(babyArrow);
+				if (!opponentChart || opponentChart && ClientPrefs.middleScroll) opponentStrums.add(babyArrow);
+				else playerStrums.add(babyArrow);
 			}
 
 			strumLineNotes.add(babyArrow);
@@ -2308,6 +2317,9 @@ class PlayState extends MusicBeatState
 		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
 		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
 
+		if (totalPlayed > 0)
+			shouldPassiveDrain = true;
+		
 		if (ClientPrefs.hardMode && health > 0.001 && shouldPassiveDrain) {
 			health -= toPassiveDrain / FlxG.updateFramerate;
 			healthDrained += toPassiveDrain / FlxG.updateFramerate;
@@ -3762,6 +3774,7 @@ class PlayState extends MusicBeatState
 		RecalculateRating();
 
 		var char:Character = boyfriend;
+		if (opponentChart) char = dad;
 		if(daNote.gfNote) {
 			char = gf;
 		}
@@ -3879,11 +3892,16 @@ class PlayState extends MusicBeatState
 			if(SONG.notes[curSection].gfSection || note.noteType == 'GF Sing') {
 				char = gf;
 			}
-
-			char.playAnim('sing' + animToPlay, true);
-			char.holdTimer = 0;
-			if (ClientPrefs.moveCameraInNoteDirection)
-				moveCamera(true, animToPlay);
+			if(opponentChart) {
+				boyfriend.playAnim('sing' + animToPlay, true);
+				boyfriend.holdTimer = 0;
+			}
+			else {
+				char.playAnim('sing' + animToPlay, true);
+				char.holdTimer = 0;
+				if (ClientPrefs.moveCameraInNoteDirection)
+					moveCamera(true, animToPlay);
+			}
 		}
 		if (ClientPrefs.opponentNotesDoDamage && (health - toDrain > 0.001 || ClientPrefs.opponentNotesCanKill) && healthDrained < 2 - toDrain) {
 			shouldPassiveDrain = true;
@@ -3973,6 +3991,10 @@ class PlayState extends MusicBeatState
 					//	boyfriend.holdTimer = 0;
 					//}
 				//}else{
+					if(opponentChart && !note.gfNote) {
+						dad.playAnim('sing' + animToPlay + daAlt, true);
+						dad.holdTimer = 0;
+					}
 					if(note.gfNote) {
 						gf.playAnim('sing' + animToPlay + daAlt, true);
 						gf.holdTimer = 0;
@@ -3980,6 +4002,7 @@ class PlayState extends MusicBeatState
 						boyfriend.playAnim('sing' + animToPlay + daAlt, true);
 						boyfriend.holdTimer = 0;
 					}
+
 				//}
 				if(note.noteType == 'Hey!') {
 					if(boyfriend.animOffsets.exists('hey')) {
@@ -4417,7 +4440,10 @@ class PlayState extends MusicBeatState
 
 	function StrumPlayAnim(isDad:Bool, id:Int, time:Float) {
 		var spr:StrumNote = null;
-		if(isDad) {
+		if (isDad && opponentChart) {
+			spr = opponentStrums.members[id];
+		}
+		else if(isDad) {
 			spr = strumLineNotes.members[id];
 		} else {
 			spr = playerStrums.members[id];
