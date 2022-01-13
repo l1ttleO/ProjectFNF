@@ -4004,7 +4004,6 @@ class PlayState extends MusicBeatState
 						boyfriend.playAnim('sing' + animToPlay + daAlt, true);
 						boyfriend.holdTimer = 0;
 					}
-
 				//}
 				if(note.noteType == 'Hey!') {
 					if(boyfriend.animOffsets.exists('hey')) {
