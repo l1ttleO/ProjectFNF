@@ -1944,7 +1944,7 @@ class PlayState extends MusicBeatState
 
 			if (player == 1)
 			{
-				if (!opponentChart || opponentChart && ClientPrefs.middleScroll) playerStrums.add(babyArrow);
+				if (!opponentChart || ClientPrefs.middleScroll) playerStrums.add(babyArrow);
 				else opponentStrums.add(babyArrow);
 			}
 			else
