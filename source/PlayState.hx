@@ -1773,7 +1773,7 @@ class PlayState extends MusicBeatState
 				{
 					gottaHitNote = !section.mustHitSection;
 				}
-				else if (songNotes[1] <= 3 && opponentChart)
+				else if (opponentChart)
 				{
 					gottaHitNote = !section.mustHitSection;
 				}
