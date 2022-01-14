@@ -148,7 +148,7 @@ class PlayState extends MusicBeatState
 	public var healthDrained:Float = 1;
 	public var minDrained:Float = 0;
 	public var shouldPassiveDrain:Bool = false;
-	public var toPassiveDrain:Float = 0.035;
+	public var toPassiveDrain:Float = 0.0375;
 	public var toDrain:Float = ClientPrefs.damageFromOpponentNotes * 0.02;
 	public var combo:Int = 0;
 	
@@ -314,13 +314,14 @@ class PlayState extends MusicBeatState
 		if (ClientPrefs.hardMode) {
 			ClientPrefs.opponentNotesDoDamage = true;
 			ClientPrefs.opponentNotesCanKill = true;
+			ClientPrefs.enableQolBalanceChanges = true; // fuck sustains
 			health = 2;
 			maxHealth = 3;
 			healthDrained = 0;
 			minDrained = -1;
-			toDrain = 0.0225;
+			toDrain = 0.023;
 			healthGain = 1.575;
-			healthLoss = 2.75;
+			healthLoss = 2.8;
 		}
 
 		// var gameCam:FlxCamera = FlxG.camera;
@@ -1046,15 +1047,16 @@ class PlayState extends MusicBeatState
 			botplayTxt.y = timeBarBG.y - 78;
 		}
 		
-		vignette = new FlxSprite().loadGraphic(Paths.image('vignette'));
-		vignette.width = 1280;
-		vignette.height = 720;
-		vignette.x = 0;
-		vignette.y = 0;
-		vignette.updateHitbox();
-		vignette.alpha = 0;
-		if (ClientPrefs.enableVignette)
+		if (ClientPrefs.enableVignette) {
+			vignette = new FlxSprite().loadGraphic(Paths.image('vignette'));
+			vignette.width = 1280;
+			vignette.height = 720;
+			vignette.x = 0;
+			vignette.y = 0;
+			vignette.updateHitbox();
+			vignette.alpha = 0;
 			add(vignette);
+		}
 
 		strumLineNotes.cameras = [camOther];
 		grpNoteSplashes.cameras = [camOther];
@@ -2358,7 +2360,7 @@ class PlayState extends MusicBeatState
 			iconP2.animation.curAnim.curFrame = 0;
 		
 		if (ClientPrefs.enableVignette)
-			vignette.alpha = 0.9 - (health / maxHealth);
+			vignette.alpha = 0.875 - (health / maxHealth);
 
 		if (FlxG.keys.anyJustPressed(debugKeysCharacter) && !endingSong && !inCutscene) {
 			persistentUpdate = false;
@@ -3759,9 +3761,10 @@ class PlayState extends MusicBeatState
 		});
 		combo = 0;
 
-		health -= daNote.missHealth * healthLoss;
+		var sustainMultiplier:Float = (ClientPrefs.enableQolBalanceChanges && daNote.isSustainNote) ? 0.9 : 1;
+		health -= daNote.missHealth * healthLoss * sustainMultiplier;
 		if (ClientPrefs.missesLowerMaxHealth)
-			maxHealth -= daNote.missHealth * healthLoss;
+			maxHealth -= daNote.missHealth * healthLoss * sustainMultiplier;
 		if(instakillOnMiss)
 		{
 			vocals.volume = 0;
@@ -3909,9 +3912,10 @@ class PlayState extends MusicBeatState
 			}
 		}
 		if (ClientPrefs.opponentNotesDoDamage && (health - toDrain > 0.001 || ClientPrefs.opponentNotesCanKill) && healthDrained < 2 - toDrain) {
+			var sustainMultiplier:Float = (ClientPrefs.enableQolBalanceChanges && note.isSustainNote) ? 0.9 : 1;
 			shouldPassiveDrain = true;
-			health -= toDrain;
-			healthDrained += toDrain;
+			health -= toDrain * sustainMultiplier;
+			healthDrained += toDrain * sustainMultiplier;
 		}
 
 		if (SONG.needsVoices)
@@ -3971,8 +3975,9 @@ class PlayState extends MusicBeatState
 				popUpScore(note);
 				if(combo > 9999) combo = 9999;
 			}
-			health += note.hitHealth * healthGain;
-			healthDrained -= note.hitHealth * healthGain;
+			var sustainMultiplier:Float = (ClientPrefs.enableQolBalanceChanges && note.isSustainNote) ? 0.85 : 1;
+			health += note.hitHealth * healthGain * sustainMultiplier;
+			healthDrained -= note.hitHealth * healthGain * sustainMultiplier;
 			if(!note.noAnimation) {
 				var daAlt = '';
 				if(note.noteType == 'Alt Animation') daAlt = '-alt';
