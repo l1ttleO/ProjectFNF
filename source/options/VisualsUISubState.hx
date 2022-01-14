@@ -89,6 +89,10 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.decimals = 1;
 		addOption(option);
 		
+		var option:Option = new Option('Move Camera in Note Direction', "If checked, the camera will move in note's direction", 'moveCameraInNoteDirection',
+			'bool', false);
+		addOption(option);
+		
 		var option:Option = new Option('Enable Vignette', "If checked, a vignette effect will appear and change depending on your health.", 'enableVignette',
 			'bool', false);
 		addOption(option);
