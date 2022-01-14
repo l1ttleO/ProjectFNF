@@ -143,7 +143,8 @@ class PlayState extends MusicBeatState
 	public var gfSpeed:Int = 1;
 	public var health:Float = 1;
 	public var maxHealth:Float = 2;
-	public var healthPercentage:Float;
+	public var healthPercentageBar:Float;
+	public var healthPercentageDisplay:Float;
 	public var healthDrained:Float = 1;
 	public var minDrained:Float = 0;
 	public var shouldPassiveDrain:Bool = false;
@@ -175,6 +176,7 @@ class PlayState extends MusicBeatState
 	public var healthLoss:Float = 1;
 	public var instakillOnMiss:Bool = false;
 	public var cpuControlled:Bool = false;
+	public var opponentChart:Bool = false;
 	public var practiceMode:Bool = false;
 
 	public var botplaySine:Float = 0;
@@ -302,6 +304,7 @@ class PlayState extends MusicBeatState
 		instakillOnMiss = ClientPrefs.getGameplaySetting('instakill', false);
 		practiceMode = ClientPrefs.getGameplaySetting('practice', false);
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
+		opponentChart = ClientPrefs.getGameplaySetting('opponentplay', false);
 
 		if (ClientPrefs.damageFromOpponentNotes == 10)
 			ClientPrefs.hardMode = true;
@@ -1000,7 +1003,7 @@ class PlayState extends MusicBeatState
 		add(healthBarBG);
 		if(ClientPrefs.downScroll) healthBarBG.y = 0.11 * FlxG.height;
 
-		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
+		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, (opponentChart ? LEFT_TO_RIGHT : RIGHT_TO_LEFT), Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 			'health', 0, 2);
 		healthBar.scrollFactor.set();
 		// healthBar
@@ -1251,8 +1254,10 @@ class PlayState extends MusicBeatState
 	}
 
 	public function reloadHealthBarColors() {
-		healthBar.createFilledBar(FlxColor.fromRGB(dad.healthColorArray[0], dad.healthColorArray[1], dad.healthColorArray[2]),
+		if (!opponentChart) healthBar.createFilledBar(FlxColor.fromRGB(dad.healthColorArray[0], dad.healthColorArray[1], dad.healthColorArray[2]),
 			FlxColor.fromRGB(boyfriend.healthColorArray[0], boyfriend.healthColorArray[1], boyfriend.healthColorArray[2]));
+		else healthBar.createFilledBar(FlxColor.fromRGB(boyfriend.healthColorArray[0], boyfriend.healthColorArray[1], boyfriend.healthColorArray[2]),
+			FlxColor.fromRGB(dad.healthColorArray[0], dad.healthColorArray[1], dad.healthColorArray[2]));
 		healthBar.updateBar();
 	}
 
@@ -1769,10 +1774,15 @@ class PlayState extends MusicBeatState
 
 				var gottaHitNote:Bool = section.mustHitSection;
 
-				if (songNotes[1] > 3)
+				if (songNotes[1] > 3 && !opponentChart)
 				{
 					gottaHitNote = !section.mustHitSection;
 				}
+				else if (opponentChart)
+				{
+					gottaHitNote = !section.mustHitSection;
+				}
+	
 
 				var oldNote:Note;
 				if (unspawnNotes.length > 0)
@@ -1939,7 +1949,8 @@ class PlayState extends MusicBeatState
 
 			if (player == 1)
 			{
-				playerStrums.add(babyArrow);
+				if (!opponentChart || ClientPrefs.middleScroll) playerStrums.add(babyArrow);
+				else opponentStrums.add(babyArrow);
 			}
 			else
 			{
@@ -1950,7 +1961,8 @@ class PlayState extends MusicBeatState
 						babyArrow.x += FlxG.width / 2 + 25;
 					}
 				}
-				opponentStrums.add(babyArrow);
+				if (!opponentChart || ClientPrefs.middleScroll) opponentStrums.add(babyArrow);
+				else playerStrums.add(babyArrow);
 			}
 
 			strumLineNotes.add(babyArrow);
@@ -2252,7 +2264,7 @@ class PlayState extends MusicBeatState
 		var thScoreHealthTxt = '';
 		var accuracyTxt = '';
 		if (ClientPrefs.advancedScoreTxt) {
-			thScoreHealthTxt = ' (' + totalPlayed * 350 + ') | Health: ' + FlxMath.roundDecimal(healthPercentage, 0) + '%';
+			thScoreHealthTxt = ' (' + totalPlayed * 350 + ') | Health: ' + FlxMath.roundDecimal(healthPercentageDisplay, 0) + '%';
 			accuracyTxt = ' | Accuracy: ' + accuracyPercentage + '%';
 		}
 		scoreTxt.text = 'Score: ' + songScore + thScoreHealthTxt + ' | Misses: ' + songMisses + accuracyTxt + ' | Rating: ' + ratingFC + ratingName + suffix;
@@ -2327,24 +2339,25 @@ class PlayState extends MusicBeatState
 		if (healthDrained < minDrained)
 			healthDrained = minDrained;
 
-		healthPercentage = health / 0.02;
-
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentage, 0, 100, 100, 0) * 0.01) - iconOffset);
+		healthPercentageDisplay = health / 0.02;
+		healthPercentageBar = opponentChart ? 100 - healthPercentageDisplay : healthPercentageDisplay;
+		
+		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentageBar, 0, 100, 100, 0) * 0.01) - iconOffset);
 		var oldP2 = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
-		var newP2 = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentage, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+		var newP2 = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentageBar, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
 
 		iconP2.x = newP2;
-		if (healthPercentage > 100 || healthPercentage < 0) {
+		if ((healthPercentageBar > 100 || healthPercentageBar < 0) && !opponentChart) { // until a fix is found, don't move the bar if opponentplay is enabled
 			healthBar.offset.x = oldP2 - newP2;
 			healthBarBG.offset.x = oldP2 - newP2;
 		}
 
-		if (healthPercentage < (ClientPrefs.hardMode ? 30 : 20))
+		if (healthPercentageBar < (ClientPrefs.hardMode ? 30 : 20))
 			iconP1.animation.curAnim.curFrame = 1;
 		else
 			iconP1.animation.curAnim.curFrame = 0;
 
-		if (healthPercentage > (ClientPrefs.hardMode ? 100 : 80))
+		if (healthPercentageBar > (ClientPrefs.hardMode ? 100 : 80))
 			iconP2.animation.curAnim.curFrame = 1;
 		else
 			iconP2.animation.curAnim.curFrame = 0;
@@ -3082,7 +3095,6 @@ class PlayState extends MusicBeatState
 
 	var cameraTwn:FlxTween;
 	public function moveCamera(isDad:Bool, ?direction:String = null) {
-		if (ClientPrefs.moveCameraInNoteDirection && direction == null) return;
 		var noteHitX:Float = 0;
 		var noteHitY:Float = 0;
 		if (ClientPrefs.moveCameraInNoteDirection) {
@@ -3778,6 +3790,7 @@ class PlayState extends MusicBeatState
 		RecalculateRating();
 
 		var char:Character = boyfriend;
+		if (opponentChart) char = dad;
 		if(daNote.gfNote) {
 			char = gf;
 		}
@@ -3895,11 +3908,18 @@ class PlayState extends MusicBeatState
 			if(SONG.notes[curSection].gfSection || note.noteType == 'GF Sing') {
 				char = gf;
 			}
-
-			char.playAnim('sing' + animToPlay, true);
-			char.holdTimer = 0;
-			if (ClientPrefs.moveCameraInNoteDirection)
-				moveCamera(true, animToPlay);
+			if(opponentChart) {
+				boyfriend.playAnim('sing' + animToPlay, true);
+				boyfriend.holdTimer = 0;
+				if (ClientPrefs.moveCameraInNoteDirection)
+					moveCamera(false, animToPlay);
+			}
+			else {
+				char.playAnim('sing' + animToPlay, true);
+				char.holdTimer = 0;
+				if (ClientPrefs.moveCameraInNoteDirection)
+					moveCamera(true, animToPlay);
+			}
 		}
 		if (ClientPrefs.opponentNotesDoDamage && (health - toDrain > 0.001 || ClientPrefs.opponentNotesCanKill) && healthDrained < 2 - toDrain) {
 			shouldPassiveDrain = true;
@@ -3973,7 +3993,7 @@ class PlayState extends MusicBeatState
 				var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
 
 				if (ClientPrefs.moveCameraInNoteDirection)
-					moveCamera(false, animToPlay);
+					moveCamera(opponentChart, animToPlay);
 
 				//if (note.isSustainNote){ wouldn't this be fun : P. i think it would be swell
 
@@ -3989,13 +4009,18 @@ class PlayState extends MusicBeatState
 					//	boyfriend.holdTimer = 0;
 					//}
 				//}else{
-					if(note.gfNote) {
+					if(opponentChart && !note.gfNote) {
+						dad.playAnim('sing' + animToPlay + daAlt, true);
+						dad.holdTimer = 0;
+					}
+					else if(note.gfNote) {
 						gf.playAnim('sing' + animToPlay + daAlt, true);
 						gf.holdTimer = 0;
 					} else {
 						boyfriend.playAnim('sing' + animToPlay + daAlt, true);
 						boyfriend.holdTimer = 0;
 					}
+
 				//}
 				if(note.noteType == 'Hey!') {
 					if(boyfriend.animOffsets.exists('hey')) {
@@ -4434,7 +4459,10 @@ class PlayState extends MusicBeatState
 
 	function StrumPlayAnim(isDad:Bool, id:Int, time:Float) {
 		var spr:StrumNote = null;
-		if(isDad) {
+		if (isDad && opponentChart) {
+			spr = opponentStrums.members[id];
+		}
+		else if(isDad) {
 			spr = strumLineNotes.members[id];
 		} else {
 			spr = playerStrums.members[id];
