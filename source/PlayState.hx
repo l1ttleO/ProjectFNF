@@ -1057,6 +1057,7 @@ class PlayState extends MusicBeatState
 			vignette.y = 0;
 			vignette.updateHitbox();
 			vignette.alpha = 0;
+			vignette.cameras = [camOther];
 			add(vignette);
 		}
 
@@ -1074,7 +1075,6 @@ class PlayState extends MusicBeatState
 		timeBarBG.cameras = [camHUD];
 		timeTxt.cameras = [camHUD];
 		doof.cameras = [camOther];
-		vignette.cameras = [camOther];
 
 		// if (SONG.song == 'South')
 		// FlxG.camera.alpha = 0.7;
