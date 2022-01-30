@@ -14,7 +14,7 @@ class ClientPrefs {
 	public static var globalAntialiasing:Bool = true;
 	public static var noteSplashes:Bool = true;
 	public static var lowQuality:Bool = false;
-	public static var framerate:Int = 60;
+	public static var framerate:Int = 120;
 	public static var cursing:Bool = true;
 	public static var violence:Bool = true;
 	public static var camZooms:Bool = true;
@@ -53,6 +53,7 @@ class ClientPrefs {
 	public static var moveCameraInNoteDirection:Bool = false;
 	public static var enableVignette:Bool = false;
 	public static var enableQolBalanceChanges:Bool = false;
+	public static var cameraZoom:Float = 1;
 
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
 	public static var keSustains:Bool = false; // i was bored, okay?
@@ -143,6 +144,7 @@ class ClientPrefs {
 		FlxG.save.data.moveCameraInNoteDirection = moveCameraInNoteDirection;
 		FlxG.save.data.enableVignette = enableVignette;
 		FlxG.save.data.enableQolBalanceChanges = enableQolBalanceChanges;
+		FlxG.save.data.cameraZoom = cameraZoom;
 
 		FlxG.save.flush();
 
@@ -350,6 +352,10 @@ class ClientPrefs {
 		if (FlxG.save.data.enableQolBalanceChanges != null)
 		{
 			enableQolBalanceChanges = FlxG.save.data.enableQolBalanceChanges;
+		}
+		if (FlxG.save.data.cameraZoom != null)
+		{
+			cameraZoom = FlxG.save.data.cameraZoom;
 		}
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v2', 'ninjamuffin99');

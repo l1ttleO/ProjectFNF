@@ -78,7 +78,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Health Bar Opacity',
-			'How much opaque should the health bar and icons be.',
+			'How opaque should the health bar and icons be.',
 			'healthBarAlpha',
 			'percent',
 			1);
@@ -97,6 +97,18 @@ class VisualsUISubState extends BaseOptionsMenu
 			'bool', false);
 		addOption(option);
 
+		var option:Option = new Option('Advanced Score Text', "If checked, you will see health, accuracy and theoretical best score", 'advancedScoreTxt', 'bool', false);
+		addOption(option);
+		
+		var option:Option = new Option('Camera Zoom', 'Sets the camera zoom value\nSet to 1 for default value', 'cameraZoom', 'float', 1);
+		option.displayFormat = "%vx";
+		option.changeValue = 0.01;
+		option.scrollSpeed = 0.1;
+		option.minValue = 0.5;
+		option.maxValue = 2;
+		option.decimals = 2;
+		addOption(option);
+		
 		#if !mobile
 		var option:Option = new Option('FPS Counter',
 			'If unchecked, hides FPS Counter.',
@@ -106,9 +118,6 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 		option.onChange = onChangeFPSCounter;
 		#end
-
-		var option:Option = new Option('Advanced Score Text', "If checked, you will see health, accuracy and theoretical best score", 'advancedScoreTxt', 'bool', false);
-		addOption(option);
 
 		super();
 	}

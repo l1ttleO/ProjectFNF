@@ -50,7 +50,7 @@ class ModifiersSubState extends BaseOptionsMenu
         option.displayFormat = option.getValue() < 10 ? '%v%' : "HARD MODE";
 		option.changeValue = 0.5;
 		option.scrollSpeed = 1;
-		option.minValue = 0.5;
+		option.minValue = 0.1;
 		option.maxValue = 10;
         addOption(option);
 
