@@ -74,7 +74,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			"If unchecked, disables the Score text zooming\neverytime you hit a note.",
 			'scoreZoom',
 			'bool',
-			true);
+			false);
 		addOption(option);
 
 		var option:Option = new Option('Health Bar Opacity',
@@ -88,18 +88,22 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.changeValue = 0.1;
 		option.decimals = 1;
 		addOption(option);
-		
+
 		var option:Option = new Option('Move Camera in Note Direction', "If checked, the camera will move in note's direction", 'moveCameraInNoteDirection',
-			'bool', false);
+			'bool', true);
 		addOption(option);
-		
+
+		var option:Option = new Option('Shake On Miss', "If checked, the camera will shake when you miss", 'shakeOnMiss',
+			'bool', true);
+		addOption(option);
+
 		var option:Option = new Option('Enable Vignette', "If checked, a vignette effect will appear and change depending on your health.", 'enableVignette',
 			'bool', false);
 		addOption(option);
 
-		var option:Option = new Option('Advanced Score Text', "If checked, you will see health, accuracy and theoretical best score", 'advancedScoreTxt', 'bool', false);
+		var option:Option = new Option('Advanced Score Text', "If checked, you will see health, accuracy and theoretical best score", 'advancedScoreTxt', 'bool', true);
 		addOption(option);
-		
+
 		var option:Option = new Option('Camera Zoom', 'Sets the camera zoom value\nSet to 1 for default value', 'cameraZoom', 'float', 1);
 		option.displayFormat = "%vx";
 		option.changeValue = 0.01;
@@ -108,7 +112,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.maxValue = 2;
 		option.decimals = 2;
 		addOption(option);
-		
+
 		#if !mobile
 		var option:Option = new Option('FPS Counter',
 			'If unchecked, hides FPS Counter.',

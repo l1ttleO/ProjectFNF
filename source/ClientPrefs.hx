@@ -21,11 +21,11 @@ class ClientPrefs {
 	public static var hideHud:Bool = false;
 	public static var noteOffset:Int = 0;
 	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
-	public static var imagesPersist:Bool = false;
+	public static var imagesPersist:Bool = true;
 	public static var ghostTapping:Bool = true;
 	public static var timeBarType:String = 'Time Left';
-	public static var scoreZoom:Bool = true;
-	public static var noReset:Bool = false;
+	public static var scoreZoom:Bool = false;
+	public static var noReset:Bool = true;
 	public static var healthBarAlpha:Float = 1;
 	public static var controllerMode:Bool = false;
 	public static var gameplaySettings:Map<String, Dynamic> = [
@@ -44,15 +44,15 @@ class ClientPrefs {
 	public static var damageFromOpponentNotes:Float = 1;
 	public static var stunsBlockInputs:Bool = false;
 	public static var shakeOnMiss:Bool = false;
-	public static var advancedScoreTxt:Bool = false;
+	public static var advancedScoreTxt:Bool = true;
 	public static var playMissAnimations:Bool = true;
 	public static var playHitSounds:Bool = false;
 	public static var maxOptimization:Bool = false;
 	public static var missesLowerMaxHealth:Bool = false;
 	public static var hardMode:Bool = false;
-	public static var moveCameraInNoteDirection:Bool = false;
+	public static var moveCameraInNoteDirection:Bool = true;
 	public static var enableVignette:Bool = false;
-	public static var enableQolBalanceChanges:Bool = false;
+	public static var enableQolBalanceChanges:Bool = true;
 	public static var cameraZoom:Float = 1;
 
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
