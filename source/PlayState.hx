@@ -148,7 +148,7 @@ class PlayState extends MusicBeatState
 	public var healthDrained:Float = 1;
 	public var minDrained:Float = 0;
 	public var shouldPassiveDrain:Bool = false;
-	public var toPassiveDrain:Float = 0.0375;
+	public var toPassiveDrain:Float = 0.035;
 	public var toDrain:Float = ClientPrefs.damageFromOpponentNotes * 0.02;
 	public var combo:Int = 0;
 
@@ -307,7 +307,7 @@ class PlayState extends MusicBeatState
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
 		opponentChart = ClientPrefs.getGameplaySetting('opponentplay', false);
 
-		if (ClientPrefs.damageFromOpponentNotes == 10)
+		if (ClientPrefs.opponentNotesDoDamage && ClientPrefs.damageFromOpponentNotes == 10)
 			ClientPrefs.hardMode = true;
 		else
 			ClientPrefs.hardMode = false;
@@ -320,9 +320,9 @@ class PlayState extends MusicBeatState
 			maxHealth = 3;
 			healthDrained = 0;
 			minDrained = -1;
-			toDrain = 0.0225;
-			healthGain = 1.55;
-			healthLoss = 2.75;
+			toDrain = 0.02175;
+			healthGain = 1.535;
+			healthLoss = 2.725;
 		}
 
 		// var gameCam:FlxCamera = FlxG.camera;
@@ -1667,7 +1667,7 @@ class PlayState extends MusicBeatState
 
 				notes.forEachAlive(function(note:Note) {
 					note.copyAlpha = false;
-					note.alpha = note.multAlpha;
+					note.alpha = getNoteOpacity(note.multAlpha);
 					if(ClientPrefs.middleScroll && !note.mustPress) {
 						note.alpha *= 0.5;
 					}
@@ -2508,7 +2508,7 @@ class PlayState extends MusicBeatState
 					daNote.angle = strumAngle;
 				}
 				if(daNote.copyAlpha) {
-					daNote.alpha = strumAlpha;
+					daNote.alpha = getNoteOpacity(strumAlpha);
 				}
 				if(daNote.copyY) {
 					if (ClientPrefs.downScroll) {
@@ -3788,8 +3788,8 @@ class PlayState extends MusicBeatState
 		var baseSustainMultiplier:Float = 1;
 		var healthSustainMultiplier:Float = 1;
 		if (ClientPrefs.enableQolBalanceChanges && daNote.isSustainNote) {
-			baseSustainMultiplier = 0.9;
-			healthSustainMultiplier = health < 0.15 ? 0.15 : health;
+			baseSustainMultiplier = 0.875;
+			healthSustainMultiplier = health * 0.925 < 0.15 ? 0.15 : health * 0.925;
 		}
 		var toRemove:Float = daNote.missHealth * healthLoss * baseSustainMultiplier * healthSustainMultiplier;
 		health -= toRemove;
@@ -3936,8 +3936,8 @@ class PlayState extends MusicBeatState
 			var baseSustainMultiplier:Float = 1;
 			var healthSustainMultiplier:Float = 1;
 			if (ClientPrefs.enableQolBalanceChanges && note.isSustainNote) {
-				baseSustainMultiplier = 0.9;
-				healthSustainMultiplier = health < 0.15 ? 0.15 : health;
+				baseSustainMultiplier = 0.875;
+				healthSustainMultiplier = health * 0.925 < 0.15 ? 0.15 : health * 0.925;
 			}
 			var toDrain:Float = toDrain * baseSustainMultiplier * healthSustainMultiplier;
 			health -= toDrain;
@@ -4007,8 +4007,8 @@ class PlayState extends MusicBeatState
 			var baseSustainMultiplier:Float = 1;
 			var healthSustainDivider:Float = 1;
 			if (ClientPrefs.enableQolBalanceChanges && note.isSustainNote) {
-				baseSustainMultiplier = 0.875;
-				healthSustainDivider = health < 0.15 ? 0.15 : health;
+				baseSustainMultiplier = 0.85;
+				healthSustainDivider = health * 0.95 < 0.15 ? 0.15 : health * 0.95;
 			}
 			var toAdd:Float = note.hitHealth * healthGain * baseSustainMultiplier / healthSustainDivider;
 			health += toAdd;
@@ -4624,4 +4624,12 @@ class PlayState extends MusicBeatState
 
 	var curLight:Int = 0;
 	var curLightEvent:Int = 0;
+
+	function getNoteOpacity(defaultValue:Float):Float {
+		if (ClientPrefs.noteOpacityChangesWithHealth == 'More HP = more opaque')
+			return health / maxHealth + 0.125;
+		if (ClientPrefs.noteOpacityChangesWithHealth == 'Less HP = more opaque')
+			return 1 - health / maxHealth + 0.25;
+		return defaultValue;
+	}
 }

@@ -54,6 +54,7 @@ class ClientPrefs {
 	public static var enableVignette:Bool = false;
 	public static var enableQolBalanceChanges:Bool = true;
 	public static var cameraZoom:Float = 1;
+	public static var noteOpacityChangesWithHealth:String = 'Disabled';
 
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
 	public static var keSustains:Bool = false; // i was bored, okay?
@@ -145,6 +146,7 @@ class ClientPrefs {
 		FlxG.save.data.enableVignette = enableVignette;
 		FlxG.save.data.enableQolBalanceChanges = enableQolBalanceChanges;
 		FlxG.save.data.cameraZoom = cameraZoom;
+		FlxG.save.data.noteOpacityChangesWithHealth = noteOpacityChangesWithHealth;
 
 		FlxG.save.flush();
 
@@ -356,6 +358,10 @@ class ClientPrefs {
 		if (FlxG.save.data.cameraZoom != null)
 		{
 			cameraZoom = FlxG.save.data.cameraZoom;
+		}
+		if (FlxG.save.data.noteOpacityChangesWithHealth != null)
+		{
+			noteOpacityChangesWithHealth = FlxG.save.data.noteOpacityChangesWithHealth;
 		}
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v2', 'ninjamuffin99');
