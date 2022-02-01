@@ -49,13 +49,17 @@ class ModifiersSubState extends BaseOptionsMenu
 			1);
         option.displayFormat = option.getValue() < 10 ? '%v%' : "HARD MODE";
 		option.changeValue = 0.5;
-		option.scrollSpeed = 1;
-		option.minValue = 0.1;
+		option.scrollSpeed = 1.25;
+		option.minValue = 0.5;
 		option.maxValue = 10;
         addOption(option);
 
 		var option:Option = new Option('Stuns Block Inputs', "If checked, missing will temporarily prevent you from hitting notes",
 			'stunsBlockInputs', 'bool', false);
+		addOption(option);
+
+		var option:Option = new Option('Note opacity:', "What should the note opacity be?", 'noteOpacityChangesWithHealth', 'string', 'Default',
+			['More HP = more opaque', 'Less HP = more opaque', 'Default']);
 		addOption(option);
 
 		super();

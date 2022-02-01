@@ -107,7 +107,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		var option:Option = new Option('Camera Zoom', 'Sets the camera zoom value\nSet to 1 for default value', 'cameraZoom', 'float', 1);
 		option.displayFormat = "%vx";
 		option.changeValue = 0.01;
-		option.scrollSpeed = 0.1;
+		option.scrollSpeed = 0.2;
 		option.minValue = 0.5;
 		option.maxValue = 2;
 		option.decimals = 2;
