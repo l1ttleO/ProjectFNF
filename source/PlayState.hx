@@ -3110,13 +3110,13 @@ class PlayState extends MusicBeatState
 		if (ClientPrefs.moveCameraInNoteDirection) {
 			switch (direction) {
 				case 'UP':
-					noteHitY -= 80;
+					noteHitY -= 70;
 				case 'DOWN':
-					noteHitY += 80;
+					noteHitY += 70;
 				case 'LEFT':
-					noteHitX -= 80;
+					noteHitX -= 70;
 				case 'RIGHT':
-					noteHitX += 80;
+					noteHitX += 70;
 			}
 		}
 		if(isDad) {
@@ -3926,7 +3926,7 @@ class PlayState extends MusicBeatState
 			}
 			char.playAnim('sing' + animToPlay, true);
 			char.holdTimer = 0;
-			if (ClientPrefs.moveCameraInNoteDirection)
+			if (ClientPrefs.moveCameraInNoteDirection && !SONG.notes[curSection].mustHitSection)
 				moveCamera(!opponentChart, animToPlay);
 		}
 
@@ -4019,7 +4019,7 @@ class PlayState extends MusicBeatState
 
 				var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
 
-				if (ClientPrefs.moveCameraInNoteDirection)
+				if (ClientPrefs.moveCameraInNoteDirection && SONG.notes[Math.floor(curStep / 16)].mustHitSection)
 					moveCamera(opponentChart, animToPlay);
 
 				//if (note.isSustainNote){ wouldn't this be fun : P. i think it would be swell
