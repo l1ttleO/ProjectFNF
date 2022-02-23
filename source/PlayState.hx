@@ -1057,17 +1057,6 @@ class PlayState extends MusicBeatState
 			botplayTxt.y = timeBarBG.y - 78;
 		}
 
-		if (ClientPrefs.enableVignette) {
-			vignette = new FlxSprite().loadGraphic(Paths.image('vignette'));
-			vignette.width = 1280;
-			vignette.height = 720;
-			vignette.x = 0;
-			vignette.y = 0;
-			vignette.updateHitbox();
-			vignette.alpha = 0;
-			vignette.cameras = [camOther];
-			add(vignette);
-		}
 
 		strumLineNotes.cameras = [camOther];
 		grpNoteSplashes.cameras = [camOther];
@@ -2271,13 +2260,19 @@ class PlayState extends MusicBeatState
 				suffix = '++';
 		}
 
-		var thScoreHealthTxt = '';
-		var accuracyTxt = '';
+		var thScoreHealthTxt:String = '';
+		var accuracyTxt:String = '';
+		var pressMissesTxt:String = '';
 		if (ClientPrefs.advancedScoreTxt) {
+			var pressMisses:Int = 0;
+			if (!ClientPrefs.ghostTapping) {
+				pressMisses = this.pressMisses;
+			} else
+				pressMissesTxt = ' (' + (songMisses + this.pressMisses) + ')';
 			thScoreHealthTxt = ' (' + (totalPlayed - pressMisses) * 350 + ') | Health: ' + FlxMath.roundDecimal(healthPercentageDisplay, 0) + '%';
 			accuracyTxt = ' | Accuracy: ' + accuracyPercentage + '%';
 		}
-		scoreTxt.text = 'Score: ' + songScore + thScoreHealthTxt + ' | Misses: ' + songMisses + accuracyTxt + ' | Rating: ' + ratingFC + ratingName + suffix;
+		scoreTxt.text = 'Score: ' + songScore + thScoreHealthTxt + ' | Misses: ' + songMisses + pressMissesTxt + accuracyTxt + ' | Rating: ' + ratingFC + ratingName + suffix;
 
 		if(botplayTxt.visible) {
 			botplaySine += 180 * elapsed;
@@ -2372,8 +2367,19 @@ class PlayState extends MusicBeatState
 		else
 			iconP2.animation.curAnim.curFrame = 0;
 
-		if (ClientPrefs.enableVignette)
+		if (ClientPrefs.enableVignette) {
+			if (vignette == null) {
+				vignette = new FlxSprite().loadGraphic(Paths.image('vignette'));
+				vignette.width = 1280;
+				vignette.height = 720;
+				vignette.x = 0;
+				vignette.y = 0;
+				vignette.updateHitbox();
+				vignette.cameras = [camOther];
+				add(vignette);
+			}
 			vignette.alpha = 0.875 - (health / maxHealth);
+		}
 
 		if (FlxG.keys.anyJustPressed(debugKeysCharacter) && !endingSong && !inCutscene) {
 			persistentUpdate = false;
@@ -3591,8 +3597,6 @@ class PlayState extends MusicBeatState
 				var lastTime:Float = Conductor.songPosition;
 				Conductor.songPosition = FlxG.sound.music.time;
 
-				var canMiss:Bool = !ClientPrefs.ghostTapping;
-
 				// heavily based on my own code LOL if it aint broke dont fix it
 				var pressNotes:Array<Note> = [];
 				//var notesDatas:Array<Int> = [];
@@ -3608,7 +3612,6 @@ class PlayState extends MusicBeatState
 							sortedNotesList.push(daNote);
 							//notesDatas.push(daNote.noteData);
 						}
-						canMiss = true;
 					}
 				});
 				sortedNotesList.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
@@ -3632,7 +3635,7 @@ class PlayState extends MusicBeatState
 
 					}
 				}
-				else if (canMiss) {
+				else {
 					noteMissPress(key);
 					callOnLuas('noteMissPress', [key]);
 				}
@@ -3772,6 +3775,8 @@ class PlayState extends MusicBeatState
 	}
 
 	function noteMiss(daNote:Note):Void { //You didn't hit the key and let it go offscreen, also used by Hurt Notes
+		if (daNote.hitCausesMiss && !daNote.wasGoodHit) return;
+
 		//Dupe note remove
 		notes.forEachAlive(function(note:Note) {
 			if (daNote != note && daNote.mustPress && daNote.noteData == note.noteData && daNote.isSustainNote == note.isSustainNote && Math.abs(daNote.strumTime - note.strumTime) < 1) {
@@ -3836,18 +3841,28 @@ class PlayState extends MusicBeatState
 	{
 		if (!boyfriend.stunned)
 		{
+
+			if(ClientPrefs.playMissAnimations) {
+				if (boyfriend.hasMissAnimations)
+					boyfriend.playAnim('sing' + singAnimations[Std.int(Math.abs(direction))] + 'miss', true);
+				FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
+			}
+
+			if (ClientPrefs.shakeOnMiss)
+				FlxG.camera.shake(0.0075, 0.1, null, true, X);
+
+			pressMisses++;
+
+			if(ClientPrefs.ghostTapping) return;
+
 			health -= 0.05 * healthLoss;
 			if (ClientPrefs.missesLowerMaxHealth)
 				maxHealth -= 0.05 * healthLoss;
-
-			pressMisses++;
 
 			if(instakillOnMiss) {
 				vocals.volume = 0;
 				doDeathCheck(true);
 			}
-
-			if(ClientPrefs.ghostTapping) return;
 
 			if (combo > 5 && gf.animOffsets.exists('sad'))
 			{
@@ -3862,8 +3877,6 @@ class PlayState extends MusicBeatState
 			totalPlayed++;
 			RecalculateRating();
 
-			if (ClientPrefs.playMissAnimations)
-				FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
 			// FlxG.log.add('played imss note');
 
@@ -3874,26 +3887,6 @@ class PlayState extends MusicBeatState
 			{
 				boyfriend.stunned = false;
 			});
-
-			if(boyfriend.hasMissAnimations && ClientPrefs.playMissAnimations) {
-				boyfriend.playAnim('sing' + singAnimations[Std.int(Math.abs(direction))] + 'miss', true);
-			}
-
-			if (ClientPrefs.playMissAnimations) {
-				switch (direction)
-				{
-					case 0:
-						boyfriend.playAnim('singLEFTmiss', true);
-					case 1:
-						boyfriend.playAnim('singDOWNmiss', true);
-					case 2:
-						boyfriend.playAnim('singUPmiss', true);
-					case 3:
-						boyfriend.playAnim('singRIGHTmiss', true);
-				}
-			}
-			if (ClientPrefs.shakeOnMiss)
-				FlxG.camera.shake(0.0075, 0.1, null, true, X);
 			vocals.volume = 0;
 		}
 	}
