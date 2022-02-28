@@ -4064,7 +4064,7 @@ class PlayState extends MusicBeatState
 				notes.remove(note, true);
 				note.destroy();
 			}
-			if (ClientPrefs.playHitSounds)
+			if (ClientPrefs.playHitSounds && !note.isSustainNote)
 				FlxG.sound.play(Paths.sound('ChartingTick'), 0.125);
 		}
 	}
