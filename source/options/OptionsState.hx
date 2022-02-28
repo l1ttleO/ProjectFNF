@@ -33,6 +33,7 @@ class OptionsState extends MusicBeatState
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
+	static var goToPlayState:Bool = false;
 
 	function openSelectedSubstate(label:String) {
 		switch(label) {
@@ -51,6 +52,13 @@ class OptionsState extends MusicBeatState
 			case 'Adjust Delay and Combo':
 				LoadingState.loadAndSwitchState(new options.NoteOffsetState());
 		}
+	}
+
+	public function new(?goToPlayState:Bool)
+	{
+		super();
+		if (goToPlayState != null)
+			OptionsState.goToPlayState = goToPlayState;
 	}
 
 	var selectorLeft:Alphabet;
@@ -108,7 +116,13 @@ class OptionsState extends MusicBeatState
 
 		if (controls.BACK) {
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-			MusicBeatState.switchState(new MainMenuState());
+			if (goToPlayState) {
+				StageData.loadDirectory(PlayState.SONG);
+				goToPlayState = false;
+				LoadingState.loadAndSwitchState(new PlayState(), true);
+			} else {
+				MusicBeatState.switchState(new MainMenuState());
+			}
 		}
 
 		if (controls.ACCEPT) {
