@@ -148,8 +148,9 @@ class PlayState extends MusicBeatState
 	public var healthDrained:Float = 1;
 	public var minDrained:Float = 0;
 	public var shouldPassiveDrain:Bool = false;
-	public var toPassiveDrain:Float = 0.035;
+	public var toPassiveDrain:Float = 0;
 	public var toDrain:Float = ClientPrefs.damageFromOpponentNotes * 0.02;
+	public var tempKarma:Float = 0;
 	public var combo:Int = 0;
 
 	public var vignette:FlxSprite;
@@ -321,6 +322,7 @@ class PlayState extends MusicBeatState
 			healthDrained = 0;
 			minDrained = -1;
 			toDrain = 0.02175;
+			toPassiveDrain = 0.035;
 			healthGain = 1.535;
 			healthLoss = 2.725;
 		}
@@ -2325,12 +2327,22 @@ class PlayState extends MusicBeatState
 		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
 		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
 
-		if (totalPlayed > 0)
+		if (totalPlayed > 0 && toPassiveDrain > 0)
 			shouldPassiveDrain = true;
 
-		if (ClientPrefs.hardMode && health > 0.001 && shouldPassiveDrain) {
-			health -= toPassiveDrain / FlxG.updateFramerate;
-			healthDrained += toPassiveDrain / FlxG.updateFramerate;
+		var passiveDrainNow:Float = toPassiveDrain / FlxG.updateFramerate;
+		if (shouldPassiveDrain && (health - passiveDrainNow > 0.001 || (ClientPrefs.karma == 'Permanent' && ClientPrefs.karmaCanKill))) {
+			health -= passiveDrainNow;
+			if (ClientPrefs.opponentNotesDoDamage)
+				healthDrained += passiveDrainNow;
+		}
+
+		var tempKarmaDrain:Float = 0.035 / FlxG.updateFramerate;
+			if (tempKarma < tempKarmaDrain)
+				tempKarmaDrain = tempKarma;
+		if (ClientPrefs.karma == 'Temporary' && tempKarma > 0 && (health - tempKarmaDrain > 0.001 || ClientPrefs.karmaCanKill)) {
+			health -= tempKarmaDrain;
+			tempKarma -= tempKarmaDrain;
 		}
 
 		if (health > maxHealth)
@@ -2434,6 +2446,7 @@ class PlayState extends MusicBeatState
 		{
 			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125), 0, 1));
 			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125), 0, 1));
+			camOther.zoom = FlxMath.lerp(1, camOther.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125), 0, 1));
 		}
 
 		FlxG.watch.addQuick("beatShit", curBeat);
@@ -2904,6 +2917,7 @@ class PlayState extends MusicBeatState
 
 					FlxG.camera.zoom += camZoom;
 					camHUD.zoom += hudZoom;
+					camOther.zoom += hudZoom;
 				}
 
 			case 'Trigger BG Ghouls':
@@ -3780,13 +3794,16 @@ class PlayState extends MusicBeatState
 		var baseSustainMultiplier:Float = 1;
 		var healthSustainMultiplier:Float = 1;
 		if (ClientPrefs.enableQolBalanceChanges && daNote.isSustainNote) {
-			baseSustainMultiplier = 0.875;
+			baseSustainMultiplier = 0.85;
 			healthSustainMultiplier = health * 0.925 < 0.15 ? 0.15 : health * 0.925;
 		}
 		var toRemove:Float = daNote.missHealth * healthLoss * baseSustainMultiplier * healthSustainMultiplier;
 		health -= toRemove;
 		if (ClientPrefs.missesLowerMaxHealth)
 			maxHealth -= toRemove;
+		if (ClientPrefs.karma == 'Permanent')
+			toPassiveDrain += toRemove / 3.5;
+		tempKarma += toRemove * 5;
 		if(instakillOnMiss)
 		{
 			vocals.volume = 0;
@@ -3842,9 +3859,15 @@ class PlayState extends MusicBeatState
 
 			if(ClientPrefs.ghostTapping) return;
 
-			health -= 0.05 * healthLoss;
+			var toRemove:Float = 0.05 * healthLoss;
+
+			health -= toRemove;
 			if (ClientPrefs.missesLowerMaxHealth)
-				maxHealth -= 0.05 * healthLoss;
+				maxHealth -= toRemove;
+
+			if (ClientPrefs.karma == 'Permanent')
+				toPassiveDrain += toRemove / 3.5;
+			tempKarma += toRemove * (health / (maxHealth - 1));
 
 			if(instakillOnMiss) {
 				vocals.volume = 0;
@@ -3916,8 +3939,8 @@ class PlayState extends MusicBeatState
 			var baseSustainMultiplier:Float = 1;
 			var healthSustainMultiplier:Float = 1;
 			if (ClientPrefs.enableQolBalanceChanges && note.isSustainNote) {
-				baseSustainMultiplier = 0.875;
-				healthSustainMultiplier = health * 0.925 < 0.15 ? 0.15 : health * 0.925;
+				baseSustainMultiplier = 0.85;
+				healthSustainMultiplier = health * 0.9 < 0.175 ? 0.175 : health * 0.9;
 			}
 			var toDrain:Float = toDrain * baseSustainMultiplier * healthSustainMultiplier;
 			health -= toDrain;
@@ -3987,8 +4010,8 @@ class PlayState extends MusicBeatState
 			var baseSustainMultiplier:Float = 1;
 			var healthSustainDivider:Float = 1;
 			if (ClientPrefs.enableQolBalanceChanges && note.isSustainNote) {
-				baseSustainMultiplier = 0.85;
-				healthSustainDivider = health * 0.95 < 0.15 ? 0.15 : health * 0.95;
+				baseSustainMultiplier = 0.825;
+				healthSustainDivider = health * 0.925 < 0.175 ? 0.175 : health * 0.925;
 			}
 			var toAdd:Float = note.hitHealth * healthGain * baseSustainMultiplier / healthSustainDivider;
 			health += toAdd;
@@ -4196,10 +4219,12 @@ class PlayState extends MusicBeatState
 		if(ClientPrefs.camZooms) {
 			FlxG.camera.zoom += 0.015;
 			camHUD.zoom += 0.03;
+			camOther.zoom += 0.03;
 
 			if(!camZooming) { //Just a way for preventing it to be permanently zoomed until Skid & Pump hits a note
 				FlxTween.tween(FlxG.camera, {zoom: defaultCamZoom}, 0.5);
 				FlxTween.tween(camHUD, {zoom: 1}, 0.5);
+				FlxTween.tween(camOther, {zoom: 1}, 0.5);
 			}
 		}
 
@@ -4342,6 +4367,7 @@ class PlayState extends MusicBeatState
 		{
 			FlxG.camera.zoom += 0.015;
 			camHUD.zoom += 0.03;
+			camOther.zoom + 0.03;
 		}
 
 		iconP1.scale.set(1.2, 1.2);

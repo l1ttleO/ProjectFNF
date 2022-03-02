@@ -87,9 +87,6 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		var option:Option = new Option('Play Hit Sounds', "If checked, hitting a note will play a sound", 'playHitSounds', 'bool', false);
 		addOption(option);
 
-		var option:Option = new Option('Misses Lower Max Health', "If checked, missing will decrease your max health", 'missesLowerMaxHealth', 'bool', false);
-		addOption(option);
-
 		var option:Option = new Option('Enable QoL and balance changes', "If checked, the gameplay can be adjusted to balance it or to implement QoL features", 'enableQolBalanceChanges', 'bool', true);
 		addOption(option);
 

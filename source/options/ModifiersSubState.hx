@@ -58,8 +58,17 @@ class ModifiersSubState extends BaseOptionsMenu
 			'stunsBlockInputs', 'bool', false);
 		addOption(option);
 
+		var option:Option = new Option('Misses Lower Max Health', "If checked, missing will decrease your max health", 'missesLowerMaxHealth', 'bool', false);
+		addOption(option);
+
 		var option:Option = new Option('Note opacity:', "What should the note opacity be?", 'noteOpacityChangesWithHealth', 'string', 'Default',
 			['More HP = more opaque', 'Less HP = more opaque', 'Default']);
+		addOption(option);
+
+		var option:Option = new Option('Karma:', "If enabled, missing will cause health drain", 'karma', 'string', 'Disabled', ['Permanent', 'Temporary', 'Disabled']);
+		addOption(option);
+
+		var option:Option = new Option('Karma can kill', "If checked, karma can kill you\nOnly works if karma is enabled", 'karmaCanKill', 'bool', false);
 		addOption(option);
 
 		super();
