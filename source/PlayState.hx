@@ -3818,13 +3818,14 @@ class PlayState extends MusicBeatState
 		totalPlayed++;
 		RecalculateRating();
 
-		if(char.hasMissAnimations && ClientPrefs.playMissAnimations)
+		if(ClientPrefs.playMissAnimations)
 		{
-			var daAlt = '';
-			if(daNote.noteType == 'Alt Animation') daAlt = '-alt';
-
-			var animToPlay:String = singAnimations[Std.int(Math.abs(daNote.noteData))] + 'miss' + daAlt;
-			char.playAnim('sing' + animToPlay, true);
+			if (char.hasMissAnimations) {
+				var daAlt = daNote.noteType == 'Alt Animation' ? '-alt' : '';
+				var animToPlay:String = 'sing' + singAnimations[Std.int(Math.abs(daNote.noteData))] + 'miss' + daAlt;
+				char.playAnim(animToPlay, true);
+			}
+			FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 		}
 
 		if (ClientPrefs.stunsBlockInputs) {
@@ -3843,13 +3844,15 @@ class PlayState extends MusicBeatState
 
 	function noteMissPress(direction:Int = 1):Void //You pressed a key when there was no notes to press for this key
 	{
-		if (!boyfriend.stunned)
+		var char:Character = opponentChart ? dad : boyfriend;
+		if (!char.stunned)
 		{
 
 			if(ClientPrefs.playMissAnimations) {
-				if (boyfriend.hasMissAnimations)
-					boyfriend.playAnim('sing' + singAnimations[Std.int(Math.abs(direction))] + 'miss', true);
-				FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
+				if (char.hasMissAnimations)
+					char.playAnim('sing' + singAnimations[Std.int(Math.abs(direction))] + 'miss', true);
+				if (!ClientPrefs.ghostTapping)
+					FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 			}
 
 			if (ClientPrefs.shakeOnMiss)
@@ -3891,14 +3894,14 @@ class PlayState extends MusicBeatState
 			// FlxG.log.add('played imss note');
 
 			if (ClientPrefs.stunsBlockInputs) {
-				boyfriend.stunned = true;
+				char.stunned = true;
 
-			new FlxTimer().start(1.25, function(tmr:FlxTimer)
-			{
-				boyfriend.stunned = false;
-			});
+				new FlxTimer().start(1.25, function(tmr:FlxTimer)
+				{
+					char.stunned = false;
+				});
+			}
 			vocals.volume = 0;
-		}
 	}
 	}
 
