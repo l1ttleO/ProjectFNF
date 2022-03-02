@@ -62,7 +62,7 @@ class DialogueEditorState extends MusicBeatState
 				copyDefaultLine()
 			]
 		};
-		
+
 		character = new DialogueCharacter();
 		character.scrollFactor.set();
 		add(character);
@@ -135,7 +135,7 @@ class DialogueEditorState extends MusicBeatState
 			updateTextBox();
 			dialogueFile.dialogue[curSelected].boxState = (angryCheckbox.checked ? 'angry' : 'normal');
 		};
-		
+
 		lineInputText = new FlxUIInputText(10, speedStepper.y + 45, 200, DEFAULT_TEXT, 8);
 		blockPressWhileTypingOn.push(lineInputText);
 
@@ -201,7 +201,7 @@ class DialogueEditorState extends MusicBeatState
 		switch(character.jsonFile.dialogue_pos) {
 			case 'right':
 				character.x = FlxG.width - character.width + DialogueBoxPsych.RIGHT_CHAR_X;
-			
+
 			case 'center':
 				character.x = FlxG.width / 2;
 				character.x -= character.width / 2;

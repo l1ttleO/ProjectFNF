@@ -207,7 +207,7 @@ class Alphabet extends FlxSpriteGroup
 		// trace(arrayShit);
 
 		if(speed <= 0) {
-			while(!finishedText) { 
+			while(!finishedText) {
 				timerCheck();
 			}
 			if(dialogueSound != null) dialogueSound.stop();

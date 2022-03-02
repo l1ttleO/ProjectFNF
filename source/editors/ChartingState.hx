@@ -144,7 +144,7 @@ class ChartingState extends MusicBeatState
 	var value1InputText:FlxUIInputText;
 	var value2InputText:FlxUIInputText;
 	var currentSongName:String;
-	
+
 	var zoomTxt:FlxText;
 	var curZoom:Int = 1;
 
@@ -372,7 +372,7 @@ class ChartingState extends MusicBeatState
 		zoomTxt = new FlxText(10, 10, 0, "Zoom: 1x", 16);
 		zoomTxt.scrollFactor.set();
 		add(zoomTxt);
-		
+
 		updateGrid();
 		super.create();
 	}
@@ -389,7 +389,7 @@ class ChartingState extends MusicBeatState
 	{
 		UI_songTitle = new FlxUIInputText(10, 10, 70, _song.song, 8);
 		blockPressWhileTypingOn.push(UI_songTitle);
-		
+
 		var check_voices = new FlxUICheckBox(10, 25, null, null, "Has voice track", 100);
 		check_voices.checked = _song.needsVoices;
 		// _song.needsVoices = check_voices.checked;
@@ -573,7 +573,7 @@ class ChartingState extends MusicBeatState
 		if(skin == null) skin = '';
 		noteSkinInputText = new FlxUIInputText(player2DropDown.x, player2DropDown.y + 50, 150, skin, 8);
 		blockPressWhileTypingOn.push(noteSkinInputText);
-	
+
 		noteSplashesInputText = new FlxUIInputText(noteSkinInputText.x, noteSkinInputText.y + 35, 150, _song.splashSkin, 8);
 		blockPressWhileTypingOn.push(noteSplashesInputText);
 
@@ -1073,7 +1073,7 @@ class ChartingState extends MusicBeatState
 	function addChartingUI() {
 		var tab_group_chart = new FlxUI(null, UI_box);
 		tab_group_chart.name = 'Charting';
-		
+
 		#if desktop
 		waveformEnabled = new FlxUICheckBox(10, 90, null, null, "Visible Waveform", 100);
 		if (FlxG.save.data.chart_waveform == null) FlxG.save.data.chart_waveform = false;
@@ -1248,7 +1248,7 @@ class ChartingState extends MusicBeatState
 		// general shit
 		var title:FlxText = new FlxText(UI_box.x + 20, UI_box.y + 20, 0);
 		bullshitUI.add(title);
-		/* 
+		/*
 			var loopCheck = new FlxUICheckBox(UI_box.x + 10, UI_box.y + 50, null, null, "Loops", 100, ['loop check']);
 			loopCheck.checked = curNoteSelected.doesLoop;
 			tooltips.add(loopCheck, {title: 'Section looping', body: "Whether or not it's a simon says style section", style: tooltipType});
@@ -1810,7 +1810,7 @@ class ChartingState extends MusicBeatState
 			strumLineNotes.members[i].alpha = FlxG.sound.music.playing ? 1 : 0.35;
 		}
 
-		bpmTxt.text = 
+		bpmTxt.text =
 		Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2)) + " / " + Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2)) +
 		"\nSection: " + curSection +
 		"\n\nBeat: " + curBeat +
@@ -1971,7 +1971,7 @@ class ChartingState extends MusicBeatState
 		var samplesPerRow:Int = Std.int(((Conductor.stepCrochet * steps * 1.1 * sampleMult) / 16) / zoomList[curZoom]);
 		if(samplesPerRow < 1) samplesPerRow = 1;
 		var waveBytes:Bytes = audioBuffers[checkForVoices].data.toBytes();
-		
+
 		var min:Float = 0;
 		var max:Float = 0;
 		while (index < (waveBytes.length - 1))
@@ -2632,7 +2632,7 @@ class ChartingState extends MusicBeatState
 			"song": _song
 		};
 
-		var data:String = Json.stringify(json,"\t");
+		var data:String = Json.stringify(json, "\t");
 
 		if ((data != null) && (data.length > 0))
 		{
@@ -2673,7 +2673,7 @@ class ChartingState extends MusicBeatState
 			"song": eventsSong
 		}
 
-		var data:String = Json.stringify(json,"\t");
+		var data:String = Json.stringify(json, "\t");
 
 		if ((data != null) && (data.length > 0))
 		{

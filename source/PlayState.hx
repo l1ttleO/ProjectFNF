@@ -407,7 +407,7 @@ class PlayState extends MusicBeatState
 				directory: "",
 				defaultZoom: 0.9,
 				isPixelStage: false,
-			
+
 				boyfriend: [770, 100],
 				girlfriend: [400, 130],
 				opponent: [100, 100]
@@ -717,7 +717,6 @@ class PlayState extends MusicBeatState
 
 		add(dadGroup);
 		add(boyfriendGroup);
-		
 		if(curStage == 'spooky') {
 			add(halloweenWhite);
 		}
@@ -849,7 +848,6 @@ class PlayState extends MusicBeatState
 			case 'limo':
 				resetFastCar();
 				insert(members.indexOf(gfGroup) - 1, fastCar);
-			
 			case 'schoolEvil':
 				var evilTrail = new FlxTrail(dad, null, 4, 24, 0.3, 0.069); //nice
 				insert(members.indexOf(dadGroup) - 1, evilTrail);
@@ -1107,7 +1105,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 		#end
-		
+
 		var daSong:String = Paths.formatToSongPath(curSong);
 		if (isStoryMode && !seenCutscene)
 		{
@@ -1582,7 +1580,7 @@ class PlayState extends MusicBeatState
 				if(curStage == 'mall') {
 					if(!ClientPrefs.lowQuality)
 						upperBoppers.dance(true);
-	
+
 					bottomBoppers.dance(true);
 					santa.dance(true);
 				}
@@ -2031,7 +2029,6 @@ class PlayState extends MusicBeatState
 				blammedLightsBlackTween.active = true;
 			if(phillyCityLightsEventTween != null)
 				phillyCityLightsEventTween.active = true;
-			
 			if(carTimer != null) carTimer.active = true;
 
 			var chars:Array<Character> = [boyfriend, gf, dad];
@@ -2040,7 +2037,6 @@ class PlayState extends MusicBeatState
 					chars[i].colorTween.active = true;
 				}
 			}
-			
 			for (tween in modchartTweens) {
 				tween.active = true;
 			}
@@ -2083,7 +2079,6 @@ class PlayState extends MusicBeatState
 
 		super.onFocus();
 	}
-	
 	override public function onFocusLost():Void
 	{
 		#if desktop
@@ -2529,7 +2524,7 @@ class PlayState extends MusicBeatState
 								} else {
 									daNote.y -= 19;
 								}
-							} 
+							}
 							daNote.y += (Note.swagWidth / 2) - (60.5 * (roundedSpeed - 1));
 							daNote.y += 27.5 * ((SONG.bpm / 100) - 1) * (roundedSpeed - 1);
 
@@ -2581,10 +2576,7 @@ class PlayState extends MusicBeatState
 						} else if(daNote.strumTime <= Conductor.songPosition || (daNote.isSustainNote && daNote.canBeHit && daNote.mustPress)) {
 							goodNoteHit(daNote);
 						}
-					} else if(daNote.strumTime <= Conductor.songPosition || (daNote.isSustainNote && daNote.canBeHit && daNote.mustPress)) {
-						goodNoteHit(daNote);
 					}
-				}
 
 				// WIP interpolation shit? Need to fix the pause issue
 				// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * songSpeed));
@@ -2618,7 +2610,6 @@ class PlayState extends MusicBeatState
 				boyfriend.dance();
 			}
 		}
-		
 		#if debug
 		if(!endingSong && !startingSong) {
 			if (FlxG.keys.justPressed.ONE) {
@@ -2708,7 +2699,6 @@ class PlayState extends MusicBeatState
 				openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x - boyfriend.positionArray[0], boyfriend.getScreenPosition().y - boyfriend.positionArray[1], camFollowPos.x, camFollowPos.y));
 
 				// MusicBeatState.switchState(new GameOverState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
-				
 				#if desktop
 				// Game Over doesn't get his own variable because it's only used here
 				DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
@@ -2846,7 +2836,6 @@ class PlayState extends MusicBeatState
 						boyfriend.color = color;
 						gf.color = color;
 					}
-					
 					if(curStage == 'philly') {
 						if(phillyCityLightsEvent != null) {
 							phillyCityLightsEvent.forEach(function(spr:BGSprite) {
@@ -2934,7 +2923,7 @@ class PlayState extends MusicBeatState
 					default:
 						var val2:Int = Std.parseInt(value2);
 						if(Math.isNaN(val2)) val2 = 0;
-		
+
 						switch(val2) {
 							case 1: char = boyfriend;
 							case 2: char = gf;
@@ -3056,7 +3045,7 @@ class PlayState extends MusicBeatState
 						setOnLuas('gfName', gf.curCharacter);
 				}
 				reloadHealthBarColors();
-			
+
 			case 'BG Freaks Expression':
 				if(bgGirls != null) bgGirls.swapDanceType();
 			case 'Change Scroll Speed':
@@ -3213,7 +3202,6 @@ class PlayState extends MusicBeatState
 				return;
 			}
 		}
-		
 		timeBarBG.visible = false;
 		timeBar.visible = false;
 		timeTxt.visible = false;
@@ -3241,7 +3229,6 @@ class PlayState extends MusicBeatState
 		}
 		#end
 
-		
 		#if LUA_ALLOWED
 		var ret:Dynamic = callOnLuas('onEndSong', []);
 		#else
@@ -3559,7 +3546,7 @@ class PlayState extends MusicBeatState
 
 			daLoop++;
 		}
-		/* 
+		/*
 			trace(combo);
 			trace(seperatedScore);
 		 */
@@ -3741,7 +3728,7 @@ class PlayState extends MusicBeatState
 			notes.forEachAlive(function(daNote:Note)
 			{
 				// hold note functions
-				if (daNote.isSustainNote && controlHoldArray[daNote.noteData] && daNote.canBeHit 
+				if (daNote.isSustainNote && controlHoldArray[daNote.noteData] && daNote.canBeHit
 				&& daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit) {
 					goodNoteHit(daNote);
 				}
@@ -3979,7 +3966,7 @@ class PlayState extends MusicBeatState
 							char.specialAnim = true;
 						}
 				}
-				
+
 				note.wasGoodHit = true;
 				if (!note.isSustainNote)
 				{
@@ -4039,7 +4026,7 @@ class PlayState extends MusicBeatState
 						char.specialAnim = true;
 						char.heyTimer = 0.6;
 					}
-	
+
 					if(gf.animOffsets.exists('cheer')) {
 						gf.playAnim('cheer', true);
 						gf.specialAnim = true;
@@ -4094,7 +4081,6 @@ class PlayState extends MusicBeatState
 	public function spawnNoteSplash(x:Float, y:Float, data:Int, ?note:Note = null) {
 		var skin:String = 'noteSplashes';
 		if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) skin = PlayState.SONG.splashSkin;
-		
 		var hue:Float = ClientPrefs.arrowHSV[data % 4][0] / 360;
 		var sat:Float = ClientPrefs.arrowHSV[data % 4][1] / 100;
 		var brt:Float = ClientPrefs.arrowHSV[data % 4][2] / 100;

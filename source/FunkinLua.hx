@@ -900,7 +900,7 @@ class FunkinLua {
 				spr.animation.play(name, forced);
 			}
 		});
-		
+
 		Lua_helper.add_callback(lua, "setScrollFactor", function(obj:String, scrollX:Float, scrollY:Float) {
 			if(PlayState.instance.modchartSprites.exists(obj)) {
 				PlayState.instance.modchartSprites.get(obj).scrollFactor.set(scrollX, scrollY);
@@ -1840,7 +1840,7 @@ class ModchartText extends FlxText
 class DebugLuaText extends FlxText
 {
 	private var disableTime:Float = 6;
-	public var parentGroup:FlxTypedGroup<DebugLuaText>; 
+	public var parentGroup:FlxTypedGroup<DebugLuaText>;
 	public function new(text:String, parentGroup:FlxTypedGroup<DebugLuaText>) {
 		this.parentGroup = parentGroup;
 		super(10, 10, 0, text, 16);
