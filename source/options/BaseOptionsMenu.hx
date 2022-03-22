@@ -48,7 +48,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 	{
 		super();
 
-		FlxG.camera.zoom = 0.95;
+		FlxG.camera.zoom = 0.95; // ProjectFNF - decrease options menu zoom
 
 		if(title == null) title = 'Options';
 		if(rpcTitle == null) rpcTitle = 'Options Menu';
@@ -59,8 +59,6 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xFFea71fd;
-		bg.setGraphicSize(Std.int(bg.width * 1.1));
-		bg.updateHitbox();
 		bg.screenCenter();
 		bg.antialiasing = ClientPrefs.globalAntialiasing;
 		add(bg);
@@ -225,7 +223,6 @@ class BaseOptionsMenu extends MusicBeatSubstate
 							{
 								case 'int':
 									curOption.setValue(Math.round(holdValue));
-
 								case 'float' | 'percent':
 									curOption.setValue(FlxMath.roundDecimal(holdValue, curOption.decimals));
 							}
@@ -288,7 +285,6 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		}
 		holdTime = 0;
 	}
-
 	function changeSelection(change:Int = 0)
 	{
 		curSelected += change;
