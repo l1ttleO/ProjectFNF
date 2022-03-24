@@ -21,15 +21,27 @@ class ClientPrefs {
 	public static var hideHud:Bool = false;
 	public static var noteOffset:Int = 0;
 	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
-	public static var imagesPersist:Bool = true;
+	public static var imagesPersist:Bool = false;
 	public static var ghostTapping:Bool = true;
 	public static var timeBarType:String = 'Time Left';
-	public static var scoreZoom:Bool = false;
-	public static var noReset:Bool = true;
+	public static var scoreZoom:Bool = true;
+	public static var noReset:Bool = false;
 	public static var healthBarAlpha:Float = 1;
 	public static var controllerMode:Bool = false;
+	public static var hitsoundVolume:Float = 0;
+	public static var pauseMusic:String = 'Tea Time';
 	public static var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
+		'scrolltype' => 'multiplicative',
+		// anyone reading this, amod is multiplicative speed mod, cmod is constant speed mod, and xmod is bpm based speed mod.
+		// an amod example would be chartSpeed * multiplier
+		// cmod would just be constantSpeed = chartSpeed
+		// and xmod basically works by basing the speed on the bpm.
+		// iirc (beatsPerSecond * (conductorToNoteDifference / 1000)) * noteSize (110 or something like that depending on it, prolly just use note.height)
+		// bps is calculated by bpm / 60
+		// oh yeah and you'd have to actually convert the difference to seconds which I already do, because this is based on beats and stuff. but it should work
+		// just fine. but I wont implement it because I don't know how you handle sustains and other stuff like that.
+		// oh yeah when you calculate the bps divide it by the songSpeed or rate because it wont scroll correctly when speeds exist.
 		'songspeed' => 1.0,
 		'healthgain' => 1.0,
 		'healthloss' => 1.0,
@@ -46,7 +58,6 @@ class ClientPrefs {
 	public static var shakeOnMiss:Bool = false;
 	public static var advancedScoreTxt:Bool = true;
 	public static var playMissAnimations:Bool = true;
-	public static var playHitSounds:Bool = false;
 	public static var maxOptimization:Bool = false;
 	public static var missesLowerMaxHealth:Bool = false;
 	public static var hardMode:Bool = false;
@@ -74,12 +85,10 @@ class ClientPrefs {
 		'note_down'		=> [S, DOWN],
 		'note_up'		=> [W, UP],
 		'note_right'	=> [D, RIGHT],
-
 		'ui_left'		=> [A, LEFT],
 		'ui_down'		=> [S, DOWN],
 		'ui_up'			=> [W, UP],
 		'ui_right'		=> [D, RIGHT],
-
 		'accept'		=> [SPACE, ENTER],
 		'back'			=> [BACKSPACE, ESCAPE],
 		'pause'			=> [ENTER, ESCAPE],
@@ -99,8 +108,7 @@ class ClientPrefs {
 		//trace(defaultKeys);
 	}
 
-	public static function saveSettings()
-	{
+	public static function saveSettings() {
 		FlxG.save.data.downScroll = downScroll;
 		FlxG.save.data.middleScroll = middleScroll;
 		FlxG.save.data.showFPS = showFPS;
@@ -124,6 +132,8 @@ class ClientPrefs {
 		FlxG.save.data.comboOffset = comboOffset;
 		FlxG.save.data.achievementsMap = Achievements.achievementsMap;
 		FlxG.save.data.henchmenDeath = Achievements.henchmenDeath;
+		FlxG.save.data.hitsoundVolume = hitsoundVolume;
+		FlxG.save.data.pauseMusic = pauseMusic;
 
 		FlxG.save.data.ratingOffset = ratingOffset;
 		FlxG.save.data.sickWindow = sickWindow;
@@ -140,7 +150,6 @@ class ClientPrefs {
 		FlxG.save.data.shakeOnMiss = shakeOnMiss;
 		FlxG.save.data.advancedScoreTxt = advancedScoreTxt;
 		FlxG.save.data.playMissAnimations = playMissAnimations;
-		FlxG.save.data.playHitSounds = playHitSounds;
 		FlxG.save.data.maxOptimization = maxOptimization;
 		FlxG.save.data.missesLowerMaxHealth = missesLowerMaxHealth;
 		FlxG.save.data.hardMode = hardMode;
@@ -161,131 +170,103 @@ class ClientPrefs {
 		FlxG.log.add("Settings saved!");
 	}
 
-	public static function loadPrefs()
-	{
-		if (FlxG.save.data.downScroll != null)
-		{
+	public static function loadPrefs() {
+		if(FlxG.save.data.downScroll != null) {
 			downScroll = FlxG.save.data.downScroll;
 		}
-		if (FlxG.save.data.middleScroll != null)
-		{
+		if(FlxG.save.data.middleScroll != null) {
 			middleScroll = FlxG.save.data.middleScroll;
 		}
-		if (FlxG.save.data.showFPS != null)
-		{
+		if(FlxG.save.data.showFPS != null) {
 			showFPS = FlxG.save.data.showFPS;
-			if (Main.fpsVar != null)
-			{
+			if(Main.fpsVar != null) {
 				Main.fpsVar.visible = showFPS;
 			}
 		}
-		if (FlxG.save.data.flashing != null)
-		{
+		if(FlxG.save.data.flashing != null) {
 			flashing = FlxG.save.data.flashing;
 		}
-		if (FlxG.save.data.globalAntialiasing != null)
-		{
+		if(FlxG.save.data.globalAntialiasing != null) {
 			globalAntialiasing = FlxG.save.data.globalAntialiasing;
 		}
-		if (FlxG.save.data.noteSplashes != null)
-		{
+		if(FlxG.save.data.noteSplashes != null) {
 			noteSplashes = FlxG.save.data.noteSplashes;
 		}
-		if (FlxG.save.data.lowQuality != null)
-		{
+		if(FlxG.save.data.lowQuality != null) {
 			lowQuality = FlxG.save.data.lowQuality;
 		}
-		if (FlxG.save.data.framerate != null)
-		{
+		if(FlxG.save.data.framerate != null) {
 			framerate = FlxG.save.data.framerate;
-			if (framerate > FlxG.drawFramerate)
-			{
+			if(framerate > FlxG.drawFramerate) {
 				FlxG.updateFramerate = framerate;
 				FlxG.drawFramerate = framerate;
-			}
-			else
-			{
+			} else {
 				FlxG.drawFramerate = framerate;
 				FlxG.updateFramerate = framerate;
 			}
 		}
 		/*if(FlxG.save.data.cursing != null) {
-				cursing = FlxG.save.data.cursing;
-			}
-			if(FlxG.save.data.violence != null) {
-				violence = FlxG.save.data.violence;
+			cursing = FlxG.save.data.cursing;
+		}
+		if(FlxG.save.data.violence != null) {
+			violence = FlxG.save.data.violence;
 		}*/
-		if (FlxG.save.data.camZooms != null)
-		{
+		if(FlxG.save.data.camZooms != null) {
 			camZooms = FlxG.save.data.camZooms;
 		}
-		if (FlxG.save.data.hideHud != null)
-		{
+		if(FlxG.save.data.hideHud != null) {
 			hideHud = FlxG.save.data.hideHud;
 		}
-		if (FlxG.save.data.noteOffset != null)
-		{
+		if(FlxG.save.data.noteOffset != null) {
 			noteOffset = FlxG.save.data.noteOffset;
 		}
-		if (FlxG.save.data.arrowHSV != null)
-		{
+		if(FlxG.save.data.arrowHSV != null) {
 			arrowHSV = FlxG.save.data.arrowHSV;
 		}
-		if (FlxG.save.data.imagesPersist != null)
-		{
-			imagesPersist = FlxG.save.data.imagesPersist;
-			FlxGraphic.defaultPersist = ClientPrefs.imagesPersist;
-		}
-		if (FlxG.save.data.ghostTapping != null)
-		{
+		if(FlxG.save.data.ghostTapping != null) {
 			ghostTapping = FlxG.save.data.ghostTapping;
 		}
-		if (FlxG.save.data.timeBarType != null)
-		{
+		if(FlxG.save.data.timeBarType != null) {
 			timeBarType = FlxG.save.data.timeBarType;
 		}
-		if (FlxG.save.data.scoreZoom != null)
-		{
+		if(FlxG.save.data.scoreZoom != null) {
 			scoreZoom = FlxG.save.data.scoreZoom;
 		}
-		if (FlxG.save.data.noReset != null)
-		{
+		if(FlxG.save.data.noReset != null) {
 			noReset = FlxG.save.data.noReset;
 		}
-		if (FlxG.save.data.healthBarAlpha != null)
-		{
+		if(FlxG.save.data.healthBarAlpha != null) {
 			healthBarAlpha = FlxG.save.data.healthBarAlpha;
 		}
-		if (FlxG.save.data.comboOffset != null)
-		{
+		if(FlxG.save.data.comboOffset != null) {
 			comboOffset = FlxG.save.data.comboOffset;
 		}
 
-		if (FlxG.save.data.ratingOffset != null)
-		{
+		if(FlxG.save.data.ratingOffset != null) {
 			ratingOffset = FlxG.save.data.ratingOffset;
 		}
-		if (FlxG.save.data.sickWindow != null)
-		{
+		if(FlxG.save.data.sickWindow != null) {
 			sickWindow = FlxG.save.data.sickWindow;
 		}
-		if (FlxG.save.data.goodWindow != null)
-		{
+		if(FlxG.save.data.goodWindow != null) {
 			goodWindow = FlxG.save.data.goodWindow;
 		}
-		if (FlxG.save.data.badWindow != null)
-		{
+		if(FlxG.save.data.badWindow != null) {
 			badWindow = FlxG.save.data.badWindow;
 		}
-		if (FlxG.save.data.safeFrames != null)
-		{
+		if(FlxG.save.data.safeFrames != null) {
 			safeFrames = FlxG.save.data.safeFrames;
 		}
-		if (FlxG.save.data.controllerMode != null)
-		{
+		if(FlxG.save.data.controllerMode != null) {
 			controllerMode = FlxG.save.data.controllerMode;
 		}
-		if (FlxG.save.data.gameplaySettings != null)
+		if(FlxG.save.data.hitsoundVolume != null) {
+			hitsoundVolume = FlxG.save.data.hitsoundVolume;
+		}
+		if(FlxG.save.data.pauseMusic != null) {
+			pauseMusic = FlxG.save.data.pauseMusic;
+		}
+		if(FlxG.save.data.gameplaySettings != null)
 		{
 			var savedMap:Map<String, Dynamic> = FlxG.save.data.gameplaySettings;
 			for (name => value in savedMap)
@@ -295,7 +276,7 @@ class ClientPrefs {
 		}
 
 		// flixel automatically saves your volume!
-		if (FlxG.save.data.volume != null)
+		if(FlxG.save.data.volume != null)
 		{
 			FlxG.sound.volume = FlxG.save.data.volume;
 		}
@@ -331,10 +312,6 @@ class ClientPrefs {
 		if (FlxG.save.data.playMissAnimations != null)
 		{
 			playMissAnimations = FlxG.save.data.playMissAnimations;
-		}
-		if (FlxG.save.data.playHitSounds != null)
-		{
-			playHitSounds = FlxG.save.data.playHitSounds;
 		}
 		if (FlxG.save.data.maxOptimization != null)
 		{
@@ -377,11 +354,9 @@ class ClientPrefs {
 		}
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v2', 'ninjamuffin99');
-		if (save != null && save.data.customControls != null)
-		{
+		if(save != null && save.data.customControls != null) {
 			var loadedControls:Map<String, Array<FlxKey>> = save.data.customControls;
-			for (control => keys in loadedControls)
-			{
+			for (control => keys in loadedControls) {
 				keyBinds.set(control, keys);
 			}
 			reloadControls();
@@ -402,7 +377,6 @@ class ClientPrefs {
 		FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
 		FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
 	}
-
 	public static function copyKey(arrayToCopy:Array<FlxKey>):Array<FlxKey> {
 		var copiedArray:Array<FlxKey> = arrayToCopy.copy();
 		var i:Int = 0;

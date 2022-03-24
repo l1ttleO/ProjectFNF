@@ -16,18 +16,21 @@ using StringTools;
 
 class CoolUtil
 {
-	public static var defaultDifficulties:Array<String> = ['Easy', 'Normal', 'Hard'];
-	public static var defaultDifficulty:String = 'Normal'; // The chart that has no suffix and starting difficulty on Freeplay/Story Mode
+	public static var defaultDifficulties:Array<String> = [
+		'Easy',
+		'Normal',
+		'Hard'
+	];
+	public static var defaultDifficulty:String = 'Normal'; //The chart that has no suffix and starting difficulty on Freeplay/Story Mode
 
 	public static var difficulties:Array<String> = [];
 
 	public static function getDifficultyFilePath(num:Null<Int> = null)
 	{
-		if (num == null)
-			num = PlayState.storyDifficulty;
+		if(num == null) num = PlayState.storyDifficulty;
 
 		var fileSuffix:String = difficulties[num];
-		if (fileSuffix != defaultDifficulty)
+		if(fileSuffix != defaultDifficulty)
 		{
 			fileSuffix = '-' + fileSuffix;
 		}
@@ -43,8 +46,7 @@ class CoolUtil
 		return difficulties[PlayState.storyDifficulty].toUpperCase();
 	}
 
-	inline public static function boundTo(value:Float, min:Float, max:Float):Float
-	{
+	inline public static function boundTo(value:Float, min:Float, max:Float):Float {
 		return Math.max(min, Math.min(max, value));
 	}
 
@@ -114,9 +116,16 @@ class CoolUtil
 
 	//uhhhh does this even work at all? i'm starting to doubt
 	public static function precacheSound(sound:String, ?library:String = null):Void {
-		if(!Assets.cache.hasSound(Paths.sound(sound, library))) {
-			FlxG.sound.cache(Paths.sound(sound, library));
-		}
+		precacheSoundFile(Paths.sound(sound, library));
+	}
+
+	public static function precacheMusic(sound:String, ?library:String = null):Void {
+		precacheSoundFile(Paths.music(sound, library));
+	}
+
+	private static function precacheSoundFile(file:Dynamic):Void {
+		if (Assets.exists(file, SOUND) || Assets.exists(file, MUSIC))
+			Assets.getSound(file, true);
 	}
 
 	public static function browserLoad(site:String) {
