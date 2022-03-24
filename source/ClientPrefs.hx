@@ -58,7 +58,6 @@ class ClientPrefs {
 	public static var shakeOnMiss:Bool = false;
 	public static var advancedScoreTxt:Bool = true;
 	public static var playMissAnimations:Bool = true;
-	public static var playHitSounds:Bool = false;
 	public static var maxOptimization:Bool = false;
 	public static var missesLowerMaxHealth:Bool = false;
 	public static var hardMode:Bool = false;
@@ -151,7 +150,6 @@ class ClientPrefs {
 		FlxG.save.data.shakeOnMiss = shakeOnMiss;
 		FlxG.save.data.advancedScoreTxt = advancedScoreTxt;
 		FlxG.save.data.playMissAnimations = playMissAnimations;
-		FlxG.save.data.playHitSounds = playHitSounds;
 		FlxG.save.data.maxOptimization = maxOptimization;
 		FlxG.save.data.missesLowerMaxHealth = missesLowerMaxHealth;
 		FlxG.save.data.hardMode = hardMode;
@@ -314,10 +312,6 @@ class ClientPrefs {
 		if (FlxG.save.data.playMissAnimations != null)
 		{
 			playMissAnimations = FlxG.save.data.playMissAnimations;
-		}
-		if (FlxG.save.data.playHitSounds != null)
-		{
-			playHitSounds = FlxG.save.data.playHitSounds;
 		}
 		if (FlxG.save.data.maxOptimization != null)
 		{

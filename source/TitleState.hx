@@ -446,7 +446,6 @@ class TitleState extends MusicBeatState
 				FlxTween.tween(gfDance, {x: -1500}, 3.7, {ease: FlxEase.expoInOut});
 				FlxTween.tween(titleText, {y: 1500}, 3.7, {ease: FlxEase.expoInOut});
 
-
 				transitioning = true;
 				// FlxG.sound.music.stop();
 
@@ -566,8 +565,7 @@ class TitleState extends MusicBeatState
 		if(logoBl != null)
 			logoBl.animation.play('bump', true);
 
-		if (logo != null)
-		{
+		if (logo != null) {
 			logo.scale.set(1.05, 1.05);
 			FlxTween.tween(logo, {'scale.x': 0.95, 'scale.y': 0.95}, 0.1, {ease: FlxEase.bounceIn});
 		}

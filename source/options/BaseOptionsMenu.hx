@@ -48,8 +48,6 @@ class BaseOptionsMenu extends MusicBeatSubstate
 	{
 		super();
 
-		FlxG.camera.zoom = 0.95; // ProjectFNF - decrease options menu zoom
-
 		if(title == null) title = 'Options';
 		if(rpcTitle == null) rpcTitle = 'Options Menu';
 
