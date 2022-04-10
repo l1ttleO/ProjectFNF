@@ -68,6 +68,8 @@ class ClientPrefs {
 	public static var noteOpacityChangesWithHealth:String = 'Disabled';
 	public static var karma:String = 'Disabled';
 	public static var karmaCanKill:Bool = false;
+	public static var laneOpacity:Float = 0;
+	public static var ratingPos:String = "Fixed";
 
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
 	public static var keSustains:Bool = false; // i was bored, okay?
@@ -160,6 +162,8 @@ class ClientPrefs {
 		FlxG.save.data.noteOpacityChangesWithHealth = noteOpacityChangesWithHealth;
 		FlxG.save.data.karma = karma;
 		FlxG.save.data.karmaCanKill = karmaCanKill;
+		FlxG.save.data.laneOpacity = laneOpacity;
+		FlxG.save.data.ratingPos = ratingPos;
 
 		FlxG.save.flush();
 
@@ -351,6 +355,14 @@ class ClientPrefs {
 		if (FlxG.save.data.karmaCanKill != null)
 		{
 			karmaCanKill = FlxG.save.data.karmaCanKill;
+		}
+		if (FlxG.save.data.laneOpacity != null)
+		{
+			laneOpacity = FlxG.save.data.laneOpacity;
+		}
+		if (FlxG.save.data.ratingPos != null)
+		{
+			ratingPos = FlxG.save.data.ratingPos;
 		}
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v2', 'ninjamuffin99');

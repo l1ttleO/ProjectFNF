@@ -89,6 +89,18 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.decimals = 1;
 		addOption(option);
 
+		var option:Option = new Option('Lane Opacity',
+			'Enables a black bar behind the notes for visibility, how much opaque should it be?.',
+			'laneOpacity',
+			'percent',
+			0);
+		option.scrollSpeed = 1.6;
+		option.minValue = 0.0;
+		option.maxValue = 1;
+		option.changeValue = 0.1;
+		option.decimals = 1;
+		addOption(option);
+
 		var option:Option = new Option('Move Camera in Note Direction', "If checked, the camera will move in note's direction", 'moveCameraInNoteDirection',
 			'bool', true);
 		addOption(option);
@@ -131,6 +143,14 @@ class VisualsUISubState extends BaseOptionsMenu
 			['None', 'Breakfast', 'Tea Time']);
 		addOption(option);
 		option.onChange = onChangePauseMusic;
+
+		var option:Option = new Option('Rating Position:',
+			"Where the ratings should stay in-game?\nFixed means that they will be part of the hud, and you will be able to change their position\nWorld means that they will be part of the stage.",
+			'ratingPos',
+			'string',
+			'World',
+			['World', 'Fixed']);
+		addOption(option);
 
 		super();
 	}
