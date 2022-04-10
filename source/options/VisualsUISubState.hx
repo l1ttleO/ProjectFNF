@@ -148,7 +148,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			"Where the ratings should stay in-game?\nFixed means that they will be part of the hud, and you will be able to change their position\nWorld means that they will be part of the stage.",
 			'ratingPos',
 			'string',
-			'World',
+			'Fixed',
 			['World', 'Fixed']);
 		addOption(option);
 
