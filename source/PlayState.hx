@@ -910,25 +910,20 @@ class PlayState extends MusicBeatState
 		if(ClientPrefs.downScroll) strumLine.y = FlxG.height - 150;
 		strumLine.scrollFactor.set();
 
-		laneunderlayOpponent = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
-		laneunderlayOpponent.alpha = ClientPrefs.laneOpacity;
-		laneunderlayOpponent.color = FlxColor.BLACK;
-		laneunderlayOpponent.scrollFactor.set();
-
-		laneunderlay = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
-		laneunderlay.alpha = ClientPrefs.laneOpacity;
-		laneunderlay.color = FlxColor.BLACK;
-		laneunderlay.scrollFactor.set();
-		
-		if (ClientPrefs.laneOpacity > 0 && !ClientPrefs.maxOptimization)
-		{
-			if (!ClientPrefs.middleScroll)
-			{
-				add(laneunderlayOpponent);
+		if (ClientPrefs.laneUnderlayOpacity > 0 && !ClientPrefs.maxOptimization) {
+			playerLaneUnderlay = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
+			playerLaneUnderlay.alpha = ClientPrefs.laneUnderlayOpacity;
+			playerLaneUnderlay.color = FlxColor.BLACK;
+			playerLaneUnderlay.scrollFactor.set();
+			add(playerLaneUnderlay);
+			if (!ClientPrefs.middleScroll) {
+				opponentLaneUnderlay = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
+				opponentLaneUnderlay.alpha = ClientPrefs.laneUnderlayOpacity;
+				opponentLaneUnderlay.color = FlxColor.BLACK;
+				opponentLaneUnderlay.scrollFactor.set();
+				add(opponentLaneUnderlay);
 			}
-			add(laneunderlay);
 		}
-
 		var showTime:Bool = (ClientPrefs.timeBarType != 'Disabled');
 		timeTxt = new FlxText(STRUM_X + (FlxG.width / 2) - 248, 19, 400, "", 32);
 		timeTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
