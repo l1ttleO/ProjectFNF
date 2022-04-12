@@ -1595,10 +1595,10 @@ class PlayState extends MusicBeatState
 		if(ret != FunkinLua.Function_Stop) {
 			generateStaticArrows(0);
 			generateStaticArrows(1);
-			laneunderlay.x = playerStrums.members[0].x - 25;
-			laneunderlayOpponent.x = opponentStrums.members[0].x - 25;
-			laneunderlay.screenCenter(Y);
-			laneunderlayOpponent.screenCenter(Y);
+			playerLaneUnderlay.x = playerStrums.members[0].x - 25;
+			playerLaneUnderlay.screenCenter(Y);
+			opponentLaneUnderlay.x = opponentStrums.members[0].x - 25;
+			opponentLaneUnderlay.screenCenter(Y);
 			for (i in 0...playerStrums.length) {
 				setOnLuas('defaultPlayerStrumX' + i, playerStrums.members[i].x);
 				setOnLuas('defaultPlayerStrumY' + i, playerStrums.members[i].y);
