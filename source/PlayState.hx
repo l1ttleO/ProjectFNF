@@ -3591,7 +3591,7 @@ class PlayState extends MusicBeatState
 		comboSpr.acceleration.y = 600;
 		comboSpr.velocity.y -= 150;
 		comboSpr.visible = (!ClientPrefs.hideHud && showCombo);
-		if(ClientPrefs.ratingPos == "Fixed") {
+		if (!ClientPrefs.fixedComboSprPos) {
 			comboSpr.cameras = [camHUD];
 			comboSpr.x += ClientPrefs.comboOffset[0];
 			comboSpr.y -= ClientPrefs.comboOffset[1];
