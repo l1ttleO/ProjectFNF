@@ -68,8 +68,8 @@ class ClientPrefs {
 	public static var noteOpacityChangesWithHealth:String = 'Disabled';
 	public static var karma:String = 'Disabled';
 	public static var karmaCanKill:Bool = false;
-	public static var laneOpacity:Float = 0;
-	public static var ratingPos:String = "Fixed";
+	public static var laneUnderlayOpacity:Float = 0;
+	public static var fixedComboSprPos:Bool = true;
 
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
 	public static var keSustains:Bool = false; // i was bored, okay?
