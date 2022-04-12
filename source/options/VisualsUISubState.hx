@@ -89,8 +89,8 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.decimals = 1;
 		addOption(option);
 
-		var option:Option = new Option('Lane Opacity',
-			'Enables a black bar behind the notes for visibility, how much opaque should it be?.',
+		var option:Option = new Option('Lane Underlay Opacity',
+			'How opaque should be a black underlay for note lanes.',
 			'laneOpacity',
 			'percent',
 			0);
