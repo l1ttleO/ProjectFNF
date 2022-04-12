@@ -91,7 +91,7 @@ class VisualsUISubState extends BaseOptionsMenu
 
 		var option:Option = new Option('Lane Underlay Opacity',
 			'How opaque should be a black underlay for note lanes.',
-			'laneOpacity',
+			'laneUnderlayOpacity',
 			'percent',
 			0);
 		option.scrollSpeed = 1.6;
