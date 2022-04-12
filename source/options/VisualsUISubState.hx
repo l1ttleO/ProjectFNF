@@ -144,12 +144,11 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 		option.onChange = onChangePauseMusic;
 
-		var option:Option = new Option('Rating Position:',
-			"Where the ratings should stay in-game?\nFixed means that they will be part of the hud, and you will be able to change their position\nWorld means that they will be part of the stage.",
-			'ratingPos',
-			'string',
-			'Fixed',
-			['World', 'Fixed']);
+		var option:Option = new Option('Fixed combo sprite position',
+			'If checked, note judgement and combo count sprites will not move together with the camera',
+			'fixedComboSprPos',
+			'bool',
+			true);
 		addOption(option);
 
 		super();
