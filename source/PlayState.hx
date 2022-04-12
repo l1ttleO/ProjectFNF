@@ -3635,7 +3635,7 @@ class PlayState extends MusicBeatState
 			numScore.x = coolText.x + (43 * daLoop) - 90;
 			numScore.y += 80;
 
-			if(ClientPrefs.ratingPos == "Fixed") {
+			if (!ClientPrefs.fixedComboSprPos) {
 				numScore.cameras = [camHUD];
 				numScore.x += ClientPrefs.comboOffset[2];
 				numScore.y -= ClientPrefs.comboOffset[3];
