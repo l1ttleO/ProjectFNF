@@ -162,8 +162,8 @@ class ClientPrefs {
 		FlxG.save.data.noteOpacityChangesWithHealth = noteOpacityChangesWithHealth;
 		FlxG.save.data.karma = karma;
 		FlxG.save.data.karmaCanKill = karmaCanKill;
-		FlxG.save.data.laneOpacity = laneOpacity;
-		FlxG.save.data.ratingPos = ratingPos;
+		FlxG.save.data.laneUnderlayOpacity = laneUnderlayOpacity;
+		FlxG.save.data.fixedComboSprPos = fixedComboSprPos;
 
 		FlxG.save.flush();
 
