@@ -356,13 +356,13 @@ class ClientPrefs {
 		{
 			karmaCanKill = FlxG.save.data.karmaCanKill;
 		}
-		if (FlxG.save.data.laneOpacity != null)
+		if (FlxG.save.data.laneUnderlayOpacity != null)
 		{
-			laneOpacity = FlxG.save.data.laneOpacity;
+			laneUnderlayOpacity = FlxG.save.data.laneUnderlayOpacity;
 		}
-		if (FlxG.save.data.ratingPos != null)
+		if (FlxG.save.data.fixedComboSprPoss != null)
 		{
-			ratingPos = FlxG.save.data.ratingPos;
+			fixedComboSprPos = FlxG.save.data.fixedComboSprPos;
 		}
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v2', 'ninjamuffin99');
