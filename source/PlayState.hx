@@ -1124,8 +1124,8 @@ class PlayState extends MusicBeatState
 		timeBar.cameras = [camHUD];
 		timeBarBG.cameras = [camHUD];
 		timeTxt.cameras = [camHUD];
-		laneunderlay.cameras = [camHUD];
-		laneunderlayOpponent.cameras = [camHUD];
+		playerLaneUnderlay.cameras = [camHUD];
+		opponentLaneUnderlay.cameras = [camHUD];
 		doof.cameras = [camOther];
 
 		// if (SONG.song == 'South')
