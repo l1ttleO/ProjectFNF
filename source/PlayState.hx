@@ -3579,7 +3579,7 @@ class PlayState extends MusicBeatState
 		rating.velocity.y -= FlxG.random.int(140, 175);
 		rating.velocity.x -= FlxG.random.int(0, 10);
 		rating.visible = (!ClientPrefs.hideHud && showRating);
-		if(ClientPrefs.ratingPos == "Fixed") {
+		if (!ClientPrefs.fixedComboSprPos) {
 			rating.cameras = [camHUD];
 			rating.x += ClientPrefs.comboOffset[0];
 			rating.y -= ClientPrefs.comboOffset[1];
