@@ -360,7 +360,7 @@ class ClientPrefs {
 		{
 			laneUnderlayOpacity = FlxG.save.data.laneUnderlayOpacity;
 		}
-		if (FlxG.save.data.fixedComboSprPoss != null)
+		if (FlxG.save.data.fixedComboSprPos != null)
 		{
 			fixedComboSprPos = FlxG.save.data.fixedComboSprPos;
 		}
