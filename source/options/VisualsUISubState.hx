@@ -89,6 +89,18 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.decimals = 1;
 		addOption(option);
 
+		var option:Option = new Option('Lane Underlay Opacity',
+			'How opaque should be a black underlay for note lanes.',
+			'laneUnderlayOpacity',
+			'percent',
+			0);
+		option.scrollSpeed = 1.6;
+		option.minValue = 0.0;
+		option.maxValue = 1;
+		option.changeValue = 0.1;
+		option.decimals = 1;
+		addOption(option);
+
 		var option:Option = new Option('Move Camera in Note Direction', "If checked, the camera will move in note's direction", 'moveCameraInNoteDirection',
 			'bool', true);
 		addOption(option);
@@ -131,6 +143,13 @@ class VisualsUISubState extends BaseOptionsMenu
 			['None', 'Breakfast', 'Tea Time']);
 		addOption(option);
 		option.onChange = onChangePauseMusic;
+
+		var option:Option = new Option('Fixed combo sprite position',
+			'If checked, note judgement and combo count sprites will not move together with the camera',
+			'fixedComboSprPos',
+			'bool',
+			true);
+		addOption(option);
 
 		super();
 	}

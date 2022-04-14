@@ -130,6 +130,9 @@ class PlayState extends MusicBeatState
 
 	private var strumLine:FlxSprite;
 
+	public var playerLaneUnderlay:FlxSprite;
+	public var opponentLaneUnderlay:FlxSprite;
+
 	//Handles the new epic mega sexy cam code that i've done
 	private var camFollow:FlxPoint;
 	private var camFollowPos:FlxObject;
@@ -907,6 +910,20 @@ class PlayState extends MusicBeatState
 		if(ClientPrefs.downScroll) strumLine.y = FlxG.height - 150;
 		strumLine.scrollFactor.set();
 
+		if (ClientPrefs.laneUnderlayOpacity > 0 && !ClientPrefs.maxOptimization) {
+			playerLaneUnderlay = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
+			playerLaneUnderlay.alpha = ClientPrefs.laneUnderlayOpacity;
+			playerLaneUnderlay.color = FlxColor.BLACK;
+			playerLaneUnderlay.scrollFactor.set();
+			add(playerLaneUnderlay);
+			if (!ClientPrefs.middleScroll) {
+				opponentLaneUnderlay = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
+				opponentLaneUnderlay.alpha = ClientPrefs.laneUnderlayOpacity;
+				opponentLaneUnderlay.color = FlxColor.BLACK;
+				opponentLaneUnderlay.scrollFactor.set();
+				add(opponentLaneUnderlay);
+			}
+		}
 		var showTime:Bool = (ClientPrefs.timeBarType != 'Disabled');
 		timeTxt = new FlxText(STRUM_X + (FlxG.width / 2) - 248, 19, 400, "", 32);
 		timeTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -1102,6 +1119,8 @@ class PlayState extends MusicBeatState
 		timeBar.cameras = [camHUD];
 		timeBarBG.cameras = [camHUD];
 		timeTxt.cameras = [camHUD];
+		playerLaneUnderlay.cameras = [camHUD];
+		opponentLaneUnderlay.cameras = [camHUD];
 		doof.cameras = [camOther];
 
 		// if (SONG.song == 'South')
@@ -1571,6 +1590,10 @@ class PlayState extends MusicBeatState
 		if(ret != FunkinLua.Function_Stop) {
 			generateStaticArrows(0);
 			generateStaticArrows(1);
+			playerLaneUnderlay.x = playerStrums.members[0].x - 25;
+			playerLaneUnderlay.screenCenter(Y);
+			opponentLaneUnderlay.x = opponentStrums.members[0].x - 25;
+			opponentLaneUnderlay.screenCenter(Y);
 			for (i in 0...playerStrums.length) {
 				setOnLuas('defaultPlayerStrumX' + i, playerStrums.members[i].x);
 				setOnLuas('defaultPlayerStrumY' + i, playerStrums.members[i].y);
@@ -2367,6 +2390,7 @@ class PlayState extends MusicBeatState
 		var accuracyTxt:String = '';
 		var pressMissesTxt:String = '';
 		if (ClientPrefs.advancedScoreTxt) {
+			scoreTxt.size = 18;
 			var pressMisses:Int = 0;
 			if (!ClientPrefs.ghostTapping) {
 				pressMisses = this.pressMisses;
@@ -3542,7 +3566,7 @@ class PlayState extends MusicBeatState
 		}
 
 		rating.loadGraphic(Paths.image(pixelShitPart1 + daRating + pixelShitPart2));
-		rating.cameras = [camHUD];
+		rating.cameras = [camGame];
 		rating.screenCenter();
 		rating.x = coolText.x - 40;
 		rating.y -= 60;
@@ -3550,17 +3574,23 @@ class PlayState extends MusicBeatState
 		rating.velocity.y -= FlxG.random.int(140, 175);
 		rating.velocity.x -= FlxG.random.int(0, 10);
 		rating.visible = (!ClientPrefs.hideHud && showRating);
-		rating.x += ClientPrefs.comboOffset[0];
-		rating.y -= ClientPrefs.comboOffset[1];
+		if (ClientPrefs.fixedComboSprPos) {
+			rating.cameras = [camHUD];
+			rating.x += ClientPrefs.comboOffset[0];
+			rating.y -= ClientPrefs.comboOffset[1];
+		}
 
 		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'combo' + pixelShitPart2));
-		comboSpr.cameras = [camHUD];
+		comboSpr.cameras = [camGame];
 		comboSpr.x = coolText.x;
 		comboSpr.acceleration.y = 600;
 		comboSpr.velocity.y -= 150;
 		comboSpr.visible = (!ClientPrefs.hideHud && showCombo);
-		comboSpr.x += ClientPrefs.comboOffset[0];
-		comboSpr.y -= ClientPrefs.comboOffset[1];
+		if (ClientPrefs.fixedComboSprPos) {
+			comboSpr.cameras = [camHUD];
+			comboSpr.x += ClientPrefs.comboOffset[0];
+			comboSpr.y -= ClientPrefs.comboOffset[1];
+		}
 
 
 		comboSpr.velocity.x += FlxG.random.int(1, 10);
@@ -3595,13 +3625,16 @@ class PlayState extends MusicBeatState
 		for (i in seperatedScore)
 		{
 			var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'num' + Std.int(i) + pixelShitPart2));
-			numScore.cameras = [camHUD];
+			numScore.cameras = [camGame];
 			numScore.screenCenter();
 			numScore.x = coolText.x + (43 * daLoop) - 90;
 			numScore.y += 80;
 
-			numScore.x += ClientPrefs.comboOffset[2];
-			numScore.y -= ClientPrefs.comboOffset[3];
+			if (ClientPrefs.fixedComboSprPos) {
+				numScore.cameras = [camHUD];
+				numScore.x += ClientPrefs.comboOffset[2];
+				numScore.y -= ClientPrefs.comboOffset[3];
+			}
 
 			if (!PlayState.isPixelStage)
 			{
