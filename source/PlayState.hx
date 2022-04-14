@@ -2390,7 +2390,7 @@ class PlayState extends MusicBeatState
 		var accuracyTxt:String = '';
 		var pressMissesTxt:String = '';
 		if (ClientPrefs.advancedScoreTxt) {
-			scoreTxt.size = 16;
+			scoreTxt.size = 18;
 			var pressMisses:Int = 0;
 			if (!ClientPrefs.ghostTapping) {
 				pressMisses = this.pressMisses;
@@ -3574,7 +3574,7 @@ class PlayState extends MusicBeatState
 		rating.velocity.y -= FlxG.random.int(140, 175);
 		rating.velocity.x -= FlxG.random.int(0, 10);
 		rating.visible = (!ClientPrefs.hideHud && showRating);
-		if (!ClientPrefs.fixedComboSprPos) {
+		if (ClientPrefs.fixedComboSprPos) {
 			rating.cameras = [camHUD];
 			rating.x += ClientPrefs.comboOffset[0];
 			rating.y -= ClientPrefs.comboOffset[1];
@@ -3586,7 +3586,7 @@ class PlayState extends MusicBeatState
 		comboSpr.acceleration.y = 600;
 		comboSpr.velocity.y -= 150;
 		comboSpr.visible = (!ClientPrefs.hideHud && showCombo);
-		if (!ClientPrefs.fixedComboSprPos) {
+		if (ClientPrefs.fixedComboSprPos) {
 			comboSpr.cameras = [camHUD];
 			comboSpr.x += ClientPrefs.comboOffset[0];
 			comboSpr.y -= ClientPrefs.comboOffset[1];
@@ -3630,7 +3630,7 @@ class PlayState extends MusicBeatState
 			numScore.x = coolText.x + (43 * daLoop) - 90;
 			numScore.y += 80;
 
-			if (!ClientPrefs.fixedComboSprPos) {
+			if (ClientPrefs.fixedComboSprPos) {
 				numScore.cameras = [camHUD];
 				numScore.x += ClientPrefs.comboOffset[2];
 				numScore.y -= ClientPrefs.comboOffset[3];
