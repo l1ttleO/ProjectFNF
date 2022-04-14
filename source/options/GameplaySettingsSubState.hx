@@ -33,7 +33,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 	{
 		title = 'Gameplay Settings';
 		rpcTitle = 'Gameplay Settings Menu'; //for Discord Rich Presence
-		
+
 		var option:Option = new Option('Controller Mode',
 			'Check this if you want to play with\na controller instead of using your Keyboard.',
 			'controllerMode',
@@ -67,7 +67,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			"If checked, pressing Reset won't do anything.",
 			'noReset',
 			'bool',
-			false);
+			true);
 		addOption(option);
 
 		var option:Option = new Option('Hitsound Volume',
@@ -87,6 +87,10 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Enable QoL and balance changes', "If checked, the gameplay can be adjusted to balance it or to implement QoL features", 'enableQolBalanceChanges', 'bool', true);
+		addOption(option);
+
+		var option:Option = new Option('Enable New Accuracy',
+			'If checked, accuracy will be calculated using millisecond values\nMay break mods that access some accuracy-related variables', 'newAccuracy', 'bool', true);
 		addOption(option);
 
 		var option:Option = new Option('Rating Offset',

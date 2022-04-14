@@ -48,8 +48,8 @@ class ModifiersSubState extends BaseOptionsMenu
 		var option:Option = new Option('Damage from Opponent Notes', 'Set how much health you lose from opponent notes', 'damageFromOpponentNotes', 'float',
 			1);
         option.displayFormat = option.getValue() < 10 ? '%v%' : "HARD MODE";
-		option.changeValue = 0.5;
-		option.scrollSpeed = 1.25;
+		option.changeValue = 0.1;
+		option.scrollSpeed = 5;
 		option.minValue = 0.5;
 		option.maxValue = 10;
         addOption(option);

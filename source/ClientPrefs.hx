@@ -24,7 +24,7 @@ class ClientPrefs {
 	public static var imagesPersist:Bool = false;
 	public static var ghostTapping:Bool = true;
 	public static var timeBarType:String = 'Time Left';
-	public static var scoreZoom:Bool = true;
+	public static var scoreZoom:Bool = false;
 	public static var noReset:Bool = false;
 	public static var healthBarAlpha:Float = 1;
 	public static var controllerMode:Bool = false;
@@ -55,7 +55,7 @@ class ClientPrefs {
 	public static var opponentNotesCanKill:Bool = false;
 	public static var damageFromOpponentNotes:Float = 1;
 	public static var stunsBlockInputs:Bool = false;
-	public static var shakeOnMiss:Bool = false;
+	public static var shakeOnMiss:Bool = true;
 	public static var advancedScoreTxt:Bool = true;
 	public static var playMissAnimations:Bool = true;
 	public static var maxOptimization:Bool = false;
@@ -70,6 +70,7 @@ class ClientPrefs {
 	public static var karmaCanKill:Bool = false;
 	public static var laneUnderlayOpacity:Float = 0;
 	public static var fixedComboSprPos:Bool = true;
+	public static var newAccuracy:Bool = true;
 
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
 	public static var keSustains:Bool = false; // i was bored, okay?
@@ -164,6 +165,7 @@ class ClientPrefs {
 		FlxG.save.data.karmaCanKill = karmaCanKill;
 		FlxG.save.data.laneUnderlayOpacity = laneUnderlayOpacity;
 		FlxG.save.data.fixedComboSprPos = fixedComboSprPos;
+		FlxG.save.data.newAccuracy = newAccuracy;
 
 		FlxG.save.flush();
 
@@ -363,6 +365,10 @@ class ClientPrefs {
 		if (FlxG.save.data.fixedComboSprPos != null)
 		{
 			fixedComboSprPos = FlxG.save.data.fixedComboSprPos;
+		}
+		if (FlxG.save.data.newAccuracy != null)
+		{
+			newAccuracy = FlxG.save.data.newAccuracy;
 		}
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v2', 'ninjamuffin99');

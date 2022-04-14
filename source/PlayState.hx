@@ -233,6 +233,7 @@ class PlayState extends MusicBeatState
 	var bgGhouls:BGSprite;
 
 	public var songScore:Int = 0;
+	public var thScore:Int = 0;
 	public var songHits:Int = 0;
 	public var songMisses:Int = 0;
 	public var pressMisses:Int = 0;
@@ -438,6 +439,7 @@ class PlayState extends MusicBeatState
 			defaultCamZoom = stageData.defaultZoom;
 		else
 			defaultCamZoom = ClientPrefs.cameraZoom;
+
 		isPixelStage = stageData.isPixelStage;
 		BF_X = stageData.boyfriend[0];
 		BF_Y = stageData.boyfriend[1];
@@ -1106,9 +1108,9 @@ class PlayState extends MusicBeatState
 		}
 
 
-		strumLineNotes.cameras = [camOther];
-		grpNoteSplashes.cameras = [camOther];
-		notes.cameras = [camOther];
+		strumLineNotes.cameras = [camHUD];
+		grpNoteSplashes.cameras = [camHUD];
+		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
 		healthBarBG.cameras = [camHUD];
 		iconP1.cameras = [camHUD];
@@ -2391,12 +2393,9 @@ class PlayState extends MusicBeatState
 		var pressMissesTxt:String = '';
 		if (ClientPrefs.advancedScoreTxt) {
 			scoreTxt.size = 18;
-			var pressMisses:Int = 0;
-			if (!ClientPrefs.ghostTapping) {
-				pressMisses = this.pressMisses;
-			} else
-				pressMissesTxt = ' (' + (songMisses + this.pressMisses) + ')';
-			thScoreHealthTxt = ' (' + (totalPlayed - pressMisses) * 350 + ') | Health: ' + FlxMath.roundDecimal(healthPercentageDisplay, 0) + '%';
+			if (pressMisses > 0)
+				pressMissesTxt = ' (+' + pressMisses + ')';
+			thScoreHealthTxt = ' (' + thScore + ') | Health: ' + FlxMath.roundDecimal(healthPercentageDisplay, 0) + '%';
 			accuracyTxt = ' | Accuracy: ' + accuracyPercentage + '%';
 		}
 		scoreTxt.text = 'Score: ' + songScore + thScoreHealthTxt + ' | Misses: ' + songMisses + pressMissesTxt + accuracyTxt + ' | Rating: ' + ratingFC + ratingName + suffix;
@@ -2458,14 +2457,14 @@ class PlayState extends MusicBeatState
 		if (totalPlayed > 0 && toPassiveDrain > 0)
 			shouldPassiveDrain = true;
 
-		var passiveDrainNow:Float = toPassiveDrain / FlxG.updateFramerate;
+		var passiveDrainNow:Float = toPassiveDrain / Main.fpsVar.currentFPS;
 		if (shouldPassiveDrain && (health - passiveDrainNow > 0.001 || (ClientPrefs.karma == 'Permanent' && ClientPrefs.karmaCanKill))) {
 			health -= passiveDrainNow;
 			if (ClientPrefs.opponentNotesDoDamage)
 				healthDrained += passiveDrainNow;
 		}
 
-		var tempKarmaDrain:Float = 0.035 / FlxG.updateFramerate;
+		var tempKarmaDrain:Float = 0.035 / Main.fpsVar.currentFPS;
 			if (tempKarma < tempKarmaDrain)
 				tempKarmaDrain = tempKarma;
 		if (ClientPrefs.karma == 'Temporary' && tempKarma > 0 && (health - tempKarmaDrain > 0.001 || ClientPrefs.karmaCanKill)) {
@@ -2678,7 +2677,7 @@ class PlayState extends MusicBeatState
 					opponentNoteHit(daNote);
 				}
 
-				if(daNote.mustPress && cpuControlled) {
+				if(daNote.mustPress && cpuControlled && !daNote.hitCausesMiss && !daNote.ignoreNote) {
 					if(daNote.isSustainNote) {
 						if(daNote.canBeHit) {
 							goodNoteHit(daNote);
@@ -2719,7 +2718,7 @@ class PlayState extends MusicBeatState
 				// Kill extremely late notes and cause misses
 				if (Conductor.songPosition > noteKillOffset + daNote.strumTime)
 				{
-					if (daNote.mustPress && !cpuControlled &&!daNote.ignoreNote && !endingSong && (daNote.tooLate || !daNote.wasGoodHit)) {
+					if (daNote.mustPress && !daNote.ignoreNote && !endingSong && (daNote.tooLate || !daNote.wasGoodHit)) {
 						noteMiss(daNote);
 					}
 
@@ -3468,7 +3467,7 @@ class PlayState extends MusicBeatState
 		eventNotes = [];
 	}
 
-	public var totalPlayed:Int = 0;
+	public var totalPlayed:Float = 0;
 	public var totalNotesHit:Float = 0.0;
 
 	public var showCombo:Bool = true;
@@ -3477,10 +3476,36 @@ class PlayState extends MusicBeatState
 	private function popUpScore(note:Note = null):Void
 	{
 		var noteDiff:Float = Math.abs(note.strumTime - Conductor.songPosition + ClientPrefs.ratingOffset);
-		//trace(noteDiff, ' ' + Math.abs(note.strumTime - Conductor.songPosition));
+		//tryna do MS based judgment due to popular demand
+		var daRating:String = Conductor.judgeNote(note, noteDiff);
+		var score:Int = 350;
 
-		// boyfriend.playAnim('hey');
+		switch (daRating) {
+			case "shit": // shit
+				countNoteHit(0.25, noteDiff, note.isSustainNote);
+				note.ratingMod = 0;
+				score = 50;
+				if (!note.ratingDisabled) shits++;
+			case "bad": // bad
+				countNoteHit(0.5, noteDiff, note.isSustainNote);
+				note.ratingMod = 0.5;
+				score = 100;
+				if (!note.ratingDisabled) bads++;
+			case "good": // good
+				countNoteHit(0.75, noteDiff, note.isSustainNote);
+				note.ratingMod = 0.75;
+				score = 200;
+				if (!note.ratingDisabled) goods++;
+			case "sick": // sick
+				countNoteHit(1, noteDiff, note.isSustainNote);
+				note.ratingMod = 1;
+				if (!note.ratingDisabled) sicks++;
+		}
+		note.rating = daRating;
+
 		vocals.volume = 1;
+
+		if (note.isSustainNote) return;
 
 		var placement:String = Std.string(combo);
 
@@ -3490,48 +3515,17 @@ class PlayState extends MusicBeatState
 		//
 
 		var rating:FlxSprite = new FlxSprite();
-		var score:Int = 350;
-
-		//tryna do MS based judgment due to popular demand
-		var daRating:String = Conductor.judgeNote(note, noteDiff);
-
-		switch (daRating)
-		{
-			case "shit": // shit
-				totalNotesHit += 0;
-				note.ratingMod = 0;
-				score = 50;
-				if(!note.ratingDisabled) shits++;
-			case "bad": // bad
-				totalNotesHit += 0.5;
-				note.ratingMod = 0.5;
-				score = 100;
-				if(!note.ratingDisabled) bads++;
-			case "good": // good
-				totalNotesHit += 0.75;
-				note.ratingMod = 0.75;
-				score = 200;
-				if(!note.ratingDisabled) goods++;
-			case "sick": // sick
-				totalNotesHit += 1;
-				note.ratingMod = 1;
-				if(!note.ratingDisabled) sicks++;
-		}
-		note.rating = daRating;
 
 		if(daRating == 'sick' && !note.noteSplashDisabled)
 		{
 			spawnNoteSplashOnNote(note);
 		}
 
+		thScore += 350;
 		if(!practiceMode && !cpuControlled) {
 			songScore += score;
 			if(!note.ratingDisabled)
-			{
 				songHits++;
-				totalPlayed++;
-				RecalculateRating();
-			}
 
 			if(ClientPrefs.scoreZoom)
 			{
@@ -3904,7 +3898,11 @@ class PlayState extends MusicBeatState
 		songMisses++;
 		vocals.volume = 0;
 		if(!practiceMode) songScore -= 10;
+		if (ClientPrefs.newAccuracy)
+			totalNotesHit--;
 		totalPlayed++;
+		if (!daNote.hitCausesMiss)
+			thScore += 350;
 		RecalculateRating();
 
 		if(ClientPrefs.playMissAnimations)
@@ -3949,9 +3947,10 @@ class PlayState extends MusicBeatState
 			if (ClientPrefs.shakeOnMiss)
 				FlxG.camera.shake(0.0075, 0.1, null, true, X);
 
-			pressMisses++;
-
-			if(ClientPrefs.ghostTapping) return;
+			if (ClientPrefs.ghostTapping) {
+				pressMisses++;
+				return;
+			}
 
 			var toRemove:Float = 0.05 * healthLoss;
 
@@ -4065,8 +4064,7 @@ class PlayState extends MusicBeatState
 	{
 		if (!note.wasGoodHit)
 		{
-			if(cpuControlled && (note.ignoreNote || note.hitCausesMiss)) return;
-			
+
 			var char:Character = opponentChart ? dad : boyfriend;
 			if (note.gfNote) char = gf;
 
@@ -4102,9 +4100,9 @@ class PlayState extends MusicBeatState
 			if (!note.isSustainNote)
 			{
 				combo += 1;
-				popUpScore(note);
 				if(combo > 9999) combo = 9999;
 			}
+			popUpScore(note);
 
 			var baseSustainMultiplier:Float = 1;
 			var healthSustainDivider:Float = 1;
@@ -4727,5 +4725,14 @@ class PlayState extends MusicBeatState
 		if (ClientPrefs.noteOpacityChangesWithHealth == 'Less HP = more opaque')
 			return 1 - health / maxHealth + 0.25;
 		return defaultValue;
+	}
+
+	function countNoteHit(ifOldAccuracy:Float, milliseconds:Float, isSustain:Bool):Void {
+		if (isSustain && !ClientPrefs.newAccuracy) return;
+
+		totalNotesHit += ClientPrefs.newAccuracy ? (isSustain ? 1 / 3 : (noteKillOffset - milliseconds + FlxG.elapsed * 1000) / noteKillOffset) : ifOldAccuracy;
+		totalPlayed += isSustain ? 1 / 3 : 1;
+
+		RecalculateRating();
 	}
 }
