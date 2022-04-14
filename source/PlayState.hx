@@ -1827,6 +1827,13 @@ class PlayState extends MusicBeatState
 		FlxTween.tween(timeBar, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
 		FlxTween.tween(timeTxt, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
 
+		#if desktop
+		// Updating Discord Rich Presence (with Time Left)
+		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter(), true, songLength);
+		#end
+		setOnLuas('songLength', songLength);
+		callOnLuas('onSongStart', []);
+
 	}
 	var debugNum:Int = 0;
 	private var noteTypeMap:Map<String, Bool> = new Map<String, Bool>();
@@ -2381,7 +2388,7 @@ class PlayState extends MusicBeatState
 
 		var suffix:String = '';
 		var thing:Float = FlxMath.roundDecimal(ratingPercent * 10, 0) * 10; // you can't do 'ratingPercent * 100', the number must be rounded before multiplying by 10
-		if (accuracyPercentage - thing < 0) {
+		if (accuracyPercentage - thing < 0 && accuracyPercentage > 30) {
 			if (accuracyPercentage - thing > -5)
 				suffix = '+';
 			if (accuracyPercentage - thing >= -1)
