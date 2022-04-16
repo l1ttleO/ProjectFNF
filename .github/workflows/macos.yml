@@ -45,7 +45,7 @@ jobs:
           haxelib install hxcpp-debug-server
           haxelib list
       - name: Compile
-        run: haxelib run lime build mac
+        run: haxelib run lime build mac -release
       - name: Publish Artifact
         uses: actions/upload-artifact@v2
         with:

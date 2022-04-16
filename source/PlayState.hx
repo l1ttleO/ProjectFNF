@@ -286,6 +286,8 @@ class PlayState extends MusicBeatState
 	// Less laggy controls
 	private var keysArray:Array<Dynamic>;
 
+	private var oldLowQuality = ClientPrefs.lowQuality;
+
 	override public function create()
 	{
 		Paths.clearStoredMemory();
@@ -340,17 +342,16 @@ class PlayState extends MusicBeatState
 			healthLoss = 2.725;
 		}
 
+		if (ClientPrefs.maxOptimization)
+			ClientPrefs.lowQuality = true;
+
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
-		if (ClientPrefs.maxOptimization) {
-			camGame.visible = false;
-			camGame.active = false;
-		}
+		if (ClientPrefs.maxOptimization)
+			toggleCamera(camGame, false);
 		camHUD = new FlxCamera();
-		if (ClientPrefs.hideHud) {
-			camHUD.visible = false;
-			camHUD.active = false;
-		}
+		if (ClientPrefs.hideHud)
+			toggleCamera(camHUD, false);
 		camOther = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
 		camOther.bgColor.alpha = 0;
@@ -912,20 +913,18 @@ class PlayState extends MusicBeatState
 		if(ClientPrefs.downScroll) strumLine.y = FlxG.height - 150;
 		strumLine.scrollFactor.set();
 
-		if (ClientPrefs.laneUnderlayOpacity > 0 && !ClientPrefs.maxOptimization) {
-			playerLaneUnderlay = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
-			playerLaneUnderlay.alpha = ClientPrefs.laneUnderlayOpacity;
-			playerLaneUnderlay.color = FlxColor.BLACK;
-			playerLaneUnderlay.scrollFactor.set();
-			add(playerLaneUnderlay);
-			if (!ClientPrefs.middleScroll) {
-				opponentLaneUnderlay = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
-				opponentLaneUnderlay.alpha = ClientPrefs.laneUnderlayOpacity;
-				opponentLaneUnderlay.color = FlxColor.BLACK;
-				opponentLaneUnderlay.scrollFactor.set();
-				add(opponentLaneUnderlay);
-			}
-		}
+		playerLaneUnderlay = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
+		playerLaneUnderlay.alpha = ClientPrefs.laneUnderlayOpacity;
+		playerLaneUnderlay.color = FlxColor.BLACK;
+		playerLaneUnderlay.scrollFactor.set();
+		add(playerLaneUnderlay);
+		opponentLaneUnderlay = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
+		opponentLaneUnderlay.alpha = ClientPrefs.laneUnderlayOpacity;
+		opponentLaneUnderlay.color = FlxColor.BLACK;
+		opponentLaneUnderlay.scrollFactor.set();
+		if (!ClientPrefs.middleScroll)
+			add(opponentLaneUnderlay);
+
 		var showTime:Bool = (ClientPrefs.timeBarType != 'Disabled');
 		timeTxt = new FlxText(STRUM_X + (FlxG.width / 2) - 248, 19, 400, "", 32);
 		timeTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -1083,10 +1082,10 @@ class PlayState extends MusicBeatState
 		add(iconP2);
 		reloadHealthBarColors();
 
-		scoreTxt = new FlxText(0, healthBarBG.y + 36, FlxG.width, "", 20);
-		scoreTxt.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		scoreTxt = new FlxText(0, healthBarBG.y + 36, FlxG.width, "", ClientPrefs.advancedScoreTxt ? 18 : 20);
+		scoreTxt.setFormat(Paths.font("vcr.ttf"), ClientPrefs.advancedScoreTxt ? 18 : 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		scoreTxt.scrollFactor.set();
-		scoreTxt.borderSize = 1.25;
+		scoreTxt.borderSize = 1.2;
 		scoreTxt.visible = !ClientPrefs.hideHud;
 		add(scoreTxt);
 
@@ -1116,8 +1115,8 @@ class PlayState extends MusicBeatState
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
-		versionTxt.cameras = [camOther];
-		botplayTxt.cameras = [camOther];
+		versionTxt.cameras = [camHUD];
+		botplayTxt.cameras = [camHUD];
 		timeBar.cameras = [camHUD];
 		timeBarBG.cameras = [camHUD];
 		timeTxt.cameras = [camHUD];
@@ -1168,8 +1167,8 @@ class PlayState extends MusicBeatState
 					add(whiteScreen);
 					whiteScreen.scrollFactor.set();
 					whiteScreen.blend = ADD;
-					camHUD.visible = false;
-					camGame.visible = true;
+					toggleCamera(camHUD, false);
+					toggleCamera(camGame, true);
 					snapCamFollowToPos(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
 					inCutscene = true;
 
@@ -1179,9 +1178,9 @@ class PlayState extends MusicBeatState
 						onComplete: function(twn:FlxTween)
 						{
 							if (!ClientPrefs.hideHud)
-								camHUD.visible = true;
+								toggleCamera(camHUD, true);
 							if (ClientPrefs.maxOptimization)
-								camGame.visible = false;
+								toggleCamera(camGame, false);
 							remove(whiteScreen);
 							startCountdown();
 						}
@@ -1194,8 +1193,8 @@ class PlayState extends MusicBeatState
 					var blackScreen:FlxSprite = new FlxSprite().makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2), FlxColor.BLACK);
 					add(blackScreen);
 					blackScreen.scrollFactor.set();
-					camHUD.visible = false;
-					camGame.visible = true;
+					toggleCamera(camHUD, false);
+					toggleCamera(camGame, true);
 					inCutscene = true;
 
 					FlxTween.tween(blackScreen, {alpha: 0}, 0.7, {
@@ -1212,9 +1211,9 @@ class PlayState extends MusicBeatState
 					new FlxTimer().start(0.8, function(tmr:FlxTimer)
 					{
 						if (!ClientPrefs.hideHud)
-							camHUD.visible = true;
+							toggleCamera(camHUD, true);
 						if (ClientPrefs.maxOptimization)
-							camGame.visible = false;
+							toggleCamera(camGame, false);
 						remove(blackScreen);
 						FlxTween.tween(FlxG.camera, {zoom: defaultCamZoom}, 2.5, {
 							ease: FlxEase.quadInOut,
@@ -1481,7 +1480,7 @@ class PlayState extends MusicBeatState
 	function schoolIntro(?dialogueBox:DialogueBox):Void
 	{
 		inCutscene = true;
-		camGame.visible = true;
+		toggleCamera(camGame, true);
 		var black:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
 		black.scrollFactor.set();
 		add(black);
@@ -1506,7 +1505,7 @@ class PlayState extends MusicBeatState
 			if (songName == 'thorns')
 			{
 				add(red);
-				camHUD.visible = false;
+				toggleCamera(camHUD, false);
 			}
 		}
 
@@ -1544,9 +1543,9 @@ class PlayState extends MusicBeatState
 									{
 										add(dialogueBox);
 										if (!ClientPrefs.hideHud)
-											camHUD.visible = true;
+											toggleCamera(camHUD, true);
 										if (ClientPrefs.maxOptimization)
-											camGame.visible = false;
+											toggleCamera(camGame, false);
 									}, true);
 								});
 								new FlxTimer().start(3.2, function(deadTime:FlxTimer)
@@ -1587,7 +1586,7 @@ class PlayState extends MusicBeatState
 
 		inCutscene = false;
 		if (ClientPrefs.maxOptimization)
-			camGame.visible = false;
+			toggleCamera(camGame, false);
 		var ret:Dynamic = callOnLuas('onStartCountdown', []);
 		if(ret != FunkinLua.Function_Stop) {
 			generateStaticArrows(0);
@@ -2399,7 +2398,6 @@ class PlayState extends MusicBeatState
 		var accuracyTxt:String = '';
 		var pressMissesTxt:String = '';
 		if (ClientPrefs.advancedScoreTxt) {
-			scoreTxt.size = 18;
 			if (pressMisses > 0)
 				pressMissesTxt = ' (+' + pressMisses + ')';
 			thScoreHealthTxt = ' (' + thScore + ') | Health: ' + FlxMath.roundDecimal(healthPercentageDisplay, 0) + '%';
@@ -3403,7 +3401,7 @@ class PlayState extends MusicBeatState
 							-FlxG.height * FlxG.camera.zoom).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
 						blackShit.scrollFactor.set();
 						add(blackShit);
-						camHUD.visible = false;
+						toggleCamera(camHUD, false);
 
 						FlxG.sound.play(Paths.sound('Lights_Shut_off'));
 					}
@@ -3574,8 +3572,8 @@ class PlayState extends MusicBeatState
 		rating.acceleration.y = 550;
 		rating.velocity.y -= FlxG.random.int(140, 175);
 		rating.velocity.x -= FlxG.random.int(0, 10);
-		rating.visible = (!ClientPrefs.hideHud && showRating);
-		if (ClientPrefs.fixedComboSprPos) {
+		rating.visible = (showRating && (!ClientPrefs.hideHud || !ClientPrefs.fixedComboSprPos || ClientPrefs.maxOptimization));
+		if (ClientPrefs.fixedComboSprPos || ClientPrefs.maxOptimization) {
 			rating.cameras = [camHUD];
 			rating.x += ClientPrefs.comboOffset[0];
 			rating.y -= ClientPrefs.comboOffset[1];
@@ -3586,8 +3584,8 @@ class PlayState extends MusicBeatState
 		comboSpr.x = coolText.x;
 		comboSpr.acceleration.y = 600;
 		comboSpr.velocity.y -= 150;
-		comboSpr.visible = (!ClientPrefs.hideHud && showCombo);
-		if (ClientPrefs.fixedComboSprPos) {
+		comboSpr.visible = (showCombo && (!ClientPrefs.hideHud || !ClientPrefs.fixedComboSprPos || ClientPrefs.maxOptimization));
+		if (ClientPrefs.fixedComboSprPos || ClientPrefs.maxOptimization) {
 			comboSpr.cameras = [camHUD];
 			comboSpr.x += ClientPrefs.comboOffset[0];
 			comboSpr.y -= ClientPrefs.comboOffset[1];
@@ -3631,7 +3629,7 @@ class PlayState extends MusicBeatState
 			numScore.x = coolText.x + (43 * daLoop) - 90;
 			numScore.y += 80;
 
-			if (ClientPrefs.fixedComboSprPos) {
+			if (ClientPrefs.fixedComboSprPos || ClientPrefs.maxOptimization) {
 				numScore.cameras = [camHUD];
 				numScore.x += ClientPrefs.comboOffset[2];
 				numScore.y -= ClientPrefs.comboOffset[3];
@@ -3651,7 +3649,7 @@ class PlayState extends MusicBeatState
 			numScore.acceleration.y = FlxG.random.int(200, 300);
 			numScore.velocity.y -= FlxG.random.int(140, 160);
 			numScore.velocity.x = FlxG.random.float(-5, 5);
-			numScore.visible = !ClientPrefs.hideHud;
+			numScore.visible = !ClientPrefs.hideHud || !ClientPrefs.fixedComboSprPos || ClientPrefs.maxOptimization;
 
 			//if (combo >= 10 || combo == 0)
 				insert(members.indexOf(strumLineNotes), numScore);
@@ -4373,6 +4371,7 @@ class PlayState extends MusicBeatState
 
 	private var preventLuaRemove:Bool = false;
 	override function destroy() {
+		ClientPrefs.lowQuality = oldLowQuality;
 		preventLuaRemove = true;
 		for (i in 0...luaArray.length) {
 			luaArray[i].call('onDestroy', []);
@@ -4741,5 +4740,10 @@ class PlayState extends MusicBeatState
 		totalPlayed += isSustain ? 1 / 3 : 1;
 
 		RecalculateRating();
+	}
+
+	function toggleCamera(camera:FlxCamera, newStatus:Bool):Void {
+		camera.visible = newStatus;
+		camera.active = newStatus;
 	}
 }
