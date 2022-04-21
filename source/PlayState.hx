@@ -2403,6 +2403,16 @@ class PlayState extends MusicBeatState
 			thScoreHealthTxt = ' (' + thScore + ') | Health: ' + FlxMath.roundDecimal(healthPercentageDisplay, 0) + '%';
 			accuracyTxt = ' | Accuracy: ' + accuracyPercentage + '%';
 		}
+
+		if (cpuControlled) {
+			if (songMisses > 0)
+				scoreTxt.color = FlxColor.RED;
+			else if (ratingPercent < 0.99)
+				scoreTxt.color = FlxColor.YELLOW;
+			else
+				scoreTxt.color = FlxColor.WHITE;
+		}
+
 		scoreTxt.text = 'Score: ' + songScore + thScoreHealthTxt + ' | Misses: ' + songMisses + pressMissesTxt + accuracyTxt + ' | Rating: ' + ratingFC + ratingName + suffix;
 
 		if(botplayTxt.visible) {
@@ -2469,7 +2479,7 @@ class PlayState extends MusicBeatState
 				healthDrained += passiveDrainNow;
 		}
 
-		var tempKarmaDrain:Float = 0.035 / Main.fpsVar.currentFPS;
+		var tempKarmaDrain:Float = 0.0375 / Main.fpsVar.currentFPS;
 			if (tempKarma < tempKarmaDrain)
 				tempKarmaDrain = tempKarma;
 		if (ClientPrefs.karma == 'Temporary' && tempKarma > 0 && (health - tempKarmaDrain > 0.001 || ClientPrefs.karmaCanKill)) {
@@ -4736,7 +4746,7 @@ class PlayState extends MusicBeatState
 	function countNoteHit(ifOldAccuracy:Float, milliseconds:Float, isSustain:Bool):Void {
 		if (isSustain && !ClientPrefs.newAccuracy) return;
 
-		totalNotesHit += ClientPrefs.newAccuracy ? (isSustain ? 1 / 3 : (noteKillOffset - milliseconds + FlxG.elapsed * 1000) / noteKillOffset) : ifOldAccuracy;
+		totalNotesHit += ClientPrefs.newAccuracy ? Math.min(isSustain ? 1 / 3 : ((noteKillOffset - milliseconds + Math.min(FlxG.elapsed * 1000, noteKillOffset * 0.3)) / noteKillOffset), 1) : ifOldAccuracy;
 		totalPlayed += isSustain ? 1 / 3 : 1;
 
 		RecalculateRating();
