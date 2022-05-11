@@ -73,8 +73,8 @@ class PlayState extends MusicBeatState
 		['C', 0.7], //From 60% to 68%
 		['B', 0.8], //From 70% to 79%
 		['A', 0.9], //From 80% to 89%
-		['S', 1], //From 90% to 99%
-		['SS', 1] //The value on this one isn't used actually, since Perfect is always "1"
+		['S', 0.99], //From 90% to 99%
+		['SS', 1]
 	];
 
 	public var modchartTweens:Map<String, FlxTween> = new Map<String, FlxTween>();
@@ -2387,7 +2387,7 @@ class PlayState extends MusicBeatState
 
 		var suffix:String = '';
 		var thing:Float = FlxMath.roundDecimal(ratingPercent * 10, 0) * 10; // you can't do 'ratingPercent * 100', the number must be rounded before multiplying by 10
-		if (accuracyPercentage - thing < 0 && accuracyPercentage > 30) {
+		if (accuracyPercentage - thing < 0 && accuracyPercentage > 30 && accuracyPercentage < 99) {
 			if (accuracyPercentage - thing > -5)
 				suffix = '+';
 			if (accuracyPercentage - thing >= -1)
@@ -2397,11 +2397,14 @@ class PlayState extends MusicBeatState
 		var thScoreHealthTxt:String = '';
 		var accuracyTxt:String = '';
 		var pressMissesTxt:String = '';
+		var extraRatingTxt:String = '';
+
 		if (ClientPrefs.advancedScoreTxt) {
 			if (pressMisses > 0)
 				pressMissesTxt = ' (+' + pressMisses + ')';
 			thScoreHealthTxt = ' (' + thScore + ') | Health: ' + FlxMath.roundDecimal(healthPercentageDisplay, 0) + '%';
-			accuracyTxt = ' | Accuracy: ' + accuracyPercentage + '%';
+			accuracyTxt = ' | Accuracy: ' + accuracyPercentage + '%' + ratingFC;
+			extraRatingTxt = ' (' + Highscore.floorDecimal(rating, 2) + ')';
 		}
 
 		if (cpuControlled) {
@@ -2413,7 +2416,7 @@ class PlayState extends MusicBeatState
 				scoreTxt.color = FlxColor.WHITE;
 		}
 
-		scoreTxt.text = 'Score: ' + songScore + thScoreHealthTxt + ' | Misses: ' + songMisses + pressMissesTxt + accuracyTxt + ' | Rating: ' + ratingFC + ratingName + suffix;
+		scoreTxt.text = 'Score: ' + songScore + thScoreHealthTxt + ' | Misses: ' + songMisses + pressMissesTxt + accuracyTxt + ' | Rating: ' + ratingName + suffix + extraRatingTxt;
 
 		if(botplayTxt.visible) {
 			botplaySine += 180 * elapsed;
@@ -3491,6 +3494,7 @@ class PlayState extends MusicBeatState
 	private function popUpScore(note:Note = null):Void
 	{
 		var noteDiff:Float = Math.abs(note.strumTime - Conductor.songPosition + ClientPrefs.ratingOffset);
+		noteDiff -= Math.min(noteDiff, Math.min(FlxG.elapsed * 1000, noteKillOffset * 0.3));
 		//tryna do MS based judgment due to popular demand
 		var daRating:String = Conductor.judgeNote(note, noteDiff);
 		var score:Int = 350;
@@ -4126,6 +4130,11 @@ class PlayState extends MusicBeatState
 				healthSustainDivider = health * 0.925 < 0.175 ? 0.175 : health * 0.925;
 			}
 			var toAdd:Float = note.hitHealth * healthGain * baseSustainMultiplier / healthSustainDivider;
+			if (tempKarma > 0) {
+				var drained:Float = Math.min(tempKarma, toAdd);
+				toAdd -= drained;
+				tempKarma -= drained;
+			}
 			health += toAdd;
 			healthDrained -= toAdd;
 			if(!note.noAnimation) {
@@ -4602,6 +4611,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
+	public var rating:Float = 1;
 	public var ratingName:String = '?';
 	public var ratingPercent:Float;
 	public var ratingFC:String;
@@ -4617,35 +4627,44 @@ class PlayState extends MusicBeatState
 				ratingPercent = 1;
 			else
 				ratingPercent = Math.min(1, Math.max(0, totalNotesHit / totalPlayed));
-
-			// Rating Name
-			if(ratingPercent >= 1)
-			{
-				ratingName = ratingStuff[ratingStuff.length-1][0]; //Uses last string
-			}
-			else
-			{
-				for (i in 0...ratingStuff.length-1)
-				{
-					if(ratingPercent < ratingStuff[i][1])
-					{
-						ratingName = ratingStuff[i][0];
-						break;
-					}
-				}
-			}
+			setRatingName(ratingPercent);
 		}
+
+		var ratingMultiplier:Float = 1.25;
 
 		// Rating FC
 		ratingFC = "";
-		if (sicks > 0) ratingFC = "(SFC) ";
-		if (goods > 0) ratingFC = "(GFC) ";
-		if (bads > 0 || shits > 0) ratingFC = "(FC) ";
-		if (songMisses > 0 && songMisses < 10) ratingFC = "(SDCB) ";
-		else if (songMisses >= 10) ratingFC = "(Clear) ";
+		if (sicks > 0) { ratingFC = " (SFC)"; ratingMultiplier = 1.25; }
+		if (goods > 0) { ratingFC = " (GFC)"; ratingMultiplier = 1.15; }
+		if (bads > 0 || shits > 0) { ratingFC = " (FC)"; ratingMultiplier = 1.1; }
+		if (songMisses > 0) { ratingFC = " (SDCB)"; ratingMultiplier = 1; }
+		if (songMisses >= 10) ratingFC = " (Clear)";
+		if (songMisses >= 20) ratingMultiplier = 0.75;
 		setOnLuas('rating', ratingPercent);
 		setOnLuas('ratingName', ratingName);
 		setOnLuas('ratingFC', ratingFC);
+
+		var scrollSpeedBonus:Float = songSpeed / 2.4;
+		var seconds:Float = Conductor.songPosition / 1000;
+		var noteDensity:Float = totalNotesHit / seconds * scrollSpeedBonus;
+
+		rating = ratingPercent * scrollSpeedBonus * ratingMultiplier * Math.max(0.75, noteDensity);
+	}
+
+	private function setRatingName(ratingPercent:Float) {
+		// Rating Name
+		if(ratingPercent >= 0.99)
+			ratingName = ratingStuff[ratingStuff.length-1][0]; //Uses last string
+		else {
+			for (i in 0...ratingStuff.length-1)
+			{
+				if(ratingPercent < ratingStuff[i][1])
+				{
+					ratingName = ratingStuff[i][0];
+					break;
+				}
+			}
+		}
 	}
 
 	#if ACHIEVEMENTS_ALLOWED
@@ -4746,7 +4765,7 @@ class PlayState extends MusicBeatState
 	function countNoteHit(ifOldAccuracy:Float, milliseconds:Float, isSustain:Bool):Void {
 		if (isSustain && !ClientPrefs.newAccuracy) return;
 
-		totalNotesHit += ClientPrefs.newAccuracy ? Math.min(isSustain ? 1 / 3 : ((noteKillOffset - milliseconds + Math.min(FlxG.elapsed * 1000, noteKillOffset * 0.3)) / noteKillOffset), 1) : ifOldAccuracy;
+		totalNotesHit += ClientPrefs.newAccuracy ? Math.min(isSustain ? 1 / 3 : ((noteKillOffset - milliseconds) / noteKillOffset), 1) : ifOldAccuracy;
 		totalPlayed += isSustain ? 1 / 3 : 1;
 
 		RecalculateRating();
