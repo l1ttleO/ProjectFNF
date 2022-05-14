@@ -2475,16 +2475,14 @@ class PlayState extends MusicBeatState
 		if (totalPlayed > 0 && toPassiveDrain > 0)
 			shouldPassiveDrain = true;
 
-		var passiveDrainNow:Float = toPassiveDrain / Main.fpsVar.currentFPS;
+		var passiveDrainNow:Float = toPassiveDrain * elapsed;
 		if (shouldPassiveDrain && (health - passiveDrainNow > 0.001 || (ClientPrefs.karma == 'Permanent' && ClientPrefs.karmaCanKill))) {
 			health -= passiveDrainNow;
 			if (ClientPrefs.opponentNotesDoDamage)
 				healthDrained += passiveDrainNow;
 		}
 
-		var tempKarmaDrain:Float = 0.0375 / Main.fpsVar.currentFPS;
-			if (tempKarma < tempKarmaDrain)
-				tempKarmaDrain = tempKarma;
+		var tempKarmaDrain:Float = Math.min(tempKarma, 0.035 * elapsed);
 		if (ClientPrefs.karma == 'Temporary' && tempKarma > 0 && (health - tempKarmaDrain > 0.001 || ClientPrefs.karmaCanKill)) {
 			health -= tempKarmaDrain;
 			tempKarma -= tempKarmaDrain;
@@ -3905,7 +3903,8 @@ class PlayState extends MusicBeatState
 			maxHealth -= toRemove;
 		if (ClientPrefs.karma == 'Permanent')
 			toPassiveDrain += toRemove / 3.5;
-		tempKarma += toRemove * 5;
+		if (ClientPrefs.karma == 'Temporary')
+			tempKarma += toRemove * 5;
 		if(instakillOnMiss)
 		{
 			vocals.volume = 0;
@@ -3979,7 +3978,8 @@ class PlayState extends MusicBeatState
 
 			if (ClientPrefs.karma == 'Permanent')
 				toPassiveDrain += toRemove / 3.5;
-			tempKarma += toRemove * (health / (maxHealth - 1));
+			if (ClientPrefs.karma == 'Temporary')
+				tempKarma += toRemove * (health / (maxHealth - 1));
 
 			if(instakillOnMiss) {
 				vocals.volume = 0;
@@ -4646,9 +4646,10 @@ class PlayState extends MusicBeatState
 
 		var scrollSpeedBonus:Float = songSpeed / 2.4;
 		var seconds:Float = Conductor.songPosition / 1000;
-		var noteDensity:Float = totalNotesHit / seconds * scrollSpeedBonus;
+		var noteDensity:Float = Math.max(0.75, totalNotesHit / seconds * scrollSpeedBonus);
+		var pressMissesPenalty = Math.max(1, pressMisses / 10);
 
-		rating = ratingPercent * scrollSpeedBonus * ratingMultiplier * Math.max(0.75, noteDensity);
+		rating = ratingPercent * scrollSpeedBonus * ratingMultiplier * noteDensity / pressMissesPenalty;
 	}
 
 	private function setRatingName(ratingPercent:Float) {
@@ -4771,7 +4772,7 @@ class PlayState extends MusicBeatState
 		RecalculateRating();
 	}
 
-	function toggleCamera(camera:FlxCamera, newStatus:Bool):Void {
+	public static function toggleCamera(camera:FlxCamera, newStatus:Bool):Void {
 		camera.visible = newStatus;
 		camera.active = newStatus;
 	}
