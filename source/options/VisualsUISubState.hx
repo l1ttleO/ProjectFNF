@@ -116,13 +116,22 @@ class VisualsUISubState extends BaseOptionsMenu
 		var option:Option = new Option('Advanced Score Text', "If checked, you will see health, accuracy and theoretical best score", 'advancedScoreTxt', 'bool', true);
 		addOption(option);
 
-		var option:Option = new Option('Camera Zoom', 'Sets the camera zoom value\nSet to 1 for default value', 'cameraZoom', 'float', 1);
+		var option:Option = new Option('Camera Zoom:', 'Sets the camera zoom value\nSet to 1 for default value', 'cameraZoom', 'float', 1);
 		option.displayFormat = "%vx";
 		option.changeValue = 0.01;
 		option.scrollSpeed = 0.2;
 		option.minValue = 0.5;
 		option.maxValue = 2;
 		option.decimals = 2;
+		addOption(option);
+
+		var option:Option = new Option('Fixed Combo Sprite Position',
+			'If checked, note judgement and combo count sprites will not move together with the camera', 'fixedComboSprPos', 'bool', true);
+		addOption(option);
+
+		var option:Option = new Option('Vertical Health Bar:',
+			'Enables and sets the location of the vertical health bar', 'verticalHealthBar', 'string', 'Disabled',
+			['Left', 'Right', 'Disabled']);
 		addOption(option);
 
 		#if !mobile
@@ -143,13 +152,6 @@ class VisualsUISubState extends BaseOptionsMenu
 			['None', 'Breakfast', 'Tea Time']);
 		addOption(option);
 		option.onChange = onChangePauseMusic;
-
-		var option:Option = new Option('Fixed combo sprite position',
-			'If checked, note judgement and combo count sprites will not move together with the camera',
-			'fixedComboSprPos',
-			'bool',
-			true);
-		addOption(option);
 
 		super();
 	}

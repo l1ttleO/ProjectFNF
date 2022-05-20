@@ -1082,7 +1082,9 @@ class PlayState extends MusicBeatState
 		add(iconP2);
 		reloadHealthBarColors();
 
-		scoreTxt = new FlxText(0, healthBarBG.y + 36, FlxG.width, "", ClientPrefs.advancedScoreTxt ? 18 : 20);
+		var downScrollAccount:Int = ClientPrefs.downScroll ? 10 : FlxG.height - 45;
+
+		scoreTxt = new FlxText(0, ClientPrefs.verticalHealthBar == 'Disabled' ? healthBarBG.y + 36 : downScrollAccount - 5, FlxG.width, "", ClientPrefs.advancedScoreTxt ? 18 : 20);
 		scoreTxt.setFormat(Paths.font("vcr.ttf"), ClientPrefs.advancedScoreTxt ? 18 : 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		scoreTxt.scrollFactor.set();
 		scoreTxt.borderSize = 1.2;
@@ -1106,6 +1108,11 @@ class PlayState extends MusicBeatState
 			botplayTxt.y = timeBarBG.y - 78;
 		}
 
+		if (ClientPrefs.verticalHealthBar != 'Disabled') {
+			healthBar.angle = 90;
+			healthBar.x = ClientPrefs.verticalHealthBar == 'Left' ? -245 : FlxG.width - 350;
+			healthBar.screenCenter(Y);
+		}
 
 		strumLineNotes.cameras = [camHUD];
 		grpNoteSplashes.cameras = [camHUD];
@@ -2459,19 +2466,6 @@ class PlayState extends MusicBeatState
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
 
-		var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
-		iconP1.scale.set(mult, mult);
-		iconP1.updateHitbox();
-
-		var mult:Float = FlxMath.lerp(1, iconP2.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
-		iconP2.scale.set(mult, mult);
-		iconP2.updateHitbox();
-
-		var iconOffset:Int = 26;
-
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
-		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
-
 		if (totalPlayed > 0 && toPassiveDrain > 0)
 			shouldPassiveDrain = true;
 
@@ -2497,14 +2491,38 @@ class PlayState extends MusicBeatState
 		healthPercentageDisplay = health / 0.02;
 		healthPercentageBar = opponentChart ? 100 - healthPercentageDisplay : healthPercentageDisplay;
 
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentageBar, 0, 100, 100, 0) * 0.01) - iconOffset);
-		var oldP2 = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
-		var newP2 = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthPercentageBar, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+		var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		iconP1.scale.set(mult, mult);
+		iconP1.updateHitbox();
 
-		iconP2.x = newP2;
-		if ((healthPercentageBar > 100 || healthPercentageBar < 0) && !opponentChart) { // until a fix is found, don't move the bar if opponentplay is enabled
-			healthBar.offset.x = oldP2 - newP2;
-			healthBarBG.offset.x = oldP2 - newP2;
+		var mult:Float = FlxMath.lerp(1, iconP2.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		iconP2.scale.set(mult, mult);
+		iconP2.updateHitbox();
+
+		var axis:Float = ClientPrefs.verticalHealthBar == 'Disabled' ? healthBar.x : FlxG.height * (ClientPrefs.downScroll ? 0.11 : 0.89);
+
+		var newP1:Float = axis + (healthBar.width * (FlxMath.remapToRange(healthPercentageBar, 0, 100, 100, 0) * 0.01) - 26);
+		var oldP2 = axis + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - 26);
+		var newP2 = axis + (healthBar.width * (FlxMath.remapToRange(healthPercentageBar, 0, 100, 100, 0) * 0.01)) - (iconP2.width - 26);
+
+		if (ClientPrefs.verticalHealthBar == 'Disabled') {
+			iconP1.x = newP1;
+			iconP2.x = newP2;
+
+			if (healthPercentageBar > 100 || healthPercentageBar < 0 && !opponentChart) {
+				healthBar.offset.x = oldP2 - newP2;
+				healthBarBG.offset.x = oldP2 - newP2;
+			}
+		} else {
+			iconP1.x = healthBar.x + 210;
+			iconP1.y = newP1;
+			iconP2.x = healthBar.x + 210;
+			iconP2.y = newP2;
+
+			if (healthPercentageBar > 100 || healthPercentageBar < 0 && !opponentChart) {
+				healthBar.offset.y = oldP2 - newP2;
+				healthBarBG.offset.y = oldP2 - newP2;
+			}
 		}
 
 		if (healthPercentageBar < (ClientPrefs.hardMode ? 30 : 20))
