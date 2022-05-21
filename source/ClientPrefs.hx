@@ -72,11 +72,13 @@ class ClientPrefs {
 	public static var fixedComboSprPos:Bool = true;
 	public static var newAccuracy:Bool = true;
 	public static var verticalHealthBar:String = 'Disabled';
+	public static var osuManiaScore:Bool = false;
 
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
 	public static var keSustains:Bool = false; // i was bored, okay?
 
 	public static var ratingOffset:Int = 0;
+	public static var maxWindow:Int = 15;
 	public static var sickWindow:Int = 45;
 	public static var goodWindow:Int = 90;
 	public static var badWindow:Int = 135;
@@ -140,6 +142,7 @@ class ClientPrefs {
 		FlxG.save.data.pauseMusic = pauseMusic;
 
 		FlxG.save.data.ratingOffset = ratingOffset;
+		FlxG.save.data.maxWindow = maxWindow;
 		FlxG.save.data.sickWindow = sickWindow;
 		FlxG.save.data.goodWindow = goodWindow;
 		FlxG.save.data.badWindow = badWindow;
@@ -168,6 +171,7 @@ class ClientPrefs {
 		FlxG.save.data.fixedComboSprPos = fixedComboSprPos;
 		FlxG.save.data.newAccuracy = newAccuracy;
 		FlxG.save.data.verticalHealthBar = verticalHealthBar;
+		FlxG.save.data.osuManiaScore = osuManiaScore;
 
 		FlxG.save.flush();
 
@@ -252,6 +256,9 @@ class ClientPrefs {
 
 		if(FlxG.save.data.ratingOffset != null) {
 			ratingOffset = FlxG.save.data.ratingOffset;
+		}
+		if(FlxG.save.data.maxWindow != null){
+			maxWindow = FlxG.save.data.maxWindow;
 		}
 		if(FlxG.save.data.sickWindow != null) {
 			sickWindow = FlxG.save.data.sickWindow;
@@ -375,6 +382,10 @@ class ClientPrefs {
 		if (FlxG.save.data.verticalHealthBar != null)
 		{
 			verticalHealthBar = FlxG.save.data.verticalHealthBar;
+		}
+		if (FlxG.save.data.osuManiaScore != null)
+		{
+			osuManiaScore = FlxG.save.data.osuManiaScore;
 		}
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v2', 'ninjamuffin99');

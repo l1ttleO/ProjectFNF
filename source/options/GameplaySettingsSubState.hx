@@ -90,7 +90,12 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Enable New Accuracy',
-			'If checked, accuracy will be calculated using millisecond values\nMay break mods that access some accuracy-related variables', 'newAccuracy', 'bool', true);
+			'If checked, accuracy will be calculated using millisecond values\nMay break mods that access some accuracy-related variables\nNOTE: Enabling osu! score will use its accuracy instead', 'newAccuracy', 'bool', true);
+		addOption(option);
+
+		var option:Option = new Option('Enable osu!mania score',
+			'If checked, score will be calculated using o!m formulas.\nEnabling New Accuracy will switch the accuracy system to o!m as well', 'osuManiaScore',
+			'bool', false);
 		addOption(option);
 
 		var option:Option = new Option('Rating Offset',
@@ -102,6 +107,14 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.scrollSpeed = 20;
 		option.minValue = -30;
 		option.maxValue = 30;
+		addOption(option);
+
+		var option:Option = new Option('MAX Hit Window', 'Changes the amount of time you have\nfor hitting a MAX in milliseconds.\nOnly works when osu!mania score is enabled', 'maxWindow', 'int',
+			15);
+		option.displayFormat = '%vms';
+		option.scrollSpeed = 5;
+		option.minValue = 5;
+		option.maxValue = 15;
 		addOption(option);
 
 		var option:Option = new Option('Sick! Hit Window',

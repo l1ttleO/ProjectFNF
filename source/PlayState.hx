@@ -105,6 +105,7 @@ class PlayState extends MusicBeatState
 	public var songSpeedTween:FlxTween;
 	public var songSpeed(default, set):Float = 1;
 	public var songSpeedType:String = "multiplicative";
+	public var songSpeedBonus:Float = 1;
 	public var noteKillOffset:Float = 350;
 
 	public var boyfriendGroup:FlxSpriteGroup;
@@ -127,6 +128,7 @@ class PlayState extends MusicBeatState
 	public var notes:FlxTypedGroup<Note>;
 	public var unspawnNotes:Array<Note> = [];
 	public var eventNotes:Array<EventNote> = [];
+	public var mustHitNoteCount:Int = 0;
 
 	private var strumLine:FlxSprite;
 
@@ -168,10 +170,12 @@ class PlayState extends MusicBeatState
 
 	private var timeBarBG:AttachedSprite;
 	public var timeBar:FlxBar;
+	public var maxes:Int = 0;
 	public var sicks:Int = 0;
 	public var goods:Int = 0;
 	public var bads:Int = 0;
 	public var shits:Int = 0;
+	public var osuScore:Bool = ClientPrefs.osuManiaScore;
 
 	private var generatedMusic:Bool = false;
 	public var endingSong:Bool = false;
@@ -232,11 +236,13 @@ class PlayState extends MusicBeatState
 	var wiggleShit:WiggleEffect = new WiggleEffect();
 	var bgGhouls:BGSprite;
 
-	public var songScore:Int = 0;
-	public var thScore:Int = 0;
+	public var songScore:Float = 0;
+	public var thScore:Float = 0;
+	public var maxScore:Float = 0;
 	public var songHits:Int = 0;
 	public var songMisses:Int = 0;
 	public var pressMisses:Int = 0;
+	public var realMisses:Int = 0;
 	public var scoreTxt:FlxText;
 	var timeTxt:FlxText;
 	var scoreTxtTween:FlxTween;
@@ -1266,6 +1272,10 @@ class PlayState extends MusicBeatState
 			FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 		}
 
+		if (osuScore)
+			for (i in 0...101)
+				bonusSqrtArray.insert(i, Math.sqrt(i)); // Square roots are expensive
+
 		Conductor.safeZoneOffset = (ClientPrefs.safeFrames / 60) * 1000;
 		callOnLuas('onCreatePost', []);
 
@@ -1298,6 +1308,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 		songSpeed = value;
+		songSpeedBonus = songSpeed / 2.4;
 		noteKillOffset = 350 / songSpeed;
 		return value;
 	}
@@ -1840,6 +1851,7 @@ class PlayState extends MusicBeatState
 		setOnLuas('songLength', songLength);
 		callOnLuas('onSongStart', []);
 
+		maxScore = 1000000 * Highscore.floorDecimal(songSpeedBonus * 1.25 * (mustHitNoteCount / (songLength / 1000) * songSpeedBonus), 2);
 	}
 	var debugNum:Int = 0;
 	private var noteTypeMap:Map<String, Bool> = new Map<String, Bool>();
@@ -1856,6 +1868,7 @@ class PlayState extends MusicBeatState
 			case "constant":
 				songSpeed = ClientPrefs.getGameplaySetting('scrollspeed', 1);
 		}
+		songSpeedBonus = songSpeed / 2.4;
 
 		var songData = SONG;
 		Conductor.changeBPM(songData.bpm);
@@ -1974,6 +1987,8 @@ class PlayState extends MusicBeatState
 
 				if (swagNote.mustPress)
 				{
+					if (!swagNote.hitCausesMiss && !swagNote.isSustainNote)
+						mustHitNoteCount++;
 					swagNote.x += FlxG.width / 2; // general offset
 				}
 				else if(ClientPrefs.middleScroll)
@@ -2423,7 +2438,7 @@ class PlayState extends MusicBeatState
 				scoreTxt.color = FlxColor.WHITE;
 		}
 
-		scoreTxt.text = 'Score: ' + songScore + thScoreHealthTxt + ' | Misses: ' + songMisses + pressMissesTxt + accuracyTxt + ' | Rating: ' + ratingName + suffix + extraRatingTxt;
+		scoreTxt.text = 'Score: ' + Highscore.floorDecimal(songScore, 0) + thScoreHealthTxt + ' | Misses: ' + songMisses + pressMissesTxt + accuracyTxt + ' | Rating: ' + ratingName + suffix + extraRatingTxt;
 
 		if(botplayTxt.visible) {
 			botplaySine += 180 * elapsed;
@@ -3198,6 +3213,7 @@ class PlayState extends MusicBeatState
 				if(val2 <= 0)
 				{
 					songSpeed = newValue;
+					songSpeedBonus = songSpeed / 2.4;
 				}
 				else
 				{
@@ -3375,7 +3391,7 @@ class PlayState extends MusicBeatState
 				#if !switch
 				var percent:Float = ratingPercent;
 				if(Math.isNaN(percent)) percent = 0;
-				Highscore.saveScore(SONG.song, songScore, storyDifficulty, percent);
+				Highscore.saveScore(SONG.song, Std.int(songScore), storyDifficulty, percent);
 				#end
 			}
 
@@ -3387,7 +3403,7 @@ class PlayState extends MusicBeatState
 
 			if (isStoryMode)
 			{
-				campaignScore += songScore;
+				campaignScore += Std.int(songScore);
 				campaignMisses += songMisses;
 
 				storyPlaylist.remove(storyPlaylist[0]);
@@ -3503,38 +3519,66 @@ class PlayState extends MusicBeatState
 
 	public var totalPlayed:Float = 0;
 	public var totalNotesHit:Float = 0.0;
+	public var bonus:Int = 100;
+	private var bonusSqrtArray:Array<Float> = [];
 
 	public var showCombo:Bool = true;
 	public var showRating:Bool = true;
 
 	private function popUpScore(note:Note = null):Void
 	{
+		if (note.isSustainNote && (!ClientPrefs.newAccuracy || osuScore)) return;
+
 		var noteDiff:Float = Math.abs(note.strumTime - Conductor.songPosition + ClientPrefs.ratingOffset);
 		noteDiff -= Math.min(noteDiff, Math.min(FlxG.elapsed * 1000, noteKillOffset * 0.3));
 		//tryna do MS based judgment due to popular demand
 		var daRating:String = Conductor.judgeNote(note, noteDiff);
-		var score:Int = 350;
+		var score:Float = 350;
+
+		var hitValue:Float = 320;
+		var hitBonusValue:Int = 32;
+		var hitBonus:Int = 0;
+		var hitPunishment:Int = 0;
+		var modMultiplier:Float = practiceMode ? 0.5 : 1;
 
 		switch (daRating) {
 			case "shit": // shit
 				countNoteHit(0.25, noteDiff, note.isSustainNote);
 				note.ratingMod = 0;
-				score = 50;
 				if (!note.ratingDisabled) shits++;
+
+				hitValue = score = 50;
+				hitBonusValue = 4;
+				hitPunishment = 44;
 			case "bad": // bad
 				countNoteHit(0.5, noteDiff, note.isSustainNote);
 				note.ratingMod = 0.5;
-				score = 100;
 				if (!note.ratingDisabled) bads++;
+
+				hitValue = score = 100;
+				hitBonusValue = 8;
+				hitPunishment = 24;
 			case "good": // good
 				countNoteHit(0.75, noteDiff, note.isSustainNote);
 				note.ratingMod = 0.75;
-				score = 200;
 				if (!note.ratingDisabled) goods++;
+
+				hitValue = score = 200;
+				hitBonusValue = 16;
+				hitPunishment = 8;
 			case "sick": // sick
 				countNoteHit(1, noteDiff, note.isSustainNote);
 				note.ratingMod = 1;
 				if (!note.ratingDisabled) sicks++;
+
+				hitValue = 300;
+				hitBonus = 1;
+			case "max":
+				countNoteHit(1, noteDiff, note.isSustainNote);
+				note.ratingMod = 1;
+				if (!note.ratingDisabled) maxes++;
+
+				hitBonus = 2;
 		}
 		note.rating = daRating;
 
@@ -3556,11 +3600,24 @@ class PlayState extends MusicBeatState
 			spawnNoteSplashOnNote(note);
 		}
 
-		thScore += 350;
-		if(!practiceMode && !cpuControlled) {
-			songScore += score;
+		if((!practiceMode || osuScore) && !cpuControlled) {
 			if(!note.ratingDisabled)
 				songHits++;
+
+			if (osuScore) {
+				bonus += hitBonus - hitPunishment;
+				if (bonus < 0) bonus = 0;
+				if (bonus > 100) bonus = 100;
+
+				var firstMultiplier = maxScore * modMultiplier * 0.5 / mustHitNoteCount;
+
+				var baseScore:Float = firstMultiplier * (hitValue / 320);
+				var bonusScore:Float = firstMultiplier * (hitBonusValue * bonusSqrtArray[bonus] / 320);
+
+				score = baseScore + bonusScore;
+			}
+
+			songScore += score;
 
 			if(ClientPrefs.scoreZoom)
 			{
@@ -3932,13 +3989,15 @@ class PlayState extends MusicBeatState
 		//For testing purposes
 		//trace(daNote.missHealth);
 		songMisses++;
+		if (!daNote.hitCausesMiss) {
+			if (!osuScore) thScore += 350;
+			realMisses++;
+		}
 		vocals.volume = 0;
-		if(!practiceMode) songScore -= 10;
-		if (ClientPrefs.newAccuracy)
+		if(!practiceMode && !osuScore) songScore -= 10;
+		if (ClientPrefs.newAccuracy && !osuScore)
 			totalNotesHit--;
 		totalPlayed++;
-		if (!daNote.hitCausesMiss)
-			thScore += 350;
 		RecalculateRating();
 
 		if(ClientPrefs.playMissAnimations)
@@ -4010,7 +4069,7 @@ class PlayState extends MusicBeatState
 			}
 			combo = 0;
 
-			if(!practiceMode) songScore -= 10;
+			if(!practiceMode && !osuScore) songScore -= 10;
 			if(!endingSong) {
 				songMisses++;
 			}
@@ -4138,6 +4197,7 @@ class PlayState extends MusicBeatState
 			{
 				combo += 1;
 				if(combo > 9999) combo = 9999;
+				if (!osuScore) thScore += 350;
 			}
 			popUpScore(note);
 
@@ -4643,15 +4703,21 @@ class PlayState extends MusicBeatState
 		{
 			if(totalPlayed < 1) //Prevent divide by 0
 				ratingPercent = 1;
-			else
+			else if (!osuScore || !ClientPrefs.newAccuracy)
 				ratingPercent = Math.min(1, Math.max(0, totalNotesHit / totalPlayed));
+			else
+				ratingPercent = (300 * (maxes + sicks) + 200 * goods + 100 * bads + 50 * shits)
+				 / (300 * (maxes + sicks + goods + bads + realMisses));
 			setRatingName(ratingPercent);
 		}
 
 		var ratingMultiplier:Float = 1.25;
 
+		if (osuScore) thScore = maxScore;
+
 		// Rating FC
 		ratingFC = "";
+		if (maxes > 0) ratingFC = " (MFC)";
 		if (sicks > 0) { ratingFC = " (SFC)"; ratingMultiplier = 1.25; }
 		if (goods > 0) { ratingFC = " (GFC)"; ratingMultiplier = 1.15; }
 		if (bads > 0 || shits > 0) { ratingFC = " (FC)"; ratingMultiplier = 1.1; }
@@ -4661,13 +4727,11 @@ class PlayState extends MusicBeatState
 		setOnLuas('rating', ratingPercent);
 		setOnLuas('ratingName', ratingName);
 		setOnLuas('ratingFC', ratingFC);
-
-		var scrollSpeedBonus:Float = songSpeed / 2.4;
 		var seconds:Float = Conductor.songPosition / 1000;
-		var noteDensity:Float = Math.max(0.75, totalNotesHit / seconds * scrollSpeedBonus);
+		var noteDensity:Float = Math.max(0.75, totalNotesHit / seconds * songSpeedBonus);
 		var pressMissesPenalty = Math.max(1, pressMisses / 10);
 
-		rating = ratingPercent * scrollSpeedBonus * ratingMultiplier * noteDensity / pressMissesPenalty;
+		rating = ratingPercent * songSpeedBonus * ratingMultiplier * noteDensity / pressMissesPenalty;
 	}
 
 	private function setRatingName(ratingPercent:Float) {
@@ -4782,9 +4846,9 @@ class PlayState extends MusicBeatState
 	}
 
 	function countNoteHit(ifOldAccuracy:Float, milliseconds:Float, isSustain:Bool):Void {
-		if (isSustain && !ClientPrefs.newAccuracy) return;
+		if (isSustain && (!ClientPrefs.newAccuracy || osuScore)) return;
 
-		totalNotesHit += ClientPrefs.newAccuracy ? Math.min(isSustain ? 1 / 3 : ((noteKillOffset - milliseconds) / noteKillOffset), 1) : ifOldAccuracy;
+		totalNotesHit += ClientPrefs.newAccuracy && !osuScore ? Math.min(isSustain ? 1 / 3 : ((noteKillOffset - milliseconds) / noteKillOffset), 1) : ifOldAccuracy;
 		totalPlayed += isSustain ? 1 / 3 : 1;
 
 		RecalculateRating();
