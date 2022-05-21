@@ -47,7 +47,7 @@ jobs:
           haxelib list
         shell: cmd
       - name: Compile
-        run: haxelib run lime build windows -release
+        run: haxelib run lime build windows -release -D CHECK_FOR_UPDATES
       - name: Publish Artifact
         uses: actions/upload-artifact@v2
         with:
