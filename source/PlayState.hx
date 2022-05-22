@@ -3543,40 +3543,40 @@ class PlayState extends MusicBeatState
 
 		switch (daRating) {
 			case "shit": // shit
+				if (!note.ratingDisabled) shits++;
 				countNoteHit(0.25, noteDiff, note.isSustainNote);
 				note.ratingMod = 0;
-				if (!note.ratingDisabled) shits++;
 
 				hitValue = score = 50;
 				hitBonusValue = 4;
 				hitPunishment = 44;
 			case "bad": // bad
+				if (!note.ratingDisabled) bads++;
 				countNoteHit(0.5, noteDiff, note.isSustainNote);
 				note.ratingMod = 0.5;
-				if (!note.ratingDisabled) bads++;
 
 				hitValue = score = 100;
 				hitBonusValue = 8;
 				hitPunishment = 24;
 			case "good": // good
+				if (!note.ratingDisabled) goods++;
 				countNoteHit(0.75, noteDiff, note.isSustainNote);
 				note.ratingMod = 0.75;
-				if (!note.ratingDisabled) goods++;
 
 				hitValue = score = 200;
 				hitBonusValue = 16;
 				hitPunishment = 8;
 			case "sick": // sick
+				if (!note.ratingDisabled) sicks++;
 				countNoteHit(1, noteDiff, note.isSustainNote);
 				note.ratingMod = 1;
-				if (!note.ratingDisabled) sicks++;
 
 				hitValue = 300;
 				hitBonus = 1;
 			case "max":
+				if (!note.ratingDisabled) maxes++;
 				countNoteHit(1, noteDiff, note.isSustainNote);
 				note.ratingMod = 1;
-				if (!note.ratingDisabled) maxes++;
 
 				hitBonus = 2;
 		}
@@ -4701,13 +4701,15 @@ class PlayState extends MusicBeatState
 		var ret:Dynamic = callOnLuas('onRecalculateRating', []);
 		if(ret != FunkinLua.Function_Stop)
 		{
-			if(totalPlayed < 1) //Prevent divide by 0
+			var totalJudgedNotes:Int = maxes + sicks + goods + bads + realMisses;
+			if(totalJudgedNotes < 1) //Prevent divide by 0
 				ratingPercent = 1;
 			else if (!osuScore || !ClientPrefs.newAccuracy)
 				ratingPercent = Math.min(1, Math.max(0, totalNotesHit / totalPlayed));
 			else
 				ratingPercent = (300 * (maxes + sicks) + 200 * goods + 100 * bads + 50 * shits)
-				 / (300 * (maxes + sicks + goods + bads + realMisses));
+				 / (300 * totalJudgedNotes);
+
 			setRatingName(ratingPercent);
 		}
 
