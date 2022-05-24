@@ -3998,6 +3998,7 @@ class PlayState extends MusicBeatState
 		if (ClientPrefs.newAccuracy && !osuScore)
 			totalNotesHit--;
 		totalPlayed++;
+		bonus = 0;
 		RecalculateRating();
 
 		if(ClientPrefs.playMissAnimations)
@@ -4074,6 +4075,7 @@ class PlayState extends MusicBeatState
 				songMisses++;
 			}
 			totalPlayed++;
+			bonus = 0;
 			RecalculateRating();
 
 			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
@@ -4720,7 +4722,7 @@ class PlayState extends MusicBeatState
 		// Rating FC
 		ratingFC = "";
 		if (maxes > 0) ratingFC = " (MFC)";
-		if (sicks > 0) { ratingFC = " (SFC)"; ratingMultiplier = 1.25; }
+		if (sicks > 0) ratingFC = " (SFC)";
 		if (goods > 0) { ratingFC = " (GFC)"; ratingMultiplier = 1.15; }
 		if (bads > 0 || shits > 0) { ratingFC = " (FC)"; ratingMultiplier = 1.1; }
 		if (songMisses > 0) { ratingFC = " (SDCB)"; ratingMultiplier = 1; }
