@@ -67,15 +67,24 @@ class PlayState extends MusicBeatState
 	public static var STRUM_X_MIDDLESCROLL = -278;
 
 	public static var ratingStuff:Array<Dynamic> = [
-		['F', 0.4], //From 20% to 39%
-		['E', 0.5], //From 40% to 49%
-		['D', 0.6], //From 50% to 59%
-		['C', 0.7], //From 60% to 68%
-		['B', 0.8], //From 70% to 79%
-		['A', 0.9], //From 80% to 89%
-		['S', 0.99], //From 90% to 99%
-		['SS', 1]
+		['=F=', 0.4], //From 20% to 39%
+		['!E!', 0.5], //From 40% to 49%
+		['@D@', 0.6], //From 50% to 59%
+		['#C#', 0.7], //From 60% to 68%
+		['$B$', 0.8], //From 70% to 79%
+		['^A^', 0.9], //From 80% to 89%
+		['&S&', 0.99], //From 90% to 99%
+		['_SS_', 1]
 	];
+
+	var redFormat:FlxTextFormat = new FlxTextFormat(FlxColor.RED);
+	var orangeFormat:FlxTextFormat = new FlxTextFormat(FlxColor.ORANGE);
+	var yellowFormat:FlxTextFormat = new FlxTextFormat(FlxColor.YELLOW);
+	var greenFormat:FlxTextFormat = new FlxTextFormat(FlxColor.GREEN);
+	var limeFormat:FlxTextFormat = new FlxTextFormat(FlxColor.LIME);
+	var cyanFormat:FlxTextFormat = new FlxTextFormat(FlxColor.CYAN);
+	var magentaFormat:FlxTextFormat = new FlxTextFormat(FlxColor.MAGENTA);
+	var blackFormat:FlxTextFormat = new FlxTextFormat(FlxColor.BLACK);
 
 	public var modchartTweens:Map<String, FlxTween> = new Map<String, FlxTween>();
 	public var modchartSprites:Map<String, ModchartSprite> = new Map<String, ModchartSprite>();
@@ -243,6 +252,7 @@ class PlayState extends MusicBeatState
 	public var pressMisses:Int = 0;
 	public var realMisses:Int = 0;
 	public var scoreTxt:FlxText;
+	public var scoreTxtBG:FlxSprite;
 	var timeTxt:FlxText;
 	var scoreTxtTween:FlxTween;
 
@@ -1092,6 +1102,11 @@ class PlayState extends MusicBeatState
 		scoreTxt.scrollFactor.set();
 		scoreTxt.borderSize = 1.2;
 		scoreTxt.visible = !ClientPrefs.hideHud;
+
+		scoreTxtBG = new FlxSprite(0, scoreTxt.y - 5).makeGraphic(FlxG.width, 30, FlxColor.BLACK);
+		scoreTxtBG.alpha = ClientPrefs.scoreTxtUnderlayOpacity;
+		scoreTxtBG.scrollFactor.set();
+		add(scoreTxtBG);
 		add(scoreTxt);
 
 		versionTxt = new FlxText(0, FlxG.height - 24, 0, SONG.song + " - " +
@@ -1125,6 +1140,7 @@ class PlayState extends MusicBeatState
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
+		scoreTxtBG.cameras = [camHUD];
 		versionTxt.cameras = [camHUD];
 		botplayTxt.cameras = [camHUD];
 		timeBar.cameras = [camHUD];
@@ -2402,40 +2418,8 @@ class PlayState extends MusicBeatState
 
 		super.update(elapsed);
 
-		var accuracyPercentage = Highscore.floorDecimal(ratingPercent * 100, 2);
 
-		var suffix:String = '';
-		var thing:Float = FlxMath.roundDecimal(ratingPercent * 10, 0) * 10; // you can't do 'ratingPercent * 100', the number must be rounded before multiplying by 10
-		if (accuracyPercentage - thing < 0 && accuracyPercentage > 30 && accuracyPercentage < 99) {
-			if (accuracyPercentage - thing > -5)
-				suffix = '+';
-			if (accuracyPercentage - thing >= -1)
-				suffix = '++';
-		}
 
-		var thScoreHealthTxt:String = '';
-		var accuracyTxt:String = '';
-		var pressMissesTxt:String = '';
-		var extraRatingTxt:String = '';
-
-		if (ClientPrefs.advancedScoreTxt) {
-			if (pressMisses > 0)
-				pressMissesTxt = ' (+' + pressMisses + ')';
-			thScoreHealthTxt = ' (' + thScore + ') | Health: ' + FlxMath.roundDecimal(healthPercentageDisplay, 0) + '%';
-			accuracyTxt = ' | Accuracy: ' + accuracyPercentage + '%' + ratingFC;
-			extraRatingTxt = ' (' + Highscore.floorDecimal(rating, 2) + ')';
-		}
-
-		if (cpuControlled) {
-			if (songMisses > 0)
-				scoreTxt.color = FlxColor.RED;
-			else if (ratingPercent < 0.99)
-				scoreTxt.color = FlxColor.YELLOW;
-			else
-				scoreTxt.color = FlxColor.WHITE;
-		}
-
-		scoreTxt.text = 'Score: ' + Highscore.floorDecimal(songScore, 0) + thScoreHealthTxt + ' | Misses: ' + songMisses + pressMissesTxt + accuracyTxt + ' | Rating: ' + ratingName + suffix + extraRatingTxt;
 
 		if(botplayTxt.visible) {
 			botplaySine += 180 * elapsed;
@@ -2481,6 +2465,8 @@ class PlayState extends MusicBeatState
 		if (totalPlayed > 0 && toPassiveDrain > 0)
 			shouldPassiveDrain = true;
 
+		var oldPercentage:Float = healthPercentageDisplay;
+
 		var passiveDrainNow:Float = toPassiveDrain * elapsed;
 		if (shouldPassiveDrain && (health - passiveDrainNow > 0.001 || (ClientPrefs.karma == 'Permanent' && ClientPrefs.karmaCanKill))) {
 			health -= passiveDrainNow;
@@ -2497,8 +2483,10 @@ class PlayState extends MusicBeatState
 		if (health > maxHealth)
 			health = maxHealth;
 
-		healthPercentageDisplay = health / 0.02;
+		healthPercentageDisplay = Highscore.floorDecimal(health / 0.02, 0);
 		healthPercentageBar = opponentChart ? 100 - healthPercentageDisplay : healthPercentageDisplay;
+		if (oldPercentage != healthPercentageDisplay)
+			updateScoreTxt();
 
 		var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
 		iconP1.scale.set(mult, mult);
@@ -4039,6 +4027,7 @@ class PlayState extends MusicBeatState
 
 			if (ClientPrefs.ghostTapping) {
 				pressMisses++;
+				updateScoreTxt();
 				return;
 			}
 
@@ -4130,6 +4119,7 @@ class PlayState extends MusicBeatState
 			var toDrain:Float = toDrain / healthDrainedDivider * baseSustainMultiplier * healthSustainMultiplier;
 			health -= toDrain;
 			healthDrained += toDrain;
+			updateScoreTxt();
 		}
 
 		if (SONG.needsVoices)
@@ -4716,12 +4706,12 @@ class PlayState extends MusicBeatState
 
 		// Rating FC
 		ratingFC = "";
-		if (maxes > 0) ratingFC = " (MFC)";
-		if (sicks > 0) ratingFC = " (SFC)";
-		if (goods > 0) { ratingFC = " (GFC)"; ratingMultiplier = 1.15; }
-		if (bads > 0 || shits > 0) { ratingFC = " (FC)"; ratingMultiplier = 1.1; }
-		if (songMisses > 0) { ratingFC = " (SDCB)"; ratingMultiplier = 1; }
-		if (songMisses >= 10) ratingFC = " (Clear)";
+		if (maxes > 0) ratingFC = " (!MFC!)";
+		if (sicks > 0) ratingFC = " (_SFC_)";
+		if (goods > 0) { ratingFC = " (^GFC^)"; ratingMultiplier = 1.15; }
+		if (bads > 0 || shits > 0) { ratingFC = " ($FC$)"; ratingMultiplier = 1.1; }
+		if (songMisses > 0) { ratingFC = " (&SDCB&)"; ratingMultiplier = 1; }
+		if (songMisses >= 10) ratingFC = " (#Clear#)";
 		if (songMisses >= 20) ratingMultiplier = 0.75;
 		setOnLuas('rating', ratingPercent);
 		setOnLuas('ratingName', ratingName);
@@ -4731,6 +4721,7 @@ class PlayState extends MusicBeatState
 		var pressMissesPenalty = Math.max(1, pressMisses / 10);
 
 		rating = ratingPercent * songSpeedBonus * ratingMultiplier * noteDensity / pressMissesPenalty;
+		updateScoreTxt();
 	}
 
 	private function setRatingName(ratingPercent:Float) {
@@ -4856,5 +4847,57 @@ class PlayState extends MusicBeatState
 	public static function toggleCamera(camera:FlxCamera, newStatus:Bool):Void {
 		camera.visible = newStatus;
 		camera.active = newStatus;
+	}
+
+	function updateScoreTxt():Void {
+		var accuracyPercentage = Highscore.floorDecimal(ratingPercent * 100, 2);
+
+		var suffix:String = '';
+		// you can't do 'ratingPercent * 100', the number must be rounded before multiplying by 10
+		var thing:Float = FlxMath.roundDecimal(ratingPercent * 10,0) * 10;
+		if (accuracyPercentage - thing < 0 && accuracyPercentage > 30 && accuracyPercentage < 99) {
+			if (accuracyPercentage - thing > -5)
+				suffix = '+';
+			if (accuracyPercentage - thing >= -1)
+				suffix = '++';
+		}
+
+		var thScoreHealthTxt:String = '';
+		var accuracyTxt:String = '';
+		var pressMissesTxt:String = '';
+		var extraRatingTxt:String = '';
+
+		var normalMissesWarning:String = ClientPrefs.advancedScoreTxt && songMisses >= 20 ? '#' : '';
+		var pressMissesWarning:String = ClientPrefs.advancedScoreTxt && pressMisses > 10 ? '#' : '';
+
+		if (ClientPrefs.advancedScoreTxt) {
+			if (pressMisses > 0)
+				pressMissesTxt = ' (+' + pressMissesWarning + pressMisses + pressMissesWarning + ')';
+			var style:String = '';
+			if (health <= 0) style = '=';
+			if (health > 0) style = '!';
+			if (health > 0.4) style = '@';
+			if (health > 0.8) style = '#';
+			if (health > 1.2) style = '$';
+			if (health > 1.6) style = '^';
+			if (health > 2) style = '&'; // This can be redone using the rating letters system
+			thScoreHealthTxt = ' (' + thScore + ') // Health: ' + style + healthPercentageDisplay + '%' + style;
+			accuracyTxt = ' // Accuracy: ' + accuracyPercentage + '%' + ratingFC;
+			var warning:String = normalMissesWarning + pressMissesWarning != '' ? '#' : '';
+			extraRatingTxt = ' (' + warning + Highscore.floorDecimal(rating, 2) + warning + ')';
+		}
+
+		scoreTxt.applyMarkup('Score: ' + Highscore.floorDecimal(songScore, 0) + thScoreHealthTxt + ' // Misses: ' + normalMissesWarning + songMisses + normalMissesWarning + pressMissesTxt + accuracyTxt
+			+ ' // Rating: ' + ratingName + suffix + extraRatingTxt,
+			[
+				new FlxTextFormatMarkerPair(redFormat, "!"),
+				new FlxTextFormatMarkerPair(orangeFormat, "@"),
+				new FlxTextFormatMarkerPair(yellowFormat, "#"),
+				new FlxTextFormatMarkerPair(greenFormat, "$"),
+				new FlxTextFormatMarkerPair(limeFormat, "^"),
+				new FlxTextFormatMarkerPair(cyanFormat, "&"),
+				new FlxTextFormatMarkerPair(magentaFormat, "_"),
+				new FlxTextFormatMarkerPair(blackFormat, "=")
+			]);
 	}
 }

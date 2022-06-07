@@ -73,6 +73,7 @@ class ClientPrefs {
 	public static var newAccuracy:Bool = true;
 	public static var verticalHealthBar:String = 'Disabled';
 	public static var osuManiaScore:Bool = false;
+	public static var scoreTxtUnderlayOpacity:Float = 0.3;
 
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
 	public static var keSustains:Bool = false; // i was bored, okay?
@@ -172,6 +173,7 @@ class ClientPrefs {
 		FlxG.save.data.newAccuracy = newAccuracy;
 		FlxG.save.data.verticalHealthBar = verticalHealthBar;
 		FlxG.save.data.osuManiaScore = osuManiaScore;
+		FlxG.save.data.scoreTxtUnderlayOpacity = scoreTxtUnderlayOpacity;
 
 		FlxG.save.flush();
 
@@ -386,6 +388,10 @@ class ClientPrefs {
 		if (FlxG.save.data.osuManiaScore != null)
 		{
 			osuManiaScore = FlxG.save.data.osuManiaScore;
+		}
+		if (FlxG.save.data.scoreTxtUnderlayOpacity != null)
+		{
+			scoreTxtUnderlayOpacity = FlxG.save.data.scoreTxtUnderlayOpacity;
 		}
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v2', 'ninjamuffin99');
