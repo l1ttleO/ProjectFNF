@@ -1851,7 +1851,7 @@ class PlayState extends MusicBeatState
 		setOnLuas('songLength', songLength);
 		callOnLuas('onSongStart', []);
 
-		maxScore = 1000000 * Highscore.floorDecimal(songSpeedBonus * 1.25 * (mustHitNoteCount / (songLength / 1000) * songSpeedBonus), 2);
+		maxScore = 1000000 * Highscore.floorDecimal(songSpeedBonus * 1.25 * (mustHitNoteCount / (songLength / 1000 - songLength / 10000) * songSpeedBonus), 2);
 	}
 	var debugNum:Int = 0;
 	private var noteTypeMap:Map<String, Bool> = new Map<String, Bool>();
@@ -4732,7 +4732,7 @@ class PlayState extends MusicBeatState
 		setOnLuas('ratingName', ratingName);
 		setOnLuas('ratingFC', ratingFC);
 		var seconds:Float = Conductor.songPosition / 1000;
-		var noteDensity:Float = Math.max(0.75, totalNotesHit / seconds * songSpeedBonus);
+		var noteDensity:Float = Math.max(0.75, (totalNotesHit / (seconds - seconds / 10)) * songSpeedBonus);
 		var pressMissesPenalty = Math.max(1, pressMisses / 10);
 
 		rating = ratingPercent * songSpeedBonus * ratingMultiplier * noteDensity / pressMissesPenalty;
