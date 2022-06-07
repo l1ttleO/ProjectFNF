@@ -154,8 +154,7 @@ class PlayState extends MusicBeatState
 	public var maxHealth:Float = 2;
 	public var healthPercentageBar:Float;
 	public var healthPercentageDisplay:Float;
-	public var healthDrained:Float = 1;
-	public var minDrained:Float = 0;
+	public var healthDrained:Float = 0;
 	public var shouldPassiveDrain:Bool = false;
 	public var toPassiveDrain:Float = 0;
 	public var toDrain:Float = ClientPrefs.damageFromOpponentNotes * 0.02;
@@ -340,8 +339,6 @@ class PlayState extends MusicBeatState
 			ClientPrefs.enableQolBalanceChanges = true; // fuck sustains
 			health = 2;
 			maxHealth = 3;
-			healthDrained = 0;
-			minDrained = -1;
 			toDrain = 0.0215;
 			toPassiveDrain = 0.0325;
 			healthGain = 1.5375;
@@ -2500,9 +2497,6 @@ class PlayState extends MusicBeatState
 		if (health > maxHealth)
 			health = maxHealth;
 
-		if (healthDrained < minDrained)
-			healthDrained = minDrained;
-
 		healthPercentageDisplay = health / 0.02;
 		healthPercentageBar = opponentChart ? 100 - healthPercentageDisplay : healthPercentageDisplay;
 
@@ -3970,7 +3964,7 @@ class PlayState extends MusicBeatState
 		var healthSustainMultiplier:Float = 1;
 		if (ClientPrefs.enableQolBalanceChanges && daNote.isSustainNote) {
 			baseSustainMultiplier = 0.85;
-			healthSustainMultiplier = health * 0.925 < 0.15 ? 0.15 : health * 0.925;
+			healthSustainMultiplier = Math.max(health * 0.925 - 0.5, 0.125);
 		}
 		var toRemove:Float = daNote.missHealth * healthLoss * baseSustainMultiplier * healthSustainMultiplier;
 		health -= toRemove;
@@ -4124,16 +4118,16 @@ class PlayState extends MusicBeatState
 				moveCamera(!opponentChart, animToPlay);
 		}
 
-		if (ClientPrefs.opponentNotesDoDamage && (health - toDrain > 0.001 || ClientPrefs.opponentNotesCanKill) &&
-			 healthDrained < 2 - 0.2) {
+		if (ClientPrefs.opponentNotesDoDamage && (health - toDrain > 0.001 || ClientPrefs.opponentNotesCanKill)) {
 			shouldPassiveDrain = true;
 			var baseSustainMultiplier:Float = 1;
 			var healthSustainMultiplier:Float = 1;
+			var healthDrainedDivider:Float = Math.max(healthDrained, 1);
 			if (ClientPrefs.enableQolBalanceChanges && note.isSustainNote) {
 				baseSustainMultiplier = 0.85;
-				healthSustainMultiplier = health * 0.9 < 0.175 ? 0.175 : health * 0.9;
+				healthSustainMultiplier = Math.max(health * 0.875 - 0.5, 0.15);
 			}
-			var toDrain:Float = toDrain * baseSustainMultiplier * healthSustainMultiplier;
+			var toDrain:Float = toDrain / healthDrainedDivider * baseSustainMultiplier * healthSustainMultiplier;
 			health -= toDrain;
 			healthDrained += toDrain;
 		}
@@ -4205,11 +4199,12 @@ class PlayState extends MusicBeatState
 
 			var baseSustainMultiplier:Float = 1;
 			var healthSustainDivider:Float = 1;
+			var healthDrainedMultiplier = Math.max(healthDrained, 1);
 			if (ClientPrefs.enableQolBalanceChanges && note.isSustainNote) {
 				baseSustainMultiplier = 0.825;
-				healthSustainDivider = health * 0.925 < 0.175 ? 0.175 : health * 0.925;
+				healthSustainDivider = Math.max(health * 0.95 - 0.5, 0.15);
 			}
-			var toAdd:Float = note.hitHealth * healthGain * baseSustainMultiplier / healthSustainDivider;
+			var toAdd:Float = note.hitHealth * healthGain * healthDrainedMultiplier * baseSustainMultiplier / healthSustainDivider;
 			if (tempKarma > 0) {
 				var drained:Float = Math.min(tempKarma, toAdd);
 				toAdd -= drained;
