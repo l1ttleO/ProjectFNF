@@ -89,13 +89,12 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		var option:Option = new Option('Enable QoL and balance changes', "If checked, the gameplay can be adjusted to balance it or to implement QoL features", 'enableQolBalanceChanges', 'bool', true);
 		addOption(option);
 
-		var option:Option = new Option('Enable New Accuracy',
-			'If checked, accuracy will be calculated using millisecond values\nMay break mods that access some accuracy-related variables\nNOTE: Enabling osu! score will use its accuracy instead', 'newAccuracy', 'bool', true);
+		var option:Option = new Option('Score:', 'Which score system do you prefer?', 'scoreSystem', 'string',
+			'Vanilla', ['Vanilla', 'osu!mania']);
 		addOption(option);
 
-		var option:Option = new Option('Enable osu!mania score',
-			'If checked, score will be calculated using o!m formulas.\nEnabling New Accuracy will switch the accuracy system to o!m as well', 'osuManiaScore',
-			'bool', false);
+		var option:Option = new Option('Accuracy:', 'Which accuracy system do you prefer?', 'accuracySystem', 'string',
+			'Psych', ['Psych', 'Millisecond-based', 'osu!mania (normal)', 'osu!mania (strict)']);
 		addOption(option);
 
 		var option:Option = new Option('Rating Offset',
@@ -109,7 +108,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.maxValue = 30;
 		addOption(option);
 
-		var option:Option = new Option('MAX Hit Window', 'Changes the amount of time you have\nfor hitting a MAX in milliseconds.\nOnly works when osu!mania score is enabled', 'maxWindow', 'int',
+		var option:Option = new Option('MAX Hit Window', 'Changes the amount of time you have\nfor hitting a MAX in milliseconds.\nOnly works when osu!mania score or accuracy is enabled', 'maxWindow', 'int',
 			15);
 		option.displayFormat = '%vms';
 		option.scrollSpeed = 5;

@@ -70,9 +70,9 @@ class ClientPrefs {
 	public static var karmaCanKill:Bool = false;
 	public static var laneUnderlayOpacity:Float = 0;
 	public static var fixedComboSprPos:Bool = true;
-	public static var newAccuracy:Bool = true;
 	public static var verticalHealthBar:String = 'Disabled';
-	public static var osuManiaScore:Bool = false;
+	public static var scoreSystem:String = 'Vanilla';
+	public static var accuracySystem:String = 'Psych';
 	public static var scoreTxtUnderlayOpacity:Float = 0.3;
 
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
@@ -170,9 +170,9 @@ class ClientPrefs {
 		FlxG.save.data.karmaCanKill = karmaCanKill;
 		FlxG.save.data.laneUnderlayOpacity = laneUnderlayOpacity;
 		FlxG.save.data.fixedComboSprPos = fixedComboSprPos;
-		FlxG.save.data.newAccuracy = newAccuracy;
 		FlxG.save.data.verticalHealthBar = verticalHealthBar;
-		FlxG.save.data.osuManiaScore = osuManiaScore;
+		FlxG.save.data.scoreSystem = scoreSystem;
+		FlxG.save.data.accuracySystem = accuracySystem;
 		FlxG.save.data.scoreTxtUnderlayOpacity = scoreTxtUnderlayOpacity;
 
 		FlxG.save.flush();
@@ -377,17 +377,17 @@ class ClientPrefs {
 		{
 			fixedComboSprPos = FlxG.save.data.fixedComboSprPos;
 		}
-		if (FlxG.save.data.newAccuracy != null)
-		{
-			newAccuracy = FlxG.save.data.newAccuracy;
-		}
 		if (FlxG.save.data.verticalHealthBar != null)
 		{
 			verticalHealthBar = FlxG.save.data.verticalHealthBar;
 		}
-		if (FlxG.save.data.osuManiaScore != null)
+		if (FlxG.save.data.scoreSystem != null)
 		{
-			osuManiaScore = FlxG.save.data.osuManiaScore;
+			scoreSystem = FlxG.save.data.scoreSystem;
+		}
+		if (FlxG.save.data.accuracySystem != null)
+		{
+			accuracySystem = FlxG.save.data.accuracySystem;
 		}
 		if (FlxG.save.data.scoreTxtUnderlayOpacity != null)
 		{

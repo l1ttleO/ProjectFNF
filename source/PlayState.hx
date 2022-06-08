@@ -183,7 +183,6 @@ class PlayState extends MusicBeatState
 	public var goods:Int = 0;
 	public var bads:Int = 0;
 	public var shits:Int = 0;
-	public var osuScore:Bool = ClientPrefs.osuManiaScore;
 
 	private var generatedMusic:Bool = false;
 	public var endingSong:Bool = false;
@@ -1285,7 +1284,7 @@ class PlayState extends MusicBeatState
 			FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 		}
 
-		if (osuScore)
+		if (ClientPrefs.scoreSystem == 'osu!mania')
 			for (i in 0...101)
 				bonusSqrtArray.insert(i, Math.sqrt(i)); // Square roots are expensive
 
@@ -2465,7 +2464,7 @@ class PlayState extends MusicBeatState
 		if (totalPlayed > 0 && toPassiveDrain > 0)
 			shouldPassiveDrain = true;
 
-		var oldPercentage:Float = healthPercentageDisplay;
+		var oldPercentage:Float = Highscore.floorDecimal(healthPercentageDisplay, 0);
 
 		var passiveDrainNow:Float = toPassiveDrain * elapsed;
 		if (shouldPassiveDrain && (health - passiveDrainNow > 0.001 || (ClientPrefs.karma == 'Permanent' && ClientPrefs.karmaCanKill))) {
@@ -2483,9 +2482,9 @@ class PlayState extends MusicBeatState
 		if (health > maxHealth)
 			health = maxHealth;
 
-		healthPercentageDisplay = Highscore.floorDecimal(health / 0.02, 0);
+		healthPercentageDisplay = health / 0.02; // Don't round this for smooth health bar movement
 		healthPercentageBar = opponentChart ? 100 - healthPercentageDisplay : healthPercentageDisplay;
-		if (oldPercentage != healthPercentageDisplay)
+		if (oldPercentage != Highscore.floorDecimal(healthPercentageDisplay, 0))
 			updateScoreTxt();
 
 		var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
@@ -3368,12 +3367,13 @@ class PlayState extends MusicBeatState
 		#end
 
 		if(ret != FunkinLua.Function_Stop && !transitioning) {
+			var score:Int = 350 * (maxes + sicks) + 200 * goods + 100 * bads + 50 * shits - (songMisses * 10);
 			if (SONG.validScore)
 			{
 				#if !switch
-				var percent:Float = ratingPercent;
+				var percent:Float = ((maxes + sicks) + goods * 0.75 + bads * 0.5) / (maxes + sicks + goods + bads + shits + songMisses);
 				if(Math.isNaN(percent)) percent = 0;
-				Highscore.saveScore(SONG.song, Std.int(songScore), storyDifficulty, percent);
+				Highscore.saveScore(SONG.song, score, storyDifficulty, percent);
 				#end
 			}
 
@@ -3385,7 +3385,7 @@ class PlayState extends MusicBeatState
 
 			if (isStoryMode)
 			{
-				campaignScore += Std.int(songScore);
+				campaignScore += score;
 				campaignMisses += songMisses;
 
 				storyPlaylist.remove(storyPlaylist[0]);
@@ -3509,7 +3509,7 @@ class PlayState extends MusicBeatState
 
 	private function popUpScore(note:Note = null):Void
 	{
-		if (note.isSustainNote && (!ClientPrefs.newAccuracy || osuScore)) return;
+		if (note.isSustainNote && ClientPrefs.accuracySystem != 'Millisecond-based') return;
 
 		var noteDiff:Float = Math.abs(note.strumTime - Conductor.songPosition + ClientPrefs.ratingOffset);
 		noteDiff -= Math.min(noteDiff, Math.min(FlxG.elapsed * 1000, noteKillOffset * 0.3));
@@ -3582,11 +3582,11 @@ class PlayState extends MusicBeatState
 			spawnNoteSplashOnNote(note);
 		}
 
-		if((!practiceMode || osuScore) && !cpuControlled) {
+		if((!practiceMode || ClientPrefs.scoreSystem == 'osu!mania') && !cpuControlled) {
 			if(!note.ratingDisabled)
 				songHits++;
 
-			if (osuScore) {
+			if (ClientPrefs.scoreSystem == 'osu!mania') {
 				bonus += hitBonus - hitPunishment;
 				if (bonus < 0) bonus = 0;
 				if (bonus > 100) bonus = 100;
@@ -3972,12 +3972,12 @@ class PlayState extends MusicBeatState
 		//trace(daNote.missHealth);
 		songMisses++;
 		if (!daNote.hitCausesMiss) {
-			if (!osuScore) thScore += 350;
+			if (ClientPrefs.scoreSystem == 'Vanilla') thScore += 350;
 			realMisses++;
 		}
 		vocals.volume = 0;
-		if(!practiceMode && !osuScore) songScore -= 10;
-		if (ClientPrefs.newAccuracy && !osuScore)
+		if (!practiceMode && ClientPrefs.scoreSystem == 'Vanilla') songScore -= 10;
+		if (ClientPrefs.accuracySystem == 'Millisecond-based')
 			totalNotesHit--;
 		totalPlayed++;
 		bonus = 0;
@@ -4053,7 +4053,7 @@ class PlayState extends MusicBeatState
 			}
 			combo = 0;
 
-			if(!practiceMode && !osuScore) songScore -= 10;
+			if (!practiceMode && ClientPrefs.scoreSystem == 'Vanilla') songScore -= 10;
 			if(!endingSong) {
 				songMisses++;
 			}
@@ -4183,7 +4183,7 @@ class PlayState extends MusicBeatState
 			{
 				combo += 1;
 				if(combo > 9999) combo = 9999;
-				if (!osuScore) thScore += 350;
+				if (ClientPrefs.scoreSystem == 'Vanilla') thScore += 350;
 			}
 			popUpScore(note);
 
@@ -4691,18 +4691,21 @@ class PlayState extends MusicBeatState
 			var totalJudgedNotes:Int = maxes + sicks + goods + bads + realMisses;
 			if(totalJudgedNotes < 1) //Prevent divide by 0
 				ratingPercent = 1;
-			else if (!osuScore || !ClientPrefs.newAccuracy)
+			else if (!ClientPrefs.accuracySystem.startsWith('osu!mania'))
 				ratingPercent = Math.min(1, Math.max(0, totalNotesHit / totalPlayed));
-			else
-				ratingPercent = (300 * (maxes + sicks) + 200 * goods + 100 * bads + 50 * shits)
-				 / (300 * totalJudgedNotes);
+			else {
+				var strictAcc:Bool = ClientPrefs.accuracySystem.endsWith('(strict)');
+				var maxesAndSicks:Int = strictAcc ? 305 * maxes + 300 * sicks : 300 * (maxes + sicks);
+				ratingPercent = (maxesAndSicks + 200 * goods + 100 * bads + 50 * shits)
+				/ ((strictAcc ? 305 : 300) * totalJudgedNotes);
+			}
 
 			setRatingName(ratingPercent);
 		}
 
 		var ratingMultiplier:Float = 1.25;
 
-		if (osuScore) thScore = maxScore;
+		if (ClientPrefs.scoreSystem == 'osu!mania') thScore = maxScore;
 
 		// Rating FC
 		ratingFC = "";
@@ -4712,13 +4715,13 @@ class PlayState extends MusicBeatState
 		if (bads > 0 || shits > 0) { ratingFC = " ($FC$)"; ratingMultiplier = 1.1; }
 		if (songMisses > 0) { ratingFC = " (&SDCB&)"; ratingMultiplier = 1; }
 		if (songMisses >= 10) ratingFC = " (#Clear#)";
-		if (songMisses >= 20) ratingMultiplier = 0.75;
+		if (songMisses >= 25) ratingMultiplier = 0.75;
 		setOnLuas('rating', ratingPercent);
 		setOnLuas('ratingName', ratingName);
 		setOnLuas('ratingFC', ratingFC);
 		var seconds:Float = Conductor.songPosition / 1000;
 		var noteDensity:Float = Math.max(0.75, (totalNotesHit / (seconds - seconds / 10)) * songSpeedBonus);
-		var pressMissesPenalty = Math.max(1, pressMisses / 10);
+		var pressMissesPenalty = Math.max(1, pressMisses / 15);
 
 		rating = ratingPercent * songSpeedBonus * ratingMultiplier * noteDensity / pressMissesPenalty;
 		updateScoreTxt();
@@ -4836,9 +4839,9 @@ class PlayState extends MusicBeatState
 	}
 
 	function countNoteHit(ifOldAccuracy:Float, milliseconds:Float, isSustain:Bool):Void {
-		if (isSustain && (!ClientPrefs.newAccuracy || osuScore)) return;
+		if (isSustain && ClientPrefs.accuracySystem != 'Millisecond-based') return;
 
-		totalNotesHit += ClientPrefs.newAccuracy && !osuScore ? Math.min(isSustain ? 1 / 3 : ((noteKillOffset - milliseconds) / noteKillOffset), 1) : ifOldAccuracy;
+		totalNotesHit += ClientPrefs.accuracySystem == 'Millisecond-based' ? Math.min(isSustain ? 1 / 3 : ((noteKillOffset - milliseconds) / noteKillOffset), 1) : ifOldAccuracy;
 		totalPlayed += isSustain ? 1 / 3 : 1;
 
 		RecalculateRating();
@@ -4867,8 +4870,8 @@ class PlayState extends MusicBeatState
 		var pressMissesTxt:String = '';
 		var extraRatingTxt:String = '';
 
-		var normalMissesWarning:String = ClientPrefs.advancedScoreTxt && songMisses >= 20 ? '#' : '';
-		var pressMissesWarning:String = ClientPrefs.advancedScoreTxt && pressMisses > 10 ? '#' : '';
+		var normalMissesWarning:String = ClientPrefs.advancedScoreTxt && songMisses >= 25 ? '@' : '';
+		var pressMissesWarning:String = ClientPrefs.advancedScoreTxt && pressMisses > 15 ? '@' : '';
 
 		if (ClientPrefs.advancedScoreTxt) {
 			if (pressMisses > 0)
@@ -4876,28 +4879,28 @@ class PlayState extends MusicBeatState
 			var style:String = '';
 			if (health <= 0) style = '=';
 			if (health > 0) style = '!';
-			if (health > 0.4) style = '@';
-			if (health > 0.8) style = '#';
-			if (health > 1.2) style = '$';
-			if (health > 1.6) style = '^';
-			if (health > 2) style = '&'; // This can be redone using the rating letters system
-			thScoreHealthTxt = ' (' + thScore + ') // Health: ' + style + healthPercentageDisplay + '%' + style;
+			if (health >= 0.4) style = '@';
+			if (health >= 0.8) style = '#';
+			if (health >= 1.2) style = '$';
+			if (health >= 1.6) style = '^';
+			if (health >= 2) style = '&'; // This can be redone using the rating letters system
+			thScoreHealthTxt = ' (' + thScore + ') // Health: ' + style + Highscore.floorDecimal(healthPercentageDisplay, 0) + '%' + style;
 			accuracyTxt = ' // Accuracy: ' + accuracyPercentage + '%' + ratingFC;
-			var warning:String = normalMissesWarning + pressMissesWarning != '' ? '#' : '';
+			var warning:String = normalMissesWarning + pressMissesWarning != '' ? '@' : '';
 			extraRatingTxt = ' (' + warning + Highscore.floorDecimal(rating, 2) + warning + ')';
 		}
 
 		scoreTxt.applyMarkup('Score: ' + Highscore.floorDecimal(songScore, 0) + thScoreHealthTxt + ' // Misses: ' + normalMissesWarning + songMisses + normalMissesWarning + pressMissesTxt + accuracyTxt
 			+ ' // Rating: ' + ratingName + suffix + extraRatingTxt,
 			[
-				new FlxTextFormatMarkerPair(redFormat, "!"),
-				new FlxTextFormatMarkerPair(orangeFormat, "@"),
-				new FlxTextFormatMarkerPair(yellowFormat, "#"),
-				new FlxTextFormatMarkerPair(greenFormat, "$"),
-				new FlxTextFormatMarkerPair(limeFormat, "^"),
-				new FlxTextFormatMarkerPair(cyanFormat, "&"),
-				new FlxTextFormatMarkerPair(magentaFormat, "_"),
-				new FlxTextFormatMarkerPair(blackFormat, "=")
+				new FlxTextFormatMarkerPair(redFormat, '!'),
+				new FlxTextFormatMarkerPair(orangeFormat, '@'),
+				new FlxTextFormatMarkerPair(yellowFormat, '#'),
+				new FlxTextFormatMarkerPair(greenFormat, '$'),
+				new FlxTextFormatMarkerPair(limeFormat, '^'),
+				new FlxTextFormatMarkerPair(cyanFormat, '&'),
+				new FlxTextFormatMarkerPair(magentaFormat, '_'),
+				new FlxTextFormatMarkerPair(blackFormat, '=')
 			]);
 	}
 }

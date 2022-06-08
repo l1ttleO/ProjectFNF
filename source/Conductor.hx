@@ -2,6 +2,8 @@ package;
 
 import Song.SwagSong;
 
+using StringTools;
+
 /**
  * ...
  * @author
@@ -41,8 +43,8 @@ class Conductor
 		// var diff = Math.abs(note.strumTime - Conductor.songPosition) / (PlayState.songMultiplier >= 1 ? PlayState.songMultiplier : 1);
 		for(i in 0...timingWindows.length) // based on 4 timing windows, will break with anything else
 		{
-			if (windowNames[i] == 'max' && !ClientPrefs.osuManiaScore) continue;
-			
+			if (windowNames[i] == 'max' && !ClientPrefs.accuracySystem.startsWith('osu!mania') && ClientPrefs.scoreSystem != 'osu!mania') continue;
+
 			if (diff <= timingWindows[Math.round(Math.min(i, timingWindows.length - 1))])
 			{
 				return windowNames[i];
