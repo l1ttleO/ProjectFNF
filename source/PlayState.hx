@@ -1999,7 +1999,7 @@ class PlayState extends MusicBeatState
 
 				if (swagNote.mustPress)
 				{
-					if (!swagNote.hitCausesMiss && !swagNote.isSustainNote)
+					if (!swagNote.ignoreNote && !swagNote.isSustainNote)
 						mustHitNoteCount++;
 					swagNote.x += FlxG.width / 2; // general offset
 				}
@@ -3577,12 +3577,12 @@ class PlayState extends MusicBeatState
 
 		var rating:FlxSprite = new FlxSprite();
 
-		if(daRating == 'sick' && !note.noteSplashDisabled)
+		if(note.ratingMod >= 1 && !note.noteSplashDisabled)
 		{
 			spawnNoteSplashOnNote(note);
 		}
 
-		if((!practiceMode || ClientPrefs.scoreSystem == 'osu!mania') && !cpuControlled) {
+		if(!practiceMode && !cpuControlled) {
 			if(!note.ratingDisabled)
 				songHits++;
 
@@ -4686,9 +4686,9 @@ class PlayState extends MusicBeatState
 		setOnLuas('hits', songHits);
 
 		var ret:Dynamic = callOnLuas('onRecalculateRating', []);
+		var totalJudgedNotes:Int = maxes + sicks + goods + bads + shits + realMisses;
 		if(ret != FunkinLua.Function_Stop)
 		{
-			var totalJudgedNotes:Int = maxes + sicks + goods + bads + realMisses;
 			if(totalJudgedNotes < 1) //Prevent divide by 0
 				ratingPercent = 1;
 			else if (!ClientPrefs.accuracySystem.startsWith('osu!mania'))
@@ -4703,19 +4703,18 @@ class PlayState extends MusicBeatState
 			setRatingName(ratingPercent);
 		}
 
-		var ratingMultiplier:Float = 1.25;
-
 		if (ClientPrefs.scoreSystem == 'osu!mania') thScore = maxScore;
+
+		var ratingMultiplier:Float = 1.25;
 
 		// Rating FC
 		ratingFC = "";
 		if (maxes > 0) ratingFC = " (!MFC!)";
 		if (sicks > 0) ratingFC = " (_SFC_)";
-		if (goods > 0) { ratingFC = " (^GFC^)"; ratingMultiplier = 1.15; }
-		if (bads > 0 || shits > 0) { ratingFC = " ($FC$)"; ratingMultiplier = 1.1; }
-		if (songMisses > 0) { ratingFC = " (&SDCB&)"; ratingMultiplier = 1; }
+		if (goods > 0) { ratingFC = " (^GFC^)"; ratingMultiplier *= (maxes + sicks) / totalJudgedNotes; }
+		if (bads > 0 || shits > 0) { ratingFC = " ($FC$)"; ratingMultiplier = 1.15 * ((maxes + sicks + goods) / totalJudgedNotes); }
+		if (songMisses > 0) { ratingFC = " (&SDCB&)"; ratingMultiplier = Math.max(0.85, 1.1 - (realMisses / 100)); }
 		if (songMisses >= 10) ratingFC = " (#Clear#)";
-		if (songMisses >= 25) ratingMultiplier = 0.75;
 		setOnLuas('rating', ratingPercent);
 		setOnLuas('ratingName', ratingName);
 		setOnLuas('ratingFC', ratingFC);
@@ -4870,10 +4869,9 @@ class PlayState extends MusicBeatState
 		var pressMissesTxt:String = '';
 		var extraRatingTxt:String = '';
 
-		var normalMissesWarning:String = ClientPrefs.advancedScoreTxt && songMisses >= 25 ? '@' : '';
-		var pressMissesWarning:String = ClientPrefs.advancedScoreTxt && pressMisses > 15 ? '@' : '';
 
 		if (ClientPrefs.advancedScoreTxt) {
+			var pressMissesWarning:String = ClientPrefs.advancedScoreTxt && pressMisses > 15 ? '@' : '';
 			if (pressMisses > 0)
 				pressMissesTxt = ' (+' + pressMissesWarning + pressMisses + pressMissesWarning + ')';
 			var style:String = '';
@@ -4886,11 +4884,10 @@ class PlayState extends MusicBeatState
 			if (health >= 2) style = '&'; // This can be redone using the rating letters system
 			thScoreHealthTxt = ' (' + thScore + ') // Health: ' + style + Highscore.floorDecimal(healthPercentageDisplay, 0) + '%' + style;
 			accuracyTxt = ' // Accuracy: ' + accuracyPercentage + '%' + ratingFC;
-			var warning:String = normalMissesWarning + pressMissesWarning != '' ? '@' : '';
-			extraRatingTxt = ' (' + warning + Highscore.floorDecimal(rating, 2) + warning + ')';
+			extraRatingTxt = ' (' + pressMissesWarning + Highscore.floorDecimal(rating, 2) + pressMissesWarning + ')';
 		}
 
-		scoreTxt.applyMarkup('Score: ' + Highscore.floorDecimal(songScore, 0) + thScoreHealthTxt + ' // Misses: ' + normalMissesWarning + songMisses + normalMissesWarning + pressMissesTxt + accuracyTxt
+		scoreTxt.applyMarkup('Score: ' + Highscore.floorDecimal(songScore, 0) + thScoreHealthTxt + ' // Misses: ' + songMisses + pressMissesTxt + accuracyTxt
 			+ ' // Rating: ' + ratingName + suffix + extraRatingTxt,
 			[
 				new FlxTextFormatMarkerPair(redFormat, '!'),
