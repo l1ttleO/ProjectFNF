@@ -3377,7 +3377,7 @@ class PlayState extends MusicBeatState
 
 		if(ret != FunkinLua.Function_Stop && !transitioning) {
 			var score:Int = 350 * (maxes + sicks) + 200 * goods + 100 * bads + 50 * shits - (songMisses * 10);
-			if (SONG.validScore)
+			if (SONG.validScore && !ClientPrefs.getGameplaySetting('practice', false) && !ClientPrefs.getGameplaySetting('botplay', false))
 			{
 				#if !switch
 				var percent:Float = ((maxes + sicks) + goods * 0.75 + bads * 0.5) / (maxes + sicks + goods + bads + shits + songMisses);
