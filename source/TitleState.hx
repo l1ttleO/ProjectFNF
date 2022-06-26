@@ -117,7 +117,7 @@ class TitleState extends MusicBeatState
 		#if CHECK_FOR_UPDATES
 		if(!closedState) {
 			trace('checking for update');
-			var http = new haxe.Http("https://raw.githubusercontent.com/ShadowMario/FNF-PsychEngine/main/gitVersion.txt");
+			var http = new haxe.Http("https://raw.githubusercontent.com/l1ttleO/ProjectFNF/main/gitVersion.txt");
 
 			http.onData = function (data:String)
 			{
@@ -231,6 +231,7 @@ class TitleState extends MusicBeatState
 		#end
 	}
 
+	var logo:FlxSprite;
 	var logoBl:FlxSprite;
 	var gfDance:FlxSprite;
 	var danceLeft:Bool = false;
@@ -283,6 +284,7 @@ class TitleState extends MusicBeatState
 		// bg.updateHitbox();
 		add(bg);
 
+		if (FileSystem.exists(Paths.modsImages('logoBumpin')) && !FileSystem.exists(Paths.modsImages('titlelogo'))) {
 		logoBl = new FlxSprite(titleJSON.titlex, titleJSON.titley);
 		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
 
@@ -292,6 +294,10 @@ class TitleState extends MusicBeatState
 		logoBl.updateHitbox();
 		// logoBl.screenCenter();
 		// logoBl.color = FlxColor.BLACK;
+		} else {
+			logo = new FlxSprite(100, 50).loadGraphic(Paths.image('titlelogo'));
+			logo.antialiasing = ClientPrefs.globalAntialiasing;
+		}
 
 		swagShader = new ColorSwap();
 		gfDance = new FlxSprite(titleJSON.gfx, titleJSON.gfy);
@@ -332,8 +338,14 @@ class TitleState extends MusicBeatState
 
 		add(gfDance);
 		gfDance.shader = swagShader.shader;
+		if (logoBl != null) {
 		add(logoBl);
 		logoBl.shader = swagShader.shader;
+		}
+		if (logo != null) {
+			add(logo);
+			logo.shader = swagShader.shader;
+		}
 
 		titleText = new FlxSprite(titleJSON.startx, titleJSON.starty);
 		#if (desktop && MODS_ALLOWED)
@@ -623,6 +635,10 @@ class TitleState extends MusicBeatState
 		if(logoBl != null)
 			logoBl.animation.play('bump', true);
 
+		if (logo != null) {
+			logo.scale.set(1.05, 1.05);
+			FlxTween.tween(logo, {'scale.x': 0.95, 'scale.y': 0.95}, 0.1, {ease: FlxEase.bounceIn});
+		}
 		if(gfDance != null) {
 			danceLeft = !danceLeft;
 			if (danceLeft)
@@ -640,14 +656,20 @@ class TitleState extends MusicBeatState
 					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 					FlxG.sound.music.fadeIn(4, 0, 0.7);
 				case 2:
-					#if PSYCH_WATERMARKS
+					#if PROJECTFNF_WATERMARKS
+					createCoolText(['ProjectFNF by'], 15);
+					#elseif PSYCH_WATERMARKS
 					createCoolText(['Psych Engine by'], 15);
 					#else
 					createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
 					#end
 				// credTextShit.visible = true;
 				case 4:
-					#if PSYCH_WATERMARKS
+					#if PROJECTFNF_WATERMARKS
+					addMoreText('l1ttleO', 15);
+					addMoreText('BeastlyGhost', 15);
+					addMoreText('aflac', 15);
+					#elseif PSYCH_WATERMARKS
 					addMoreText('Shadow Mario', 15);
 					addMoreText('RiverOaken', 15);
 					addMoreText('shubs', 15);
@@ -662,7 +684,7 @@ class TitleState extends MusicBeatState
 				// credTextShit.text = 'In association \nwith';
 				// credTextShit.screenCenter();
 				case 6:
-					#if PSYCH_WATERMARKS
+					#if (PROJECTFNF_WATERMARKS || PSYCH_WATERMARKS)
 					createCoolText(['Not associated', 'with'], -40);
 					#else
 					createCoolText(['In association', 'with'], -40);
