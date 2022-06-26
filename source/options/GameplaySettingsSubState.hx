@@ -56,8 +56,15 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			false);
 		addOption(option);
 
+		var option:Option = new Option('Opponent Notes',
+			'If unchecked, opponent notes get hidden.',
+			'opponentStrums',
+			'bool',
+			true);
+		addOption(option);
+
 		var option:Option = new Option('Ghost Tapping',
-			"If checked, you won't get misses from pressing keys\nwhile there are no notes able to be hit.\nGhost misses will still affect your rating!",
+			"If checked, you won't get misses from pressing keys\nwhile there are no notes able to be hit.",
 			'ghostTapping',
 			'bool',
 			true);
@@ -67,7 +74,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			"If checked, pressing Reset won't do anything.",
 			'noReset',
 			'bool',
-			true);
+			false);
 		addOption(option);
 
 		var option:Option = new Option('Hitsound Volume',
@@ -81,21 +88,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.maxValue = 1;
 		option.changeValue = 0.1;
 		option.decimals = 1;
-
-		var option:Option = new Option('Play Miss Anims and Sounds', "If unchecked, you will not see miss anims or hear miss sounds", 'playMissAnimations',
-			'bool', true);
-		addOption(option);
-
-		var option:Option = new Option('Enable QoL and balance changes', "If checked, the gameplay can be adjusted to balance it or to implement QoL features", 'enableQolBalanceChanges', 'bool', true);
-		addOption(option);
-
-		var option:Option = new Option('Score:', 'Which score system do you prefer?', 'scoreSystem', 'string',
-			'Vanilla', ['Vanilla', 'osu!mania']);
-		addOption(option);
-
-		var option:Option = new Option('Accuracy:', 'Which accuracy system do you prefer?', 'accuracySystem', 'string',
-			'Psych', ['Psych', 'Millisecond-based', 'osu!mania (normal)', 'osu!mania (strict)']);
-		addOption(option);
+		option.onChange = onChangeHitsoundVolume;
 
 		var option:Option = new Option('Rating Offset',
 			'Changes how late/early you have to hit for a "Sick!"\nHigher values mean you have to hit later.',
@@ -106,14 +99,6 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.scrollSpeed = 20;
 		option.minValue = -30;
 		option.maxValue = 30;
-		addOption(option);
-
-		var option:Option = new Option('MAX Hit Window', 'Changes the amount of time you have\nfor hitting a MAX in milliseconds.\nOnly works when osu!mania score or accuracy is enabled', 'maxWindow', 'int',
-			15);
-		option.displayFormat = '%vms';
-		option.scrollSpeed = 5;
-		option.minValue = 5;
-		option.maxValue = 15;
 		addOption(option);
 
 		var option:Option = new Option('Sick! Hit Window',
@@ -161,5 +146,10 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		super();
+	}
+
+	function onChangeHitsoundVolume()
+	{
+		FlxG.sound.play(Paths.sound('hitsound'), ClientPrefs.hitsoundVolume);
 	}
 }

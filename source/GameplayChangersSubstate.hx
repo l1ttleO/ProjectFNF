@@ -90,9 +90,6 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 		var option:GameplayOption = new GameplayOption('Botplay', 'botplay', 'bool', false);
 		optionsArray.push(option);
-
-		var option:GameplayOption = new GameplayOption('Play as Opponent', 'opponentplay', 'bool', false);
-		optionsArray.push(option);
 	}
 
 	public function getOptionByName(name:String)
@@ -109,7 +106,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 	public function new()
 	{
 		super();
-
+		
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		bg.alpha = 0.6;
 		add(bg);
@@ -123,7 +120,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 		checkboxGroup = new FlxTypedGroup<CheckboxThingie>();
 		add(checkboxGroup);
-
+		
 		getOptions();
 
 		for (i in 0...optionsArray.length)
@@ -237,7 +234,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 									curOption.curOption = num;
 									curOption.setValue(curOption.options[num]); //lol
-
+									
 									if (curOption.name == "Scroll Type")
 									{
 										var oOption:GameplayOption = getOptionByName("Scroll Speed");
@@ -271,7 +268,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 							{
 								case 'int':
 									curOption.setValue(Math.round(holdValue));
-
+								
 								case 'float' | 'percent':
 									curOption.setValue(FlxMath.roundDecimal(holdValue, curOption.decimals));
 							}
@@ -341,7 +338,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		}
 		holdTime = 0;
 	}
-
+	
 	function changeSelection(change:Int = 0)
 	{
 		curSelected += change;
@@ -441,7 +438,7 @@ class GameplayOption
 				if(num > -1) {
 					curOption = num;
 				}
-
+	
 			case 'percent':
 				displayFormat = '%v%';
 				changeValue = 0.01;
