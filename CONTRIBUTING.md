@@ -6,9 +6,9 @@ ProjectFNF requires a different method of contributing changes using patches. Ho
 
 Before you start PRing changes, you'll need the following:
 
-- Haxe version 4.2.4 or higher
-- `git` (required to make and apply patches; commit and push changes)
-- a GitHub account (required to make the pull request and update it if needed)
+- Haxe version 4.2.4 or higher;
+- `git` (required to make and apply patches; commit and push changes);
+- a GitHub account (required to make the pull request and update it if needed).
 
 ## Understanding Patches
 
@@ -28,13 +28,14 @@ Assuming you have already forked the repository and cloned it to your local mach
 If you want to implement new functionality, you want to *add* a new patch.
 Adding patches to ProjectFNF is very simple:
 
-If your changes do not involve the `assets` folder:
+If your changes involve the `assets` folder, you must put new/replaced assets in `patches/assets`, making sure to preserve the directory structure. After that:
 
 1. Modify the `source/` folder as you need;
 1. Test your changes thoroughly before committing and patching, as fixing up might be difficult!
 1. Run `git commit -a` with the desired patch message. Do not push the newly created commit!
 1. Run the batch file `art/create-patch-from-commit.bat`;
 1. PR the generated patch files back to this repository (push the **patch file**, not the commit the patch was created from).
+
 
 ## Modifying patches
 
@@ -45,7 +46,8 @@ Assuming you did **not** apply all patches (if you did, run `art/revert-codebase
 
 1. Apply the patch you want to modify using `git am patches\source\<FILENAME HERE>`
 1. Modify the changes as you need
-1. Run ```console
+1. Run 
+```console
 git commit -a --author "ORIGINAL_USERNAME <ORIGINAL_EMAIL> -m "ORIGINAL_MESSAGE
 >
 YOUR_USERNAME: <description of your changes>
@@ -53,7 +55,8 @@ YOUR_USERNAME: <description of your changes>
 > 
 Co-authored-by: YOUR_USERNAME <YOUR_EMAIL>"
 ```
-Example: ```console
+Example: 
+```console
 git commit -a --author "l1ttleO <l1ttleofficial@outlook.com>" -m "Add visual option 'Vignette'
 >
 BeastlyGhost: fixed a crash if this option is enabled mid-song
