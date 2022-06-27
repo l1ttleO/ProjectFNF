@@ -56,6 +56,8 @@ jobs:
         run: echo "${{github.run_id}}" > VERSION
       - name: Apply patches
         run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
           cp -r patches/assets .
           git am patches/source/*.patch
         shell: bash
@@ -103,9 +105,11 @@ jobs:
         run: echo "${{github.run_id}}" > VERSION
       - name: Apply patches
         run: |
-          xcopy patches\assets assets /S
-          for /f %f in ('dir /b patches\source') do git am patches\source\%f
-        shell: cmd
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          cp -r patches/assets .
+          git am patches/source/*.patch
+        shell: bash
       - name: Compile
         run: haxelib run lime build windows --app-version="4.0.0-${{ github.run_id}}"
       - name: Publish Artifact
@@ -149,6 +153,8 @@ jobs:
         run: echo "${{github.run_id}}" > VERSION
       - name: Apply patches
         run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
           cp -r patches/assets .
           git am patches/source/*.patch
         shell: bash
