@@ -32,6 +32,7 @@ If your changes involve the `assets` folder, you must put new/replaced assets in
 
 1. Modify the `source/` folder as you need;
 1. Test your changes thoroughly before committing and patching, as fixing up might be difficult!
+1. Before committing, discard all changes to the `assets/` folder
 1. Run `git commit -a` with the desired patch message. Do not push the newly created commit!
 1. Run the batch file `art/create-patch-from-commit.bat`;
 1. PR the generated patch files back to this repository (push the **patch file**, not the commit the patch was created from).
