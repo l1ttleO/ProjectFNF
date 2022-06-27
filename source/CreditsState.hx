@@ -81,12 +81,6 @@ class CreditsState extends MusicBeatState
 		#end
 
 		var pisspoop:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
-			['ProjectFNF Team'],
-			['l1ttleO',             'none',             'Main Programmer of ProjectFNF',                       		'https://twitter.com/l1ttleO',          '00FFF7'],
-			['ProjectFNF Contributors'],
-			['BeastlyGhost',        'none',             'Cool new options and fixes',                               'https://twitter.com/Fan_de_RPG',       'CCDFFD'],
-			['OneShotSank',         'none',             'Main menu changes',                                  		'https://twitter.com/Scridescriptive',  'EFB66C'],
-			['Stilic',              'none',             'Minor changes',                                     	    'https://github.com/Stilic',            'FF2D32'],
 			['Psych Engine Team'],
 			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',							'https://twitter.com/Shadow_Mario_',	'444444'],
 			['RiverOaken',			'river',			'Main Artist/Animator of Psych Engine',						'https://twitter.com/RiverOaken',		'B42F71'],
