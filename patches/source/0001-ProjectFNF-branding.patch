@@ -16,7 +16,7 @@ Subject: [PATCH] Add ProjectFNF branding
  9 files changed, 76 insertions(+), 97 deletions(-)
 
 diff --git a/Project.xml b/Project.xml
-index 901d96e..cff4464 100644
+index 053db81..6b21dc6 100644
 --- a/Project.xml
 +++ b/Project.xml
 @@ -2,7 +2,7 @@
@@ -168,7 +168,7 @@ index 7e67c5b..0525e88 100644
 -* You can reset your Score on Freeplay/Story Mode by pressing Reset button.
 -* You can listen to a song or adjust Scroll Speed/Damage taken/etc. on Freeplay by pressing Space.
 diff --git a/source/CreditsState.hx b/source/CreditsState.hx
-index ca5faa0..06b0a03 100644
+index e0eb466..499ec14 100644
 --- a/source/CreditsState.hx
 +++ b/source/CreditsState.hx
 @@ -81,6 +81,12 @@ class CreditsState extends MusicBeatState
@@ -182,8 +182,8 @@ index ca5faa0..06b0a03 100644
 +			['OneShotSank',         'none',             'Main menu changes',                                  		'https://twitter.com/Scridescriptive',  'EFB66C'],
 +			['Stilic',              'none',             'Minor changes',                                     	    'https://github.com/Stilic',            'FF2D32'],
  			['Psych Engine Team'],
- 			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',							'https://twitter.com/Shadow_Mario_',	'444444'],
- 			['RiverOaken',			'river',			'Main Artist/Animator of Psych Engine',						'https://twitter.com/RiverOaken',		'B42F71'],
+ 			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',								'https://twitter.com/Shadow_Mario_',	'444444'],
+ 			['RiverOaken',			'river',			'Main Artist/Animator of Psych Engine',							'https://twitter.com/RiverOaken',		'B42F71'],
 diff --git a/source/Discord.hx b/source/Discord.hx
 index adb081b..b4dc9a9 100644
 --- a/source/Discord.hx
@@ -238,7 +238,7 @@ index 56be353..7696de4 100644
  		if (!FileSystem.exists("./crash/"))
  			FileSystem.createDirectory("./crash/");
 diff --git a/source/MainMenuState.hx b/source/MainMenuState.hx
-index 49b77b9..c3255bb 100644
+index 5ddcf44..309fd0e 100644
 --- a/source/MainMenuState.hx
 +++ b/source/MainMenuState.hx
 @@ -25,6 +25,7 @@ using StringTools;
@@ -246,7 +246,7 @@ index 49b77b9..c3255bb 100644
  class MainMenuState extends MusicBeatState
  {
 +	public static var projectFnfVersion:String = '2.5';
- 	public static var psychEngineVersion:String = '0.6.0'; //This is also used for Discord RPC
+ 	public static var psychEngineVersion:String = '0.6.1'; //This is also used for Discord RPC
  	public static var curSelected:Int = 0;
  
 @@ -130,6 +131,10 @@ class MainMenuState extends MusicBeatState
@@ -288,10 +288,10 @@ index 0dcfe7f..ea08be7 100644
  			else if(controls.BACK) {
  				leftState = true;
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index cf783ee..1afdec1 100644
+index fbd6e51..f690509 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
-@@ -1182,6 +1182,11 @@ class PlayState extends MusicBeatState
+@@ -1185,6 +1185,11 @@ class PlayState extends MusicBeatState
  			botplayTxt.y = timeBarBG.y - 78;
  		}
  
@@ -303,7 +303,7 @@ index cf783ee..1afdec1 100644
  		strumLineNotes.cameras = [camHUD];
  		grpNoteSplashes.cameras = [camHUD];
  		notes.cameras = [camHUD];
-@@ -1195,6 +1200,7 @@ class PlayState extends MusicBeatState
+@@ -1198,6 +1203,7 @@ class PlayState extends MusicBeatState
  		timeBarBG.cameras = [camHUD];
  		timeTxt.cameras = [camHUD];
  		doof.cameras = [camHUD];
@@ -312,12 +312,12 @@ index cf783ee..1afdec1 100644
  		// if (SONG.song == 'South')
  		// FlxG.camera.alpha = 0.7;
 diff --git a/source/TitleState.hx b/source/TitleState.hx
-index c6a88ee..f5676c8 100644
+index 1cd1b48..f7c2524 100644
 --- a/source/TitleState.hx
 +++ b/source/TitleState.hx
-@@ -117,7 +117,7 @@ class TitleState extends MusicBeatState
+@@ -136,7 +136,7 @@ class TitleState extends MusicBeatState
  		#if CHECK_FOR_UPDATES
- 		if(!closedState) {
+ 		if(ClientPrefs.checkForUpdates && !closedState) {
  			trace('checking for update');
 -			var http = new haxe.Http("https://raw.githubusercontent.com/ShadowMario/FNF-PsychEngine/main/gitVersion.txt");
 +			var http = new haxe.Http("https://raw.githubusercontent.com/l1ttleO/ProjectFNF/main/gitVersion.txt");

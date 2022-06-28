@@ -10,10 +10,10 @@ Subject: [PATCH] Modifiers 'Damage from Opponent Notes' and 'Opponent Notes Can 
  3 files changed, 39 insertions(+)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
-index c84325b..e9037e5 100644
+index 117cca4..f2d6429 100644
 --- a/source/ClientPrefs.hx
 +++ b/source/ClientPrefs.hx
-@@ -59,6 +59,10 @@ class ClientPrefs {
+@@ -60,6 +60,10 @@ class ClientPrefs {
  	public static var badWindow:Int = 135;
  	public static var safeFrames:Float = 10;
  
@@ -24,17 +24,17 @@ index c84325b..e9037e5 100644
  	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
  	public static var keyBinds:Map<String, Array<FlxKey>> = [
  		//Key Bind, Name for ControlsSubState
-@@ -126,6 +130,9 @@ class ClientPrefs {
- 		FlxG.save.data.controllerMode = controllerMode;
+@@ -128,6 +132,9 @@ class ClientPrefs {
  		FlxG.save.data.hitsoundVolume = hitsoundVolume;
  		FlxG.save.data.pauseMusic = pauseMusic;
+ 		FlxG.save.data.checkForUpdates = checkForUpdates;
 +
 +		FlxG.save.data.damageFromOpponentNotes = damageFromOpponentNotes;
 +		FlxG.save.data.opponentNotesCanKill = opponentNotesCanKill;
  	
  		FlxG.save.flush();
  
-@@ -243,6 +250,12 @@ class ClientPrefs {
+@@ -245,6 +252,12 @@ class ClientPrefs {
  				gameplaySettings.set(name, value);
  			}
  		}
@@ -48,10 +48,10 @@ index c84325b..e9037e5 100644
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 1afdec1..6b85d9e 100644
+index f690509..4c6e07a 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
-@@ -161,6 +161,7 @@ class PlayState extends MusicBeatState
+@@ -163,6 +163,7 @@ class PlayState extends MusicBeatState
  
  	public var gfSpeed:Int = 1;
  	public var health:Float = 1;
@@ -59,7 +59,7 @@ index 1afdec1..6b85d9e 100644
  	public var combo:Int = 0;
  
  	private var healthBarBG:AttachedSprite;
-@@ -4442,6 +4443,10 @@ class PlayState extends MusicBeatState
+@@ -4446,6 +4447,10 @@ class PlayState extends MusicBeatState
  		StrumPlayAnim(true, Std.int(Math.abs(note.noteData)) % 4, time);
  		note.hitByOpponent = true;
  
@@ -70,7 +70,7 @@ index 1afdec1..6b85d9e 100644
  		callOnLuas('opponentNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote, note.ID]);
  
  		if (!note.isSustainNote)
-@@ -4499,6 +4504,7 @@ class PlayState extends MusicBeatState
+@@ -4503,6 +4508,7 @@ class PlayState extends MusicBeatState
  				popUpScore(note);
  			}
  			health += note.hitHealth * healthGain;
@@ -79,7 +79,7 @@ index 1afdec1..6b85d9e 100644
  			if(!note.noAnimation) {
  				var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
 diff --git a/source/options/ModifiersSubState.hx b/source/options/ModifiersSubState.hx
-index 4b0d115..b6e4769 100644
+index 4b0d115..25ee861 100644
 --- a/source/options/ModifiersSubState.hx
 +++ b/source/options/ModifiersSubState.hx
 @@ -15,6 +15,26 @@ class ModifiersSubState extends BaseOptionsMenu
