@@ -6,9 +6,9 @@ Subject: [PATCH] Add gameplay option 'osu!mania score system'
 ---
  source/ClientPrefs.hx                      | 10 ++++
  source/Conductor.hx                        |  4 ++
- source/PlayState.hx                        | 57 +++++++++++++++++++---
- source/options/GameplaySettingsSubState.hx | 19 ++++++++
- 4 files changed, 82 insertions(+), 8 deletions(-)
+ source/PlayState.hx                        | 59 +++++++++++++++++++---
+ source/options/GameplaySettingsSubState.hx | 19 +++++++
+ 4 files changed, 84 insertions(+), 8 deletions(-)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
 index 683c4e3..0d8d6ab 100644
@@ -82,7 +82,7 @@ index eae80b3..fe203fc 100644
  	public function new(name:String)
  	{
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 8fbea0b..e9fda6a 100644
+index 8fbea0b..33348a8 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
 @@ -142,6 +142,7 @@ class PlayState extends MusicBeatState
@@ -243,21 +243,23 @@ index 8fbea0b..e9fda6a 100644
  			songScore += score;
  			if(!note.ratingDisabled)
  			{
-@@ -4352,7 +4393,7 @@ class PlayState extends MusicBeatState
+@@ -4352,7 +4393,8 @@ class PlayState extends MusicBeatState
  		//trace(daNote.missHealth);
  		songMisses++;
  		vocals.volume = 0;
 -		if(!practiceMode) songScore -= 10;
 +		if(!practiceMode && ClientPrefs.scoreSystem == 'Vanilla') songScore -= 10;
++		bonus = 0;
  
  		totalPlayed++;
  		RecalculateRating();
-@@ -4398,7 +4439,7 @@ class PlayState extends MusicBeatState
+@@ -4398,7 +4440,8 @@ class PlayState extends MusicBeatState
  			}
  			combo = 0;
  
 -			if(!practiceMode) songScore -= 10;
 +			if(!practiceMode && ClientPrefs.scoreSystem == 'Vanilla') songScore -= 10;
++			bonus = 0;
  			if(!endingSong) {
  				songMisses++;
  			}
