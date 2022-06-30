@@ -1,0 +1,62 @@
+From 823a233319c80196febdc8b5a25166efe7b7c9d3 Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Sun, 26 Jun 2022 20:25:02 +0500
+Subject: [PATCH] Add Modifiers menu
+
+---
+ source/options/ModifiersSubState.hx | 20 ++++++++++++++++++++
+ source/options/OptionsState.hx      |  4 +++-
+ 2 files changed, 23 insertions(+), 1 deletion(-)
+ create mode 100644 source/options/ModifiersSubState.hx
+
+diff --git a/source/options/ModifiersSubState.hx b/source/options/ModifiersSubState.hx
+new file mode 100644
+index 0000000..4b0d115
+--- /dev/null
++++ b/source/options/ModifiersSubState.hx
+@@ -0,0 +1,20 @@
++package options;
++
++class ModifiersSubState extends BaseOptionsMenu
++{
++	public function new()
++	{
++		title = 'Modifiers';
++		rpcTitle = 'Modifiers Menu'; // for Discord Rich Presence
++
++		// I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
++		//var option:Option = new Option('Downscroll', // Name
++		//	'If checked, notes go Down instead of Up, simple enough.', // Description
++		//	'downScroll', // Save data variable name
++		//	'bool', // Variable type
++		//	false); // Default value
++		//addOption(option);
++
++		super();
++	}
++}
+diff --git a/source/options/OptionsState.hx b/source/options/OptionsState.hx
+index 131974f..ec41530 100644
+--- a/source/options/OptionsState.hx
++++ b/source/options/OptionsState.hx
+@@ -29,7 +29,7 @@ using StringTools;
+ 
+ class OptionsState extends MusicBeatState
+ {
+-	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay'];
++	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Modifiers'];
+ 	private var grpOptions:FlxTypedGroup<Alphabet>;
+ 	private static var curSelected:Int = 0;
+ 	public static var menuBG:FlxSprite;
+@@ -46,6 +46,8 @@ class OptionsState extends MusicBeatState
+ 				openSubState(new options.VisualsUISubState());
+ 			case 'Gameplay':
+ 				openSubState(new options.GameplaySettingsSubState());
++			case 'Modifiers':
++				openSubState(new options.ModifiersSubState());
+ 			case 'Adjust Delay and Combo':
+ 				LoadingState.loadAndSwitchState(new options.NoteOffsetState());
+ 		}
+-- 
+2.34.1.windows.1
+

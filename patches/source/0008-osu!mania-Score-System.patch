@@ -1,0 +1,303 @@
+From 34f793230ab9750107b3fb9a94f9cb7d6b94ad56 Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Thu, 30 Jun 2022 16:29:23 +0500
+Subject: [PATCH] Add gameplay option 'osu!mania score system'
+
+---
+ source/ClientPrefs.hx                      | 10 ++++
+ source/Conductor.hx                        |  4 ++
+ source/PlayState.hx                        | 57 +++++++++++++++++++---
+ source/options/GameplaySettingsSubState.hx | 19 ++++++++
+ 4 files changed, 82 insertions(+), 8 deletions(-)
+
+diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
+index 683c4e3..0d8d6ab 100644
+--- a/source/ClientPrefs.hx
++++ b/source/ClientPrefs.hx
+@@ -55,6 +55,7 @@ class ClientPrefs {
+ 
+ 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
+ 	public static var ratingOffset:Int = 0;
++	public static var maxWindow:Int = 15;
+ 	public static var sickWindow:Int = 45;
+ 	public static var goodWindow:Int = 90;
+ 	public static var badWindow:Int = 135;
+@@ -66,6 +67,7 @@ class ClientPrefs {
+ 	public static var stunsBlockInputs:Float = 0;
+ 	public static var cameraMoveIntensity:Float = 0;
+ 	public static var missShakeIntensity:Float = 0;
++	public static var scoreSystem:String = 'Vanilla';
+ 
+ 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+ 	public static var keyBinds:Map<String, Array<FlxKey>> = [
+@@ -126,6 +128,7 @@ class ClientPrefs {
+ 		FlxG.save.data.henchmenDeath = Achievements.henchmenDeath;
+ 
+ 		FlxG.save.data.ratingOffset = ratingOffset;
++		FlxG.save.data.maxWindow = maxWindow;
+ 		FlxG.save.data.sickWindow = sickWindow;
+ 		FlxG.save.data.goodWindow = goodWindow;
+ 		FlxG.save.data.badWindow = badWindow;
+@@ -141,6 +144,7 @@ class ClientPrefs {
+ 		FlxG.save.data.stunsBlockInputs = stunsBlockInputs;
+ 		FlxG.save.data.cameraMoveIntensity = cameraMoveIntensity;
+ 		FlxG.save.data.missShakeIntensity = missShakeIntensity;
++		FlxG.save.data.scoreSystem = scoreSystem;
+ 	
+ 		FlxG.save.flush();
+ 
+@@ -229,6 +233,9 @@ class ClientPrefs {
+ 		if(FlxG.save.data.ratingOffset != null) {
+ 			ratingOffset = FlxG.save.data.ratingOffset;
+ 		}
++		if(FlxG.save.data.maxWindow != null) {
++			maxWindow = FlxG.save.data.maxWindow;
++		}
+ 		if(FlxG.save.data.sickWindow != null) {
+ 			sickWindow = FlxG.save.data.sickWindow;
+ 		}
+@@ -273,6 +280,9 @@ class ClientPrefs {
+ 		if(FlxG.save.data.missShakeIntensity != null) {
+ 			missShakeIntensity = FlxG.save.data.missShakeIntensity;
+ 		}
++		if(FlxG.save.data.scoreSystem != null) {
++			scoreSystem = FlxG.save.data.scoreSystem;
++		}
+ 		
+ 		// flixel automatically saves your volume!
+ 		if(FlxG.save.data.volume != null)
+diff --git a/source/Conductor.hx b/source/Conductor.hx
+index eae80b3..fe203fc 100644
+--- a/source/Conductor.hx
++++ b/source/Conductor.hx
+@@ -164,6 +164,10 @@ class Rating
+ 	public var ratingMod:Float = 1;
+ 	public var score:Int = 350;
+ 	public var noteSplash:Bool = true;
++	public var hitValue:Float = 320; // for osu!mania score
++	public var hitBonusValue:Int = 32;
++	public var hitBonus:Int = 2;
++	public var hitPunishment:Int = 0;
+ 
+ 	public function new(name:String)
+ 	{
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index 8fbea0b..e9fda6a 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -142,6 +142,7 @@ class PlayState extends MusicBeatState
+ 	public var notes:FlxTypedGroup<Note>;
+ 	public var unspawnNotes:Array<Note> = [];
+ 	public var eventNotes:Array<EventNote> = [];
++	public var mustHitNoteCount:Int = 0;
+ 
+ 	private var strumLine:FlxSprite;
+ 
+@@ -174,6 +175,7 @@ class PlayState extends MusicBeatState
+ 	public var timeBar:FlxBar;
+ 
+ 	public var ratingsData:Array<Rating> = [];
++	public var maxs:Int = 0;
+ 	public var sicks:Int = 0;
+ 	public var goods:Int = 0;
+ 	public var bads:Int = 0;
+@@ -250,7 +252,8 @@ class PlayState extends MusicBeatState
+ 	var tankmanRun:FlxTypedGroup<TankmenBG>;
+ 	var foregroundSprites:FlxTypedGroup<BGSprite>;
+ 
+-	public var songScore:Int = 0;
++	public var songScore:Float = 0;
++	public var maxScore:Float = 0;
+ 	public var songHits:Int = 0;
+ 	public var songMisses:Int = 0;
+ 	public var scoreTxt:FlxText;
+@@ -322,24 +325,41 @@ class PlayState extends MusicBeatState
+ 		];
+ 
+ 		//Ratings
+-		ratingsData.push(new Rating('sick')); //default rating
++		ratingsData.push(new Rating('max')); //default rating
++
++		var rating:Rating = new Rating('sick');
++		rating.hitValue = 300;
++		rating.hitBonus = 1;
++		ratingsData.push(rating);
+ 
+ 		var rating:Rating = new Rating('good');
+ 		rating.ratingMod = 0.7;
+ 		rating.score = 200;
+ 		rating.noteSplash = false;
++		rating.hitValue = 200;
++		rating.hitBonus = 0;
++		rating.hitBonusValue = 16;
++		rating.hitPunishment = 8;
+ 		ratingsData.push(rating);
+ 
+ 		var rating:Rating = new Rating('bad');
+ 		rating.ratingMod = 0.4;
+ 		rating.score = 100;
+ 		rating.noteSplash = false;
++		rating.hitValue = 100;
++		rating.hitBonus = 0;
++		rating.hitBonusValue = 8;
++		rating.hitPunishment = 24;
+ 		ratingsData.push(rating);
+ 
+ 		var rating:Rating = new Rating('shit');
+ 		rating.ratingMod = 0;
+ 		rating.score = 50;
+ 		rating.noteSplash = false;
++		rating.hitValue = 50;
++		rating.hitBonus = 0;
++		rating.hitBonusValue = 4;
++		rating.hitPunishment = 44;
+ 		ratingsData.push(rating);
+ 
+ 		// For the "Just the Two of Us" achievement
+@@ -1344,6 +1364,10 @@ class PlayState extends MusicBeatState
+ 			FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
+ 		}
+ 
++		if (ClientPrefs.scoreSystem == 'osu!mania')
++			for (i in 0...101)
++				bonusSqrtArray.insert(i, Math.sqrt(i)); // Square roots are expensive
++
+ 		Conductor.safeZoneOffset = (ClientPrefs.safeFrames / 60) * 1000;
+ 		callOnLuas('onCreatePost', []);
+ 
+@@ -2249,6 +2273,7 @@ class PlayState extends MusicBeatState
+ 		// Updating Discord Rich Presence (with Time Left)
+ 		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter(), true, songLength);
+ 		#end
++		maxScore = 1000000;
+ 		setOnLuas('songLength', songLength);
+ 		callOnLuas('onSongStart', []);
+ 	}
+@@ -2391,6 +2416,7 @@ class PlayState extends MusicBeatState
+ 
+ 				if (swagNote.mustPress)
+ 				{
++					if (!swagNote.ignoreNote && !swagNote.isSustainNote) mustHitNoteCount++;
+ 					swagNote.x += FlxG.width / 2; // general offset
+ 				}
+ 				else if(ClientPrefs.middleScroll)
+@@ -3801,12 +3827,13 @@ class PlayState extends MusicBeatState
+ 
+ 		var ret:Dynamic = callOnLuas('onEndSong', [], false);
+ 		if(ret != FunkinLua.Function_Stop && !transitioning) {
+-			if (SONG.validScore)
++			var score:Int = 350 * (maxs + sicks) + 200 * goods + 100 * bads + 50 * shits - (songMisses * 10);
++			if (SONG.validScore && !ClientPrefs.getGameplaySetting('practice', false) && !ClientPrefs.getGameplaySetting('botplay', false))
+ 			{
+ 				#if !switch
+ 				var percent:Float = ratingPercent;
+ 				if(Math.isNaN(percent)) percent = 0;
+-				Highscore.saveScore(SONG.song, songScore, storyDifficulty, percent);
++				Highscore.saveScore(SONG.song, score, storyDifficulty, percent);
+ 				#end
+ 			}
+ 
+@@ -3818,7 +3845,7 @@ class PlayState extends MusicBeatState
+ 
+ 			if (isStoryMode)
+ 			{
+-				campaignScore += songScore;
++				campaignScore += score;
+ 				campaignMisses += songMisses;
+ 
+ 				storyPlaylist.remove(storyPlaylist[0]);
+@@ -3937,6 +3964,8 @@ class PlayState extends MusicBeatState
+ 
+ 	public var totalPlayed:Int = 0;
+ 	public var totalNotesHit:Float = 0.0;
++	public var bonus:Int = 100;
++	private var bonusSqrtArray:Array<Float> = [];
+ 
+ 	public var showCombo:Bool = false;
+ 	public var showComboNum:Bool = true;
+@@ -3958,7 +3987,7 @@ class PlayState extends MusicBeatState
+ 		//
+ 
+ 		var rating:FlxSprite = new FlxSprite();
+-		var score:Int = 350;
++		var score:Float = 350;
+ 
+ 		//tryna do MS based judgment due to popular demand
+ 		var daRating:Rating = Conductor.judgeNote(note, noteDiff);
+@@ -3975,6 +4004,18 @@ class PlayState extends MusicBeatState
+ 		}
+ 
+ 		if(!practiceMode && !cpuControlled) {
++			if (ClientPrefs.scoreSystem == 'osu!mania') {
++				bonus += daRating.hitBonus - daRating.hitPunishment;
++				if (bonus < 0) bonus = 0;
++				if (bonus > 100) bonus = 100;
++
++				var firstMultiplier = maxScore * (practiceMode ? 0.5 : 1) * 0.5 / mustHitNoteCount;
++ 
++				var baseScore:Float = firstMultiplier * (daRating.hitValue / 320);
++				var bonusScore:Float = firstMultiplier * (daRating.hitBonusValue * bonusSqrtArray[bonus] / 320);
++
++				score = baseScore + bonusScore;
++			}
+ 			songScore += score;
+ 			if(!note.ratingDisabled)
+ 			{
+@@ -4352,7 +4393,7 @@ class PlayState extends MusicBeatState
+ 		//trace(daNote.missHealth);
+ 		songMisses++;
+ 		vocals.volume = 0;
+-		if(!practiceMode) songScore -= 10;
++		if(!practiceMode && ClientPrefs.scoreSystem == 'Vanilla') songScore -= 10;
+ 
+ 		totalPlayed++;
+ 		RecalculateRating();
+@@ -4398,7 +4439,7 @@ class PlayState extends MusicBeatState
+ 			}
+ 			combo = 0;
+ 
+-			if(!practiceMode) songScore -= 10;
++			if(!practiceMode && ClientPrefs.scoreSystem == 'Vanilla') songScore -= 10;
+ 			if(!endingSong) {
+ 				songMisses++;
+ 			}
+diff --git a/source/options/GameplaySettingsSubState.hx b/source/options/GameplaySettingsSubState.hx
+index 108dcc2..3d93cf1 100644
+--- a/source/options/GameplaySettingsSubState.hx
++++ b/source/options/GameplaySettingsSubState.hx
+@@ -90,6 +90,14 @@ class GameplaySettingsSubState extends BaseOptionsMenu
+ 		option.decimals = 1;
+ 		option.onChange = onChangeHitsoundVolume;
+ 
++		var option:Option = new Option('Score system:',
++			"What score system do you prefer?\nosu!mania uses ScoreV1",
++			'scoreSystem',
++			'string',
++			'Vanilla',
++			['osu!mania', 'Vanilla']);
++		addOption(option);
++
+ 		var option:Option = new Option('Rating Offset',
+ 			'Changes how late/early you have to hit for a "Sick!"\nHigher values mean you have to hit later.',
+ 			'ratingOffset',
+@@ -101,6 +109,17 @@ class GameplaySettingsSubState extends BaseOptionsMenu
+ 		option.maxValue = 30;
+ 		addOption(option);
+ 
++		var option:Option = new Option('MAX Hit Window',
++			'Changes the amount of time you have\nfor hitting a "MAX" in milliseconds.\nRequires osu!mania score or accuracy',
++			'maxWindow',
++			'int',
++			15);
++		option.displayFormat = '%vms';
++		option.scrollSpeed = 5;
++		option.minValue = 5;
++		option.maxValue = 15;
++		addOption(option);
++
+ 		var option:Option = new Option('Sick! Hit Window',
+ 			'Changes the amount of time you have\nfor hitting a "Sick!" in milliseconds.',
+ 			'sickWindow',
+-- 
+2.34.1.windows.1
+
