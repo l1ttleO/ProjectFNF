@@ -40,10 +40,10 @@ index dbe9f15..683c4e3 100644
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 286268f..8fbea0b 100644
+index 0e9b322..8143689 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
-@@ -4369,6 +4369,7 @@ class PlayState extends MusicBeatState
+@@ -4359,6 +4359,7 @@ class PlayState extends MusicBeatState
  			char = gf;
  		}
  
@@ -51,10 +51,10 @@ index 286268f..8fbea0b 100644
  		if(char != null && !daNote.noMissAnimation && char.hasMissAnimations)
  		{
  			var animToPlay:String = singAnimations[Std.int(Math.abs(daNote.noteData))] + 'miss' + daNote.animSuffix;
-@@ -4416,6 +4417,7 @@ class PlayState extends MusicBeatState
+@@ -4406,6 +4407,7 @@ class PlayState extends MusicBeatState
+ 				boyfriend.stunned = false;
  			});
  
- 			var char:Character = opponentPlay ? dad : boyfriend;
 +			FlxG.camera.shake(ClientPrefs.missShakeIntensity / 100, 0.5, null, true, singAnimations[Std.int(Math.abs(direction))].endsWith('UP') || singAnimations[Std.int(Math.abs(direction))].endsWith('DOWN') ? flixel.util.FlxAxes.Y : flixel.util.FlxAxes.X);
  			if(char.hasMissAnimations) {
  				char.playAnim(singAnimations[Std.int(Math.abs(direction))] + 'miss', true);

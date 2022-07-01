@@ -23,7 +23,7 @@ index 15ebe4d..dcdb16d 100644
  
  	public function getOptionByName(name:String)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 4c2ee95..2ff5300 100644
+index 4c2ee95..17723d2 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
 @@ -191,6 +191,7 @@ class PlayState extends MusicBeatState
@@ -90,13 +90,20 @@ index 4c2ee95..2ff5300 100644
  		if(daNote.gfNote) {
  			char = gf;
  		}
-@@ -4393,8 +4399,9 @@ class PlayState extends MusicBeatState
+@@ -4362,6 +4368,7 @@ class PlayState extends MusicBeatState
+ 
+ 		if (!boyfriend.stunned)
+ 		{
++			var char:Character = opponentPlay ? dad : boyfriend;
+ 			health -= 0.05 * healthLoss;
+ 			if(instakillOnMiss)
+ 			{
+@@ -4393,8 +4400,8 @@ class PlayState extends MusicBeatState
  				boyfriend.stunned = false;
  			});
  
 -			if(boyfriend.hasMissAnimations) {
 -				boyfriend.playAnim(singAnimations[Std.int(Math.abs(direction))] + 'miss', true);
-+			var char:Character = opponentPlay ? dad : boyfriend;
 +			if(char.hasMissAnimations) {
 +				char.playAnim(singAnimations[Std.int(Math.abs(direction))] + 'miss', true);
  			}
