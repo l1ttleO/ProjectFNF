@@ -5,15 +5,15 @@ Subject: [PATCH] Add ProjectFNF branding
 
 ---
  Project.xml             |   5 +-
- README.md               | 105 +++++++++-------------------------------
+ README.md               | 107 +++++++++-------------------------------
  source/CreditsState.hx  |   6 +++
  source/Discord.hx       |   6 +--
  source/Main.hx          |   4 +-
  source/MainMenuState.hx |   5 ++
  source/OutdatedState.hx |   6 +--
  source/PlayState.hx     |   6 +++
- source/TitleState.hx    |  30 ++++++++++--
- 9 files changed, 76 insertions(+), 97 deletions(-)
+ source/TitleState.hx    |  32 ++++++++++--
+ 9 files changed, 78 insertions(+), 99 deletions(-)
 
 diff --git a/Project.xml b/Project.xml
 index 053db81..6b21dc6 100644
@@ -39,7 +39,7 @@ index 053db81..6b21dc6 100644
  	<define name="CRASH_HANDLER" if="desktop release" />
  
 diff --git a/README.md b/README.md
-index 7e67c5b..0525e88 100644
+index 507d926..24b9586 100644
 --- a/README.md
 +++ b/README.md
 @@ -1,28 +1,37 @@
@@ -84,19 +84,20 @@ index 7e67c5b..0525e88 100644
 +* @tr1zn - Beta testing
  
 -## Credits:
-+## Psych Engine Credits and Special Thanks
- * Shadow Mario - Coding
- * RiverOaken - Arts and Animations
- * bbpanzu - Assistant Coding
++## Psych Engine Credits and Special Thanks:
+ * Shadow Mario - Programmer
+ * RiverOaken - Artist
+ * Yoshubs - Assistant Programmer
 -
 -### Special Thanks
+ * bbpanzu - Ex-Programmer
  * shubs - New Input System
- * SqirraRNG - Chart Editor's Sound Waveform base code
- * iFlicky - Delay/Combo Menu Song Composer + Dialogue Sounds
-@@ -31,73 +40,3 @@ otherwise, you can delete the "VIDEOS_ALLOWED" Line on Project.xml
- * Smokey - Spritemap Texture Atlas support
- * Cary - OG Resolution code
- * Nebula_Zorua - VCR Shader code
+ * SqirraRNG - Crash Handler and Base code for Chart Editor's Waveform
+@@ -31,74 +40,4 @@ otherwise, you can delete the "VIDEOS_ALLOWED" Line on Project.xml
+ * PolybiusProxy - .MP4 Video Loader Library (hxCodec)
+ * Keoiki - Note Splash Animations
+ * Smokey - Sprite Atlas Support
+-* Nebula the Zorua - LUA JIT Fork and some Lua reworks
 -_____________________________________
 -
 -# Features
@@ -167,6 +168,8 @@ index 7e67c5b..0525e88 100644
 -* Some stuff based on Week 7's changes has been put in (Background colors on Freeplay, Note splashes)
 -* You can reset your Score on Freeplay/Story Mode by pressing Reset button.
 -* You can listen to a song or adjust Scroll Speed/Damage taken/etc. on Freeplay by pressing Space.
++* Nebula the Zorua - LUA JIT Fork and some Lua reworks
++
 diff --git a/source/CreditsState.hx b/source/CreditsState.hx
 index e0eb466..499ec14 100644
 --- a/source/CreditsState.hx
@@ -238,7 +241,7 @@ index 56be353..7696de4 100644
  		if (!FileSystem.exists("./crash/"))
  			FileSystem.createDirectory("./crash/");
 diff --git a/source/MainMenuState.hx b/source/MainMenuState.hx
-index 5ddcf44..309fd0e 100644
+index 0a907c2..f8fd43b 100644
 --- a/source/MainMenuState.hx
 +++ b/source/MainMenuState.hx
 @@ -25,6 +25,7 @@ using StringTools;
@@ -246,7 +249,7 @@ index 5ddcf44..309fd0e 100644
  class MainMenuState extends MusicBeatState
  {
 +	public static var projectFnfVersion:String = '2.5';
- 	public static var psychEngineVersion:String = '0.6.1'; //This is also used for Discord RPC
+ 	public static var psychEngineVersion:String = '0.6.2'; //This is also used for Discord RPC
  	public static var curSelected:Int = 0;
  
 @@ -130,6 +131,10 @@ class MainMenuState extends MusicBeatState
@@ -288,10 +291,10 @@ index 0dcfe7f..ea08be7 100644
  			else if(controls.BACK) {
  				leftState = true;
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index fbd6e51..f690509 100644
+index 2fc62c0..4ccf0dc 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
-@@ -1185,6 +1185,11 @@ class PlayState extends MusicBeatState
+@@ -1184,6 +1184,11 @@ class PlayState extends MusicBeatState
  			botplayTxt.y = timeBarBG.y - 78;
  		}
  
@@ -303,7 +306,7 @@ index fbd6e51..f690509 100644
  		strumLineNotes.cameras = [camHUD];
  		grpNoteSplashes.cameras = [camHUD];
  		notes.cameras = [camHUD];
-@@ -1198,6 +1203,7 @@ class PlayState extends MusicBeatState
+@@ -1197,6 +1202,7 @@ class PlayState extends MusicBeatState
  		timeBarBG.cameras = [camHUD];
  		timeTxt.cameras = [camHUD];
  		doof.cameras = [camHUD];
@@ -312,10 +315,10 @@ index fbd6e51..f690509 100644
  		// if (SONG.song == 'South')
  		// FlxG.camera.alpha = 0.7;
 diff --git a/source/TitleState.hx b/source/TitleState.hx
-index 1cd1b48..f7c2524 100644
+index 1cd1b48..268a8b6 100644
 --- a/source/TitleState.hx
 +++ b/source/TitleState.hx
-@@ -136,7 +136,7 @@ class TitleState extends MusicBeatState
+@@ -136,12 +136,12 @@ class TitleState extends MusicBeatState
  		#if CHECK_FOR_UPDATES
  		if(ClientPrefs.checkForUpdates && !closedState) {
  			trace('checking for update');
@@ -324,6 +327,12 @@ index 1cd1b48..f7c2524 100644
  
  			http.onData = function (data:String)
  			{
+ 				updateVersion = data.split('\n')[0].trim();
+-				var curVersion:String = MainMenuState.psychEngineVersion.trim();
++				var curVersion:String = MainMenuState.projectFnfVersion.trim();
+ 				trace('version online: ' + updateVersion + ', your version: ' + curVersion);
+ 				if(updateVersion != curVersion) {
+ 					trace('versions arent matching!');
 @@ -231,6 +231,7 @@ class TitleState extends MusicBeatState
  		#end
  	}

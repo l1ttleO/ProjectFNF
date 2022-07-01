@@ -10,10 +10,10 @@ Subject: [PATCH] Modifier 'Stuns Block Inputs'
  3 files changed, 28 insertions(+), 4 deletions(-)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
-index e9037e5..767f6fc 100644
+index f2d6429..8026b40 100644
 --- a/source/ClientPrefs.hx
 +++ b/source/ClientPrefs.hx
-@@ -62,6 +62,7 @@ class ClientPrefs {
+@@ -63,6 +63,7 @@ class ClientPrefs {
  	// ProjectFNF
  	public static var damageFromOpponentNotes:Float = 0;
  	public static var opponentNotesCanKill:Bool = false;
@@ -21,7 +21,7 @@ index e9037e5..767f6fc 100644
  
  	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
  	public static var keyBinds:Map<String, Array<FlxKey>> = [
-@@ -133,6 +134,7 @@ class ClientPrefs {
+@@ -135,6 +136,7 @@ class ClientPrefs {
  
  		FlxG.save.data.damageFromOpponentNotes = damageFromOpponentNotes;
  		FlxG.save.data.opponentNotesCanKill = opponentNotesCanKill;
@@ -29,7 +29,7 @@ index e9037e5..767f6fc 100644
  	
  		FlxG.save.flush();
  
-@@ -256,6 +258,9 @@ class ClientPrefs {
+@@ -258,6 +260,9 @@ class ClientPrefs {
  		if(FlxG.save.data.opponentNotesCanKill != null) {
  			opponentNotesCanKill = FlxG.save.data.opponentNotesCanKill;
  		}
@@ -40,12 +40,12 @@ index e9037e5..767f6fc 100644
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 6b85d9e..5b416d4 100644
+index d66762a..4c2ee95 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
-@@ -4341,6 +4341,13 @@ class PlayState extends MusicBeatState
+@@ -4335,6 +4335,13 @@ class PlayState extends MusicBeatState
  		totalPlayed++;
- 		RecalculateRating();
+ 		RecalculateRating(true);
  
 +		boyfriend.stunned = true;
 +
@@ -57,7 +57,7 @@ index 6b85d9e..5b416d4 100644
  		var char:Character = boyfriend;
  		if(daNote.gfNote) {
  			char = gf;
-@@ -4385,13 +4392,12 @@ class PlayState extends MusicBeatState
+@@ -4379,13 +4386,12 @@ class PlayState extends MusicBeatState
  			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
  			// FlxG.log.add('played imss note');
  

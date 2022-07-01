@@ -82,10 +82,10 @@ index eae80b3..fe203fc 100644
  	public function new(name:String)
  	{
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 8fbea0b..33348a8 100644
+index 4c50671..381fe6f 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
-@@ -142,6 +142,7 @@ class PlayState extends MusicBeatState
+@@ -141,6 +141,7 @@ class PlayState extends MusicBeatState
  	public var notes:FlxTypedGroup<Note>;
  	public var unspawnNotes:Array<Note> = [];
  	public var eventNotes:Array<EventNote> = [];
@@ -93,7 +93,7 @@ index 8fbea0b..33348a8 100644
  
  	private var strumLine:FlxSprite;
  
-@@ -174,6 +175,7 @@ class PlayState extends MusicBeatState
+@@ -173,6 +174,7 @@ class PlayState extends MusicBeatState
  	public var timeBar:FlxBar;
  
  	public var ratingsData:Array<Rating> = [];
@@ -101,7 +101,7 @@ index 8fbea0b..33348a8 100644
  	public var sicks:Int = 0;
  	public var goods:Int = 0;
  	public var bads:Int = 0;
-@@ -250,7 +252,8 @@ class PlayState extends MusicBeatState
+@@ -249,7 +251,8 @@ class PlayState extends MusicBeatState
  	var tankmanRun:FlxTypedGroup<TankmenBG>;
  	var foregroundSprites:FlxTypedGroup<BGSprite>;
  
@@ -111,7 +111,7 @@ index 8fbea0b..33348a8 100644
  	public var songHits:Int = 0;
  	public var songMisses:Int = 0;
  	public var scoreTxt:FlxText;
-@@ -322,24 +325,41 @@ class PlayState extends MusicBeatState
+@@ -321,24 +324,41 @@ class PlayState extends MusicBeatState
  		];
  
  		//Ratings
@@ -154,7 +154,7 @@ index 8fbea0b..33348a8 100644
  		ratingsData.push(rating);
  
  		// For the "Just the Two of Us" achievement
-@@ -1344,6 +1364,10 @@ class PlayState extends MusicBeatState
+@@ -1343,6 +1363,10 @@ class PlayState extends MusicBeatState
  			FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
  		}
  
@@ -165,7 +165,7 @@ index 8fbea0b..33348a8 100644
  		Conductor.safeZoneOffset = (ClientPrefs.safeFrames / 60) * 1000;
  		callOnLuas('onCreatePost', []);
  
-@@ -2249,6 +2273,7 @@ class PlayState extends MusicBeatState
+@@ -2267,6 +2291,7 @@ class PlayState extends MusicBeatState
  		// Updating Discord Rich Presence (with Time Left)
  		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter(), true, songLength);
  		#end
@@ -173,7 +173,7 @@ index 8fbea0b..33348a8 100644
  		setOnLuas('songLength', songLength);
  		callOnLuas('onSongStart', []);
  	}
-@@ -2391,6 +2416,7 @@ class PlayState extends MusicBeatState
+@@ -2405,6 +2430,7 @@ class PlayState extends MusicBeatState
  
  				if (swagNote.mustPress)
  				{
@@ -181,7 +181,7 @@ index 8fbea0b..33348a8 100644
  					swagNote.x += FlxG.width / 2; // general offset
  				}
  				else if(ClientPrefs.middleScroll)
-@@ -3801,12 +3827,13 @@ class PlayState extends MusicBeatState
+@@ -3808,12 +3834,13 @@ class PlayState extends MusicBeatState
  
  		var ret:Dynamic = callOnLuas('onEndSong', [], false);
  		if(ret != FunkinLua.Function_Stop && !transitioning) {
@@ -197,7 +197,7 @@ index 8fbea0b..33348a8 100644
  				#end
  			}
  
-@@ -3818,7 +3845,7 @@ class PlayState extends MusicBeatState
+@@ -3825,7 +3852,7 @@ class PlayState extends MusicBeatState
  
  			if (isStoryMode)
  			{
@@ -206,7 +206,7 @@ index 8fbea0b..33348a8 100644
  				campaignMisses += songMisses;
  
  				storyPlaylist.remove(storyPlaylist[0]);
-@@ -3937,6 +3964,8 @@ class PlayState extends MusicBeatState
+@@ -3943,6 +3970,8 @@ class PlayState extends MusicBeatState
  
  	public var totalPlayed:Int = 0;
  	public var totalNotesHit:Float = 0.0;
@@ -215,7 +215,7 @@ index 8fbea0b..33348a8 100644
  
  	public var showCombo:Bool = false;
  	public var showComboNum:Bool = true;
-@@ -3958,7 +3987,7 @@ class PlayState extends MusicBeatState
+@@ -3964,7 +3993,7 @@ class PlayState extends MusicBeatState
  		//
  
  		var rating:FlxSprite = new FlxSprite();
@@ -224,7 +224,7 @@ index 8fbea0b..33348a8 100644
  
  		//tryna do MS based judgment due to popular demand
  		var daRating:Rating = Conductor.judgeNote(note, noteDiff);
-@@ -3975,6 +4004,18 @@ class PlayState extends MusicBeatState
+@@ -3981,6 +4010,18 @@ class PlayState extends MusicBeatState
  		}
  
  		if(!practiceMode && !cpuControlled) {
@@ -243,7 +243,7 @@ index 8fbea0b..33348a8 100644
  			songScore += score;
  			if(!note.ratingDisabled)
  			{
-@@ -4352,7 +4393,8 @@ class PlayState extends MusicBeatState
+@@ -4342,7 +4383,8 @@ class PlayState extends MusicBeatState
  		//trace(daNote.missHealth);
  		songMisses++;
  		vocals.volume = 0;
@@ -252,8 +252,8 @@ index 8fbea0b..33348a8 100644
 +		bonus = 0;
  
  		totalPlayed++;
- 		RecalculateRating();
-@@ -4398,7 +4440,8 @@ class PlayState extends MusicBeatState
+ 		RecalculateRating(true);
+@@ -4388,7 +4430,8 @@ class PlayState extends MusicBeatState
  			}
  			combo = 0;
  
