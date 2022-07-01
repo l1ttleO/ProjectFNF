@@ -6,9 +6,9 @@ Subject: [PATCH] Add gameplay option 'osu!mania score system'
 ---
  source/ClientPrefs.hx                      | 10 ++++
  source/Conductor.hx                        |  4 ++
- source/PlayState.hx                        | 59 +++++++++++++++++++---
+ source/PlayState.hx                        | 63 +++++++++++++++++++---
  source/options/GameplaySettingsSubState.hx | 19 +++++++
- 4 files changed, 84 insertions(+), 8 deletions(-)
+ 4 files changed, 89 insertions(+), 7 deletions(-)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
 index 683c4e3..0d8d6ab 100644
@@ -82,7 +82,7 @@ index eae80b3..fe203fc 100644
  	public function new(name:String)
  	{
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 4c50671..381fe6f 100644
+index 4c50671..6d32ad0 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
 @@ -141,6 +141,7 @@ class PlayState extends MusicBeatState
@@ -181,32 +181,27 @@ index 4c50671..381fe6f 100644
  					swagNote.x += FlxG.width / 2; // general offset
  				}
  				else if(ClientPrefs.middleScroll)
-@@ -3808,12 +3834,13 @@ class PlayState extends MusicBeatState
+@@ -3808,10 +3834,17 @@ class PlayState extends MusicBeatState
  
  		var ret:Dynamic = callOnLuas('onEndSong', [], false);
  		if(ret != FunkinLua.Function_Stop && !transitioning) {
 -			if (SONG.validScore)
-+			var score:Int = 350 * (maxs + sicks) + 200 * goods + 100 * bads + 50 * shits - (songMisses * 10);
++			var songScore:Int = 0;
++			var percent:Float = 0;
++			for (rating in ratingsData) {
++				var counter:Int = Reflect.field(this, rating.counter);
++				songScore += rating.score * counter;
++				percent += rating.ratingMod * counter;
++			}
 +			if (SONG.validScore && !ClientPrefs.getGameplaySetting('practice', false) && !ClientPrefs.getGameplaySetting('botplay', false))
  			{
  				#if !switch
- 				var percent:Float = ratingPercent;
+-				var percent:Float = ratingPercent;
++				percent /= totalPlayed;
  				if(Math.isNaN(percent)) percent = 0;
--				Highscore.saveScore(SONG.song, songScore, storyDifficulty, percent);
-+				Highscore.saveScore(SONG.song, score, storyDifficulty, percent);
+ 				Highscore.saveScore(SONG.song, songScore, storyDifficulty, percent);
  				#end
- 			}
- 
-@@ -3825,7 +3852,7 @@ class PlayState extends MusicBeatState
- 
- 			if (isStoryMode)
- 			{
--				campaignScore += songScore;
-+				campaignScore += score;
- 				campaignMisses += songMisses;
- 
- 				storyPlaylist.remove(storyPlaylist[0]);
-@@ -3943,6 +3970,8 @@ class PlayState extends MusicBeatState
+@@ -3943,6 +3976,8 @@ class PlayState extends MusicBeatState
  
  	public var totalPlayed:Int = 0;
  	public var totalNotesHit:Float = 0.0;
@@ -215,7 +210,7 @@ index 4c50671..381fe6f 100644
  
  	public var showCombo:Bool = false;
  	public var showComboNum:Bool = true;
-@@ -3964,7 +3993,7 @@ class PlayState extends MusicBeatState
+@@ -3964,7 +3999,7 @@ class PlayState extends MusicBeatState
  		//
  
  		var rating:FlxSprite = new FlxSprite();
@@ -224,7 +219,7 @@ index 4c50671..381fe6f 100644
  
  		//tryna do MS based judgment due to popular demand
  		var daRating:Rating = Conductor.judgeNote(note, noteDiff);
-@@ -3981,6 +4010,18 @@ class PlayState extends MusicBeatState
+@@ -3981,6 +4016,18 @@ class PlayState extends MusicBeatState
  		}
  
  		if(!practiceMode && !cpuControlled) {
@@ -243,7 +238,7 @@ index 4c50671..381fe6f 100644
  			songScore += score;
  			if(!note.ratingDisabled)
  			{
-@@ -4342,7 +4383,8 @@ class PlayState extends MusicBeatState
+@@ -4342,7 +4389,8 @@ class PlayState extends MusicBeatState
  		//trace(daNote.missHealth);
  		songMisses++;
  		vocals.volume = 0;
@@ -253,7 +248,7 @@ index 4c50671..381fe6f 100644
  
  		totalPlayed++;
  		RecalculateRating(true);
-@@ -4388,7 +4430,8 @@ class PlayState extends MusicBeatState
+@@ -4388,7 +4436,8 @@ class PlayState extends MusicBeatState
  			}
  			combo = 0;
  
