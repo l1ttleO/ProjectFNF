@@ -48,7 +48,7 @@ index 117cca4..f2d6429 100644
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 4ccf0dc..d66762a 100644
+index 4ccf0dc..2dd298c 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
 @@ -162,6 +162,7 @@ class PlayState extends MusicBeatState
@@ -64,7 +64,7 @@ index 4ccf0dc..d66762a 100644
  		note.hitByOpponent = true;
  
 +		var damage:Float = ClientPrefs.damageFromOpponentNotes * 0.02;
-+		var toRemove:Float = Math.min(damage, ClientPrefs.opponentNotesCanKill && healthDrained + damage < 1.8 ? 0.4 : health - 0.001);
++		var toRemove:Float = Math.min(damage, ClientPrefs.opponentNotesCanKill && healthDrained + damage < 1.8 ? 0.4 : Math.max(0.001, health) - 0.001);
 +		health -= toRemove;
 +		healthDrained += toRemove;
  		callOnLuas('opponentNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote]);

@@ -5,9 +5,9 @@ Subject: [PATCH] Add visual options 'Advanced Score Text' and 'Score Text Underl
 
 ---
  source/ClientPrefs.hx               |   2 +
- source/PlayState.hx                 | 158 ++++++++++++++++++++++------
+ source/PlayState.hx                 | 162 ++++++++++++++++++++++------
  source/options/VisualsUISubState.hx |  18 ++++
- 3 files changed, 145 insertions(+), 33 deletions(-)
+ 3 files changed, 147 insertions(+), 35 deletions(-)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
 index aa21ab9..9995bdd 100644
@@ -23,7 +23,7 @@ index aa21ab9..9995bdd 100644
  	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
  	public static var keyBinds:Map<String, Array<FlxKey>> = [
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index c7dad70..1a4eb38 100644
+index acd19dc..506723b 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
 @@ -75,17 +75,33 @@ class PlayState extends MusicBeatState
@@ -196,14 +196,14 @@ index c7dad70..1a4eb38 100644
  
 +		if (health > 2) health = 2;
 +		healthPercentageDisplay = health / 0.02; // Don't round this for smooth health bar movement
-+		healthPercentageBar = opponentPlay ? 100 - healthPercentageDisplay : healthPercentageDisplay;
-+		if (ClientPrefs.advancedScoreTxt && oldPercentage != Highscore.floorDecimal(healthPercentageDisplay, 0)) 
++		healthPercentageBar = opponentPlay ? Math.max(0, Math.min(100, 100 - healthPercentageDisplay)) : healthPercentageDisplay;
++		if (ClientPrefs.advancedScoreTxt && oldPercentage != Highscore.floorDecimal(healthPercentageDisplay, 0))
 +			updateScore(true);
 +
  		var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
  		iconP1.scale.set(mult, mult);
  		iconP1.updateHitbox();
-@@ -2953,8 +3029,8 @@ class PlayState extends MusicBeatState
+@@ -2953,15 +3029,15 @@ class PlayState extends MusicBeatState
  		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
  		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
  
@@ -212,8 +212,17 @@ index c7dad70..1a4eb38 100644
 +		/*if (health > 2)
 +			health = 2;*/
  
- 		if (healthBar.percent < 20)
+-		if (healthBar.percent < 20)
++		if (healthPercentageBar < 20)
  			iconP1.animation.curAnim.curFrame = 1;
+ 		else
+ 			iconP1.animation.curAnim.curFrame = 0;
+ 
+-		if (healthBar.percent > 80)
++		if (healthPercentageBar > 80)
+ 			iconP2.animation.curAnim.curFrame = 1;
+ 		else
+ 			iconP2.animation.curAnim.curFrame = 0;
 @@ -3662,6 +3738,7 @@ class PlayState extends MusicBeatState
  
  				var newValue:Float = SONG.speed * ClientPrefs.getGameplaySetting('scrollspeed', 1) * val1;
@@ -327,7 +336,7 @@ index c7dad70..1a4eb38 100644
 -			}
 +			//}
  
-+			var ratingMultiplier:Float = 1.25; 
++			var ratingMultiplier:Float = 1.25;
  			// Rating FC
  			ratingFC = "";
 -			if (sicks > 0) ratingFC = "SFC";
