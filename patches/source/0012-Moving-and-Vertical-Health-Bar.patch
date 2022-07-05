@@ -1,7 +1,7 @@
 From b06699b4990424d7d3ed53e18e392677fde68f2e Mon Sep 17 00:00:00 2001
 From: l1ttleO <l1ttleofficial@outlook.com>
 Date: Sat, 2 Jul 2022 14:48:00 +0500
-Subject: [PATCH] Moving and vertical health bar
+Subject: [PATCH] Add visual option 'Health Bar Position' and make the health bar be able to move
 
 ---
  source/ClientPrefs.hx               |  7 ++++-
