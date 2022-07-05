@@ -3,6 +3,7 @@ From: l1ttleO <l1ttleofficial@outlook.com>
 Date: Sun, 26 Jun 2022 23:01:51 +0500
 Subject: [PATCH] Add ProjectFNF branding
 
+Co-authored-by: Stilic <lateman-jpeg@outlook.fr>
 ---
  Project.xml             |  5 +++--
  source/CreditsState.hx  |  6 ++++++

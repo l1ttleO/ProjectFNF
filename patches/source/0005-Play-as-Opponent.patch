@@ -3,6 +3,7 @@ From: l1ttleO <l1ttleofficial@outlook.com>
 Date: Mon, 27 Jun 2022 22:36:42 +0500
 Subject: [PATCH] Add gameplay changer 'Play as Opponent'
 
+Co-authored-by: BeastlyGhost <45212377+BeastlyGhost@users.noreply.github.com>
 ---
  source/GameplayChangersSubstate.hx |  3 ++
  source/PlayState.hx                | 58 ++++++++++++++++++------------
