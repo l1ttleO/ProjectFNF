@@ -1,0 +1,101 @@
+From be6e20be7949ade27339d5d785510c2a25615201 Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Wed, 6 Jul 2022 18:53:09 +0500
+Subject: [PATCH] lmao
+
+---
+ source/ClientPrefs.hx               |  5 +++++
+ source/PlayState.hx                 | 10 ++++++++++
+ source/options/VisualsUISubState.hx | 11 +++++++++++
+ 3 files changed, 26 insertions(+)
+
+diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
+index e7b860b..29a08fc 100644
+--- a/source/ClientPrefs.hx
++++ b/source/ClientPrefs.hx
+@@ -80,6 +80,7 @@ class ClientPrefs {
+ 	public static var hideGf:Bool = false;
+ 	public static var hideBf:Bool = false;
+ 	public static var missesDecreaseMaxHealth:Bool = false;
++	public static var vignetteStrength:Float = 0.7;
+ 
+ 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+ 	public static var keyBinds:Map<String, Array<FlxKey>> = [
+@@ -167,6 +168,7 @@ class ClientPrefs {
+ 		FlxG.save.data.hideGf = hideGf;
+ 		FlxG.save.data.hideBf = hideBf;
+ 		FlxG.save.data.missesDecreaseMaxHealth = missesDecreaseMaxHealth;
++		FlxG.save.data.vignetteStrength = vignetteStrength;
+ 	
+ 		FlxG.save.flush();
+ 
+@@ -335,6 +337,9 @@ class ClientPrefs {
+ 		if(FlxG.save.data.missesDecreaseMaxHealth != null) {
+ 			missesDecreaseMaxHealth = FlxG.save.data.missesDecreaseMaxHealth;
+ 		}
++		if(FlxG.save.data.vignetteStrength != null) {
++			vignetteStrength = FlxG.save.data.vignetteStrength;
++		}
+ 		
+ 		// flixel automatically saves your volume!
+ 		if(FlxG.save.data.volume != null)
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index 41488d0..a3465df 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -332,6 +332,7 @@ class PlayState extends MusicBeatState
+ 	var precacheList:Map<String, String> = new Map<String, String>();
+ 
+ 	private var oldLQ:Bool = ClientPrefs.lowQuality; // Avoids loading things into RAM that won't be rendered
++	private var vignette:FlxSprite;
+ 	override public function create()
+ 	{
+ 		Paths.clearStoredMemory();
+@@ -1401,6 +1402,8 @@ class PlayState extends MusicBeatState
+ 			precacheList.set(Paths.formatToSongPath(ClientPrefs.pauseMusic), 'music');
+ 		}
+ 
++		precacheList.set('vignette', 'image');
++
+ 		#if desktop
+ 		// Updating Discord Rich Presence.
+ 		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
+@@ -3047,6 +3050,13 @@ class PlayState extends MusicBeatState
+ 		if (ClientPrefs.advancedScoreTxt && oldPercentage != Highscore.floorDecimal(healthPercentageDisplay, 0))
+ 			updateScore(true);
+ 
++		if (vignette == null) {
++			vignette = new FlxSprite().loadGraphic(Paths.image('vignette'));
++			vignette.cameras = [camHUD];
++			add(vignette);
++		}
++		vignette.alpha = ClientPrefs.vignetteStrength - (health / maxHealth);
++
+ 		var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+ 		iconP1.scale.set(mult, mult);
+ 		iconP1.updateHitbox();
+diff --git a/source/options/VisualsUISubState.hx b/source/options/VisualsUISubState.hx
+index 3d80f1b..d2f6623 100644
+--- a/source/options/VisualsUISubState.hx
++++ b/source/options/VisualsUISubState.hx
+@@ -127,6 +127,17 @@ class VisualsUISubState extends BaseOptionsMenu
+ 			['Vertical (left)', 'Vertical (right)', 'Horizontal', 'Disabled']);
+ 		addOption(option);
+ 
++		var option:Option = new Option('Vignette Strength',
++			'Defines the strength of an effect that will darken your screen if your health gets low\nThe effect is proportional to maximum health',
++			'vignetteStrength',
++			'percent',
++			0.7);
++		addOption(option);
++		option.scrollSpeed = 0;
++		option.minValue = 0.0;
++		option.maxValue = 1;
++		option.changeValue = 0.05;
++
+ 		#if !mobile
+ 		var option:Option = new Option('FPS Counter',
+ 			'If unchecked, hides FPS Counter.',
+-- 
+2.34.1.windows.1
+
