@@ -1,0 +1,86 @@
+From 0cf7ddcb957379c630dfda69cb354099a38385ae Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Wed, 6 Jul 2022 15:56:19 +0500
+Subject: [PATCH] Add gameplay changers 'Starting Health' and 'Maximum Health'
+
+---
+ source/ClientPrefs.hx              |  4 +++-
+ source/GameplayChangersSubstate.hx | 16 ++++++++++++++++
+ source/PlayState.hx                |  5 ++++-
+ 3 files changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
+index b3d20aa..1b690c4 100644
+--- a/source/ClientPrefs.hx
++++ b/source/ClientPrefs.hx
+@@ -50,7 +50,9 @@ class ClientPrefs {
+ 		'instakill' => false,
+ 		'practice' => false,
+ 		'botplay' => false,
+-		'opponentplay' => false
++		'opponentplay' => false,
++		'startingHealth' => 0.5,
++		'maxHealth' => 1
+ 	];
+ 
+ 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
+diff --git a/source/GameplayChangersSubstate.hx b/source/GameplayChangersSubstate.hx
+index dcdb16d..90b53ac 100644
+--- a/source/GameplayChangersSubstate.hx
++++ b/source/GameplayChangersSubstate.hx
+@@ -82,6 +82,22 @@ class GameplayChangersSubstate extends MusicBeatSubstate
+ 		option.displayFormat = '%vX';
+ 		optionsArray.push(option);
+ 
++		var option:GameplayOption = new GameplayOption('Starting Health', 'startingHealth', 'percent', 0.5);
++		option.scrollSpeed = 1.7;
++		option.minValue = 0.01;
++		option.maxValue = 2;
++		option.changeValue = 0.01;
++		option.displayFormat = '%v%';
++		optionsArray.push(option);
++
++		var option:GameplayOption = new GameplayOption('Maximum Health', 'maxHealth', 'percent', 1);
++		option.scrollSpeed = 1.7;
++		option.minValue = 0.01;
++		option.maxValue = 2;
++		option.changeValue = 0.01;
++		option.displayFormat = '%v%';
++		optionsArray.push(option);
++
+ 		var option:GameplayOption = new GameplayOption('Instakill on Miss', 'instakill', 'bool', false);
+ 		optionsArray.push(option);
+ 
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index 8c86810..e3f20db 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -180,6 +180,7 @@ class PlayState extends MusicBeatState
+ 
+ 	public var gfSpeed:Int = 1;
+ 	public var health:Float = 1;
++	public var maxHealth:Float = 2;
+ 	public var healthDrained:Float = 1;
+ 	public var healthPercentageDisplay:Float = 50;
+ 	public var healthPercentageBar:Float = 50;
+@@ -404,6 +405,8 @@ class PlayState extends MusicBeatState
+ 		practiceMode = ClientPrefs.getGameplaySetting('practice', false);
+ 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
+ 		opponentPlay = ClientPrefs.getGameplaySetting('opponentplay', false);
++		health = ClientPrefs.getGameplaySetting('startingHealth', 0.5) * 2.0;
++		maxHealth = ClientPrefs.getGameplaySetting('maxHealth', 1) * 2.0;
+ 
+ 		// var gameCam:FlxCamera = FlxG.camera;
+ 		camGame = new FlxCamera();
+@@ -3038,7 +3041,7 @@ class PlayState extends MusicBeatState
+ 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
+ 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
+ 
+-		if (health > 2) health = 2;
++		if (health > maxHealth) health = maxHealth;
+ 		healthPercentageDisplay = health / 0.02; // Don't round this for smooth health bar movement
+ 		healthPercentageBar = opponentPlay ? Math.max(0, Math.min(100, 100 - healthPercentageDisplay)) : healthPercentageDisplay;
+ 		if (ClientPrefs.advancedScoreTxt && oldPercentage != Highscore.floorDecimal(healthPercentageDisplay, 0))
+-- 
+2.34.1.windows.1
+
