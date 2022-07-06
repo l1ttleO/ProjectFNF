@@ -401,7 +401,7 @@ index 3035dfd..8692c4d 100644
 +		addOption(option);
 +		
 +		var option:Option = new Option('Score Text Underlay Opacity',
-+			'How opaque should be an underlay for score text."',
++			'How opaque should be an underlay for score text.',
 +			'scoreTxtUnderlayOpacity',
 +			'percent',
 +			0.3);
