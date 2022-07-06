@@ -1,0 +1,82 @@
+From b16bc0a6d813fa255913c58054b5a9edcb23c3ef Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Wed, 6 Jul 2022 17:23:35 +0500
+Subject: [PATCH] Add modifier 'Misses Decrease Maximum Health'
+
+---
+ source/ClientPrefs.hx               | 5 +++++
+ source/PlayState.hx                 | 2 ++
+ source/options/ModifiersSubState.hx | 7 +++++++
+ 3 files changed, 14 insertions(+)
+
+diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
+index 1b690c4..e7b860b 100644
+--- a/source/ClientPrefs.hx
++++ b/source/ClientPrefs.hx
+@@ -79,6 +79,7 @@ class ClientPrefs {
+ 	public static var hideOpponent:Bool = false;
+ 	public static var hideGf:Bool = false;
+ 	public static var hideBf:Bool = false;
++	public static var missesDecreaseMaxHealth:Bool = false;
+ 
+ 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+ 	public static var keyBinds:Map<String, Array<FlxKey>> = [
+@@ -165,6 +166,7 @@ class ClientPrefs {
+ 		FlxG.save.data.hideOpponent = hideOpponent;
+ 		FlxG.save.data.hideGf = hideGf;
+ 		FlxG.save.data.hideBf = hideBf;
++		FlxG.save.data.missesDecreaseMaxHealth = missesDecreaseMaxHealth;
+ 	
+ 		FlxG.save.flush();
+ 
+@@ -330,6 +332,9 @@ class ClientPrefs {
+ 		if(FlxG.save.data.hideBf != null) {
+ 			hideBf = FlxG.save.data.hideBf;
+ 		}
++		if(FlxG.save.data.missesDecreaseMaxHealth != null) {
++			missesDecreaseMaxHealth = FlxG.save.data.missesDecreaseMaxHealth;
++		}
+ 		
+ 		// flixel automatically saves your volume!
+ 		if(FlxG.save.data.volume != null)
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index e3f20db..41488d0 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -4513,6 +4513,7 @@ class PlayState extends MusicBeatState
+ 		var prevCombo:Int = combo;
+ 		combo = 0;
+ 		health -= daNote.missHealth * healthLoss;
++		if (ClientPrefs.missesDecreaseMaxHealth) maxHealth -= daNote.missHealth * healthLoss;
+ 		
+ 		if(instakillOnMiss)
+ 		{
+@@ -4574,6 +4575,7 @@ class PlayState extends MusicBeatState
+ 				return;
+ 			}
+ 			health -= 0.05 * healthLoss;
++			if (ClientPrefs.missesDecreaseMaxHealth) maxHealth -= 0.05 * healthLoss;
+ 			if(instakillOnMiss)
+ 			{
+ 				vocals.volume = 0;
+diff --git a/source/options/ModifiersSubState.hx b/source/options/ModifiersSubState.hx
+index 6115798..7166f0c 100644
+--- a/source/options/ModifiersSubState.hx
++++ b/source/options/ModifiersSubState.hx
+@@ -48,6 +48,13 @@ class ModifiersSubState extends BaseOptionsMenu
+ 		option.decimals = 1;
+ 		addOption(option);
+ 
++		var option:Option = new Option('Misses Decrease Max Health', // Name
++			'If checked, misses will lower your maximum health by damage taken.', // Description
++			'missesDecreaseMaxHealth', // Save data variable name
++			'bool', // Variable type
++			false); // Default value
++		addOption(option);
++
+ 		super();
+ 	}
+ }
+-- 
+2.34.1.windows.1
+
