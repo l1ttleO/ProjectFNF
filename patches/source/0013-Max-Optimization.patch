@@ -52,7 +52,7 @@ index 46eff0a..b3d20aa 100644
 +		if(FlxG.save.data.hideBf != null) {
 +			hideBf = FlxG.save.data.hideBf;
 +		}
- 
+ 		
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
 diff --git a/source/FunkinLua.hx b/source/FunkinLua.hx

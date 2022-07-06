@@ -36,7 +36,7 @@ index 10df0e3..46eff0a 100644
 +		if(FlxG.save.data.healthBarType != null) {
 +			healthBarType = FlxG.save.data.healthBarType;
 +		}
-
+ 		
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
