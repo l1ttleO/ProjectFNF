@@ -6,14 +6,14 @@ Subject: [PATCH] Add visual option 'Move Camera in Note Direction'
 ---
  source/ClientPrefs.hx               |  5 +++++
  source/PlayState.hx                 | 20 ++++++++++++++------
- source/options/VisualsUISubState.hx | 20 ++++++++++----------
- 3 files changed, 29 insertions(+), 16 deletions(-)
+ source/options/VisualsUISubState.hx | 12 ++++++++++++
+ 3 files changed, 31 insertions(+), 6 deletions(-)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
-index 767f6fc..cfd4372 100644
+index 8026b40..dbe9f15 100644
 --- a/source/ClientPrefs.hx
 +++ b/source/ClientPrefs.hx
-@@ -63,6 +63,7 @@ class ClientPrefs {
+@@ -64,6 +64,7 @@ class ClientPrefs {
  	public static var damageFromOpponentNotes:Float = 0;
  	public static var opponentNotesCanKill:Bool = false;
  	public static var stunsBlockInputs:Float = 0;
@@ -21,7 +21,7 @@ index 767f6fc..cfd4372 100644
  
  	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
  	public static var keyBinds:Map<String, Array<FlxKey>> = [
-@@ -135,6 +136,7 @@ class ClientPrefs {
+@@ -137,6 +138,7 @@ class ClientPrefs {
  		FlxG.save.data.damageFromOpponentNotes = damageFromOpponentNotes;
  		FlxG.save.data.opponentNotesCanKill = opponentNotesCanKill;
  		FlxG.save.data.stunsBlockInputs = stunsBlockInputs;
@@ -29,7 +29,7 @@ index 767f6fc..cfd4372 100644
  	
  		FlxG.save.flush();
  
-@@ -261,6 +263,9 @@ class ClientPrefs {
+@@ -263,6 +265,9 @@ class ClientPrefs {
  		if(FlxG.save.data.stunsBlockInputs != null) {
  			stunsBlockInputs = FlxG.save.data.stunsBlockInputs;
  		}
@@ -40,10 +40,10 @@ index 767f6fc..cfd4372 100644
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index a6949bf..faa7a57 100644
+index 8cead4e..99e2c94 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
-@@ -3670,20 +3670,26 @@ class PlayState extends MusicBeatState
+@@ -3687,20 +3687,26 @@ class PlayState extends MusicBeatState
  	}
  
  	var cameraTwn:FlxTween;
@@ -75,7 +75,7 @@ index a6949bf..faa7a57 100644
  
  			if (Paths.formatToSongPath(SONG.song) == 'tutorial' && cameraTwn == null && FlxG.camera.zoom != 1)
  			{
-@@ -4422,6 +4428,7 @@ class PlayState extends MusicBeatState
+@@ -4416,6 +4422,7 @@ class PlayState extends MusicBeatState
  		var char:Character = opponentPlay ? boyfriend : dad;
  		if (note.gfNote) char = gf;
  		var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
@@ -83,7 +83,7 @@ index a6949bf..faa7a57 100644
  		if(note.noteType == 'Hey!' && char.animOffsets.exists('hey')) {
  			char.playAnim('hey', true);
  			char.specialAnim = true;
-@@ -4524,8 +4531,9 @@ class PlayState extends MusicBeatState
+@@ -4516,8 +4523,9 @@ class PlayState extends MusicBeatState
  			health += note.hitHealth * healthGain;
  			healthDrained -= note.hitHealth * healthGain;
  
@@ -95,36 +95,28 @@ index a6949bf..faa7a57 100644
  				/*if(note.gfNote)
  				{
 diff --git a/source/options/VisualsUISubState.hx b/source/options/VisualsUISubState.hx
-index a3992b4..d181739 100644
+index 9c798e4..4c67547 100644
 --- a/source/options/VisualsUISubState.hx
 +++ b/source/options/VisualsUISubState.hx
-@@ -77,16 +77,16 @@ class VisualsUISubState extends BaseOptionsMenu
- 			true);
+@@ -89,6 +89,18 @@ class VisualsUISubState extends BaseOptionsMenu
+ 		option.decimals = 1;
  		addOption(option);
- 
--		var option:Option = new Option('Health Bar Transparency',
--			'How much transparent should the health bar and icons be.',
--			'healthBarAlpha',
--			'percent',
--			1);
--		option.scrollSpeed = 1.6;
--		option.minValue = 0.0;
--		option.maxValue = 1;
--		option.changeValue = 0.1;
--		option.decimals = 1;
+ 		
 +		var option:Option = new Option('Camera Move Intensity',
 +			'How far should the camera move when a note gets hit.',
 +			'cameraMoveIntensity',
 +			'int',
 +			70);
 +		option.displayFormat = "%v pixels";
-+		option.scrollSpeed = 66.7;
++		option.scrollSpeed = 0;
 +		option.minValue = 0;
 +		option.maxValue = 200;
-+		option.changeValue = 5;
- 		addOption(option);
- 		
++		option.changeValue = 10;
++		addOption(option);
++		
  		#if !mobile
+ 		var option:Option = new Option('FPS Counter',
+ 			'If unchecked, hides FPS Counter.',
 -- 
 2.34.1.windows.1
 

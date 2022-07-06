@@ -40,7 +40,7 @@ index dbe9f15..683c4e3 100644
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 0e9b322..8143689 100644
+index 99e2c94..72999de 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
 @@ -4359,6 +4359,7 @@ class PlayState extends MusicBeatState
@@ -60,11 +60,11 @@ index 0e9b322..8143689 100644
  				char.playAnim(singAnimations[Std.int(Math.abs(direction))] + 'miss', true);
  			}
 diff --git a/source/options/VisualsUISubState.hx b/source/options/VisualsUISubState.hx
-index d1391cb..3035dfd 100644
+index 4c67547..476abf1 100644
 --- a/source/options/VisualsUISubState.hx
 +++ b/source/options/VisualsUISubState.hx
-@@ -89,6 +89,18 @@ class VisualsUISubState extends BaseOptionsMenu
- 		option.changeValue = 5;
+@@ -101,6 +101,18 @@ class VisualsUISubState extends BaseOptionsMenu
+ 		option.changeValue = 10;
  		addOption(option);
  		
 +		var option:Option = new Option('Miss Shake Intensity',
@@ -82,7 +82,7 @@ index d1391cb..3035dfd 100644
  		#if !mobile
  		var option:Option = new Option('FPS Counter',
  			'If unchecked, hides FPS Counter.',
-@@ -130,6 +142,10 @@ class VisualsUISubState extends BaseOptionsMenu
+@@ -142,6 +154,10 @@ class VisualsUISubState extends BaseOptionsMenu
  
  		changedMusic = true;
  	}

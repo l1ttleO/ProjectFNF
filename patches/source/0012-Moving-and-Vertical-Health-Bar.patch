@@ -130,13 +130,13 @@ index 4b22913..04b6a2c 100644
  			health = 2;*/
  
 diff --git a/source/options/VisualsUISubState.hx b/source/options/VisualsUISubState.hx
-index 8692c4d..3d80f1b 100644
+index 0d38df2..a766802 100644
 --- a/source/options/VisualsUISubState.hx
 +++ b/source/options/VisualsUISubState.hx
-@@ -119,6 +119,14 @@ class VisualsUISubState extends BaseOptionsMenu
- 		option.maxValue = 1;
+@@ -132,6 +132,14 @@ class VisualsUISubState extends BaseOptionsMenu
  		option.changeValue = 0.1;
- 		
+ 		option.decimals = 1;
+ 
 +		var option:Option = new Option('Health Bar:',
 +			"How should the Health Bar be positioned?",
 +			'healthBarType',

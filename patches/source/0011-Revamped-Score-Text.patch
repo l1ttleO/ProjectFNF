@@ -6,8 +6,8 @@ Subject: [PATCH] Add visual options 'Advanced Score Text' and 'Score Text Underl
 ---
  source/ClientPrefs.hx               |  10 ++
  source/PlayState.hx                 | 163 ++++++++++++++++++++++------
- source/options/VisualsUISubState.hx |  18 +++
- 3 files changed, 157 insertions(+), 34 deletions(-)
+ source/options/VisualsUISubState.hx |  19 ++++
+ 3 files changed, 158 insertions(+), 34 deletions(-)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
 index 3368b24..10df0e3 100644
@@ -385,14 +385,13 @@ index c29c99b..4b22913 100644
  		setOnLuas('ratingName', ratingName);
  		setOnLuas('ratingFC', ratingFC);
 diff --git a/source/options/VisualsUISubState.hx b/source/options/VisualsUISubState.hx
-index 3035dfd..8692c4d 100644
+index 476abf1..0d38df2 100644
 --- a/source/options/VisualsUISubState.hx
 +++ b/source/options/VisualsUISubState.hx
-@@ -100,6 +100,24 @@ class VisualsUISubState extends BaseOptionsMenu
- 		option.changeValue = 0.1;
+@@ -113,6 +113,25 @@ class VisualsUISubState extends BaseOptionsMenu
  		option.onChange = onChangeMissShakeIntensity;
  		addOption(option);
-+
+ 		
 +		var option:Option = new Option('Advanced Score Text', //Name
 +			'If checked, there will be additional information displayed in score text.', //Description
 +			'advancedScoreTxt', //Save data variable name
@@ -410,9 +409,11 @@ index 3035dfd..8692c4d 100644
 +		option.minValue = 0.0;
 +		option.maxValue = 1;
 +		option.changeValue = 0.1;
- 		
++		option.decimals = 1;
++
  		#if !mobile
  		var option:Option = new Option('FPS Counter',
+ 			'If unchecked, hides FPS Counter.',
 -- 
 2.34.1.windows.1
 

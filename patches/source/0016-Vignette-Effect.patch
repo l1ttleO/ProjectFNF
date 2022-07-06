@@ -1,7 +1,7 @@
 From be6e20be7949ade27339d5d785510c2a25615201 Mon Sep 17 00:00:00 2001
 From: l1ttleO <l1ttleofficial@outlook.com>
 Date: Wed, 6 Jul 2022 18:53:09 +0500
-Subject: [PATCH] lmao
+Subject: [PATCH] Add visual option 'Vignette Strength'
 
 ---
  source/ClientPrefs.hx               |  5 +++++
