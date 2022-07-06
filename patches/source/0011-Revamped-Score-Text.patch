@@ -4,13 +4,13 @@ Date: Fri, 1 Jul 2022 21:37:56 +0500
 Subject: [PATCH] Add visual options 'Advanced Score Text' and 'Score Text Underlay Opacity'
 
 ---
- source/ClientPrefs.hx               |   2 +
+ source/ClientPrefs.hx               |  10 ++
  source/PlayState.hx                 | 163 ++++++++++++++++++++++------
  source/options/VisualsUISubState.hx |  18 +++
- 3 files changed, 149 insertions(+), 34 deletions(-)
+ 3 files changed, 157 insertions(+), 34 deletions(-)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
-index aa21ab9..9995bdd 100644
+index 3368b24..10df0e3 100644
 --- a/source/ClientPrefs.hx
 +++ b/source/ClientPrefs.hx
 @@ -70,6 +70,8 @@ class ClientPrefs {
@@ -22,6 +22,28 @@ index aa21ab9..9995bdd 100644
  
  	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
  	public static var keyBinds:Map<String, Array<FlxKey>> = [
+@@ -149,6 +151,8 @@ class ClientPrefs {
+ 		FlxG.save.data.scoreSystem = scoreSystem;
+ 		FlxG.save.data.accuracySystem = accuracySystem;
+ 		FlxG.save.data.missAnimsSounds = missAnimsSounds;
++		FlxG.save.data.advancedScoreTxt = advancedScoreTxt;
++		FlxG.save.data.scoreTxtUnderlayOpacity = scoreTxtUnderlayOpacity;
+ 	
+ 		FlxG.save.flush();
+ 
+@@ -293,6 +297,12 @@ class ClientPrefs {
+ 		if(FlxG.save.data.missAnimsSounds != null) {
+ 			missAnimsSounds = FlxG.save.data.missAnimsSounds;
+ 		}
++		if(FlxG.save.data.advancedScoreTxt != null) {
++			advancedScoreTxt = FlxG.save.data.advancedScoreTxt;
++		}
++		if(FlxG.save.data.scoreTxtUnderlayOpacity != null) {
++			scoreTxtUnderlayOpacity = FlxG.save.data.scoreTxtUnderlayOpacity;
++		}
+ 		
+ 		// flixel automatically saves your volume!
+ 		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
 index c29c99b..4b22913 100644
 --- a/source/PlayState.hx

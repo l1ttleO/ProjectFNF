@@ -4,13 +4,13 @@ Date: Fri, 1 Jul 2022 21:44:06 +0500
 Subject: [PATCH] Add gameplay option 'Play Miss Anims and Sounds'
 
 ---
- source/ClientPrefs.hx                      |  1 +
+ source/ClientPrefs.hx                      |  5 +++++
  source/PlayState.hx                        | 25 ++++++++++++++++------
  source/options/GameplaySettingsSubState.hx |  7 ++++++
- 3 files changed, 27 insertions(+), 6 deletions(-)
+ 3 files changed, 31 insertions(+), 6 deletions(-)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
-index 7361c8a..aa21ab9 100644
+index 7361c8a..3368b24 100644
 --- a/source/ClientPrefs.hx
 +++ b/source/ClientPrefs.hx
 @@ -69,6 +69,7 @@ class ClientPrefs {
@@ -21,6 +21,24 @@ index 7361c8a..aa21ab9 100644
  
  	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
  	public static var keyBinds:Map<String, Array<FlxKey>> = [
+@@ -147,6 +148,7 @@ class ClientPrefs {
+ 		FlxG.save.data.missShakeIntensity = missShakeIntensity;
+ 		FlxG.save.data.scoreSystem = scoreSystem;
+ 		FlxG.save.data.accuracySystem = accuracySystem;
++		FlxG.save.data.missAnimsSounds = missAnimsSounds;
+ 	
+ 		FlxG.save.flush();
+ 
+@@ -288,6 +290,9 @@ class ClientPrefs {
+ 		if(FlxG.save.data.accuracySystem != null) {
+ 			accuracySystem = FlxG.save.data.accuracySystem;
+ 		}
++		if(FlxG.save.data.missAnimsSounds != null) {
++			missAnimsSounds = FlxG.save.data.missAnimsSounds;
++		}
+ 		
+ 		// flixel automatically saves your volume!
+ 		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
 index 284434c..acd19dc 100644
 --- a/source/PlayState.hx

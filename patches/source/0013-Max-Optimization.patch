@@ -11,7 +11,7 @@ Subject: [PATCH] Add graphical options for hiding sprites and characters
  4 files changed, 82 insertions(+), 4 deletions(-)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
-index 74f5817..3156753 100644
+index 46eff0a..b3d20aa 100644
 --- a/source/ClientPrefs.hx
 +++ b/source/ClientPrefs.hx
 @@ -73,6 +73,10 @@ class ClientPrefs {
@@ -25,10 +25,10 @@ index 74f5817..3156753 100644
  
  	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
  	public static var keyBinds:Map<String, Array<FlxKey>> = [
-@@ -152,6 +156,10 @@ class ClientPrefs {
- 		FlxG.save.data.scoreSystem = scoreSystem;
- 		FlxG.save.data.accuracySystem = accuracySystem;
- 		FlxG.save.data.healthBarType = FlxG.save.data.healthBarType;
+@@ -155,6 +159,10 @@ class ClientPrefs {
+ 		FlxG.save.data.advancedScoreTxt = advancedScoreTxt;
+ 		FlxG.save.data.scoreTxtUnderlayOpacity = scoreTxtUnderlayOpacity;
+ 		FlxG.save.data.healthBarType = healthBarType;
 +		FlxG.save.data.hideAllSprites = hideAllSprites;
 +		FlxG.save.data.hideOpponent = hideOpponent;
 +		FlxG.save.data.hideGf = hideGf;
@@ -36,7 +36,7 @@ index 74f5817..3156753 100644
  	
  		FlxG.save.flush();
  
-@@ -296,6 +304,18 @@ class ClientPrefs {
+@@ -308,6 +316,18 @@ class ClientPrefs {
  		if(FlxG.save.data.healthBarType != null) {
  			healthBarType = FlxG.save.data.healthBarType;
  		}
@@ -69,10 +69,10 @@ index bdde794..b160b30 100644
  
  		#if windows
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 56fd856..02fd1a8 100644
+index 04b6a2c..8c86810 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
-@@ -223,6 +223,7 @@ class PlayState extends MusicBeatState
+@@ -224,6 +224,7 @@ class PlayState extends MusicBeatState
  	public var camHUD:FlxCamera;
  	public var camGame:FlxCamera;
  	public var camOther:FlxCamera;
@@ -80,7 +80,7 @@ index 56fd856..02fd1a8 100644
  	public var cameraSpeed:Float = 1;
  
  	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
-@@ -328,9 +329,11 @@ class PlayState extends MusicBeatState
+@@ -329,9 +330,11 @@ class PlayState extends MusicBeatState
  
  	var precacheList:Map<String, String> = new Map<String, String>();
  
@@ -92,7 +92,7 @@ index 56fd856..02fd1a8 100644
  
  		// for lua
  		instance = this;
-@@ -405,10 +408,17 @@ class PlayState extends MusicBeatState
+@@ -406,10 +409,17 @@ class PlayState extends MusicBeatState
  		camGame = new FlxCamera();
  		camHUD = new FlxCamera();
  		camOther = new FlxCamera();
@@ -110,7 +110,7 @@ index 56fd856..02fd1a8 100644
  		FlxG.cameras.add(camHUD);
  		FlxG.cameras.add(camOther);
  		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
-@@ -2117,6 +2127,10 @@ class PlayState extends MusicBeatState
+@@ -2120,6 +2130,10 @@ class PlayState extends MusicBeatState
  								countdownReady.destroy();
  							}
  						});
@@ -121,7 +121,7 @@ index 56fd856..02fd1a8 100644
  						FlxG.sound.play(Paths.sound('intro2' + introSoundsSuffix), 0.6);
  					case 2:
  						countdownSet = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
-@@ -2138,6 +2152,12 @@ class PlayState extends MusicBeatState
+@@ -2141,6 +2155,12 @@ class PlayState extends MusicBeatState
  							}
  						});
  						FlxG.sound.play(Paths.sound('intro1' + introSoundsSuffix), 0.6);
@@ -134,7 +134,7 @@ index 56fd856..02fd1a8 100644
  					case 3:
  						countdownGo = new FlxSprite().loadGraphic(Paths.image(introAlts[2]));
  						countdownGo.cameras = [camHUD];
-@@ -3666,7 +3686,7 @@ class PlayState extends MusicBeatState
+@@ -3669,7 +3689,7 @@ class PlayState extends MusicBeatState
  
  			case 'Screen Shake':
  				var valuesArray:Array<String> = [value1, value2];
@@ -143,7 +143,7 @@ index 56fd856..02fd1a8 100644
  				for (i in 0...targetsArray.length) {
  					var split:Array<String> = valuesArray[i].split(',');
  					var duration:Float = 0;
-@@ -3826,6 +3846,7 @@ class PlayState extends MusicBeatState
+@@ -3829,6 +3849,7 @@ class PlayState extends MusicBeatState
  		if (direction.endsWith("RIGHT")) addX += ClientPrefs.cameraMoveIntensity;
  		if(isDad)
  		{
@@ -151,7 +151,7 @@ index 56fd856..02fd1a8 100644
  			camFollow.set(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
  			camFollow.x += dad.cameraPosition[0] + opponentCameraOffset[0] + addX;
  			camFollow.y += dad.cameraPosition[1] + opponentCameraOffset[1] + addY;
-@@ -3833,6 +3854,7 @@ class PlayState extends MusicBeatState
+@@ -3836,6 +3857,7 @@ class PlayState extends MusicBeatState
  		}
  		else
  		{
@@ -159,7 +159,7 @@ index 56fd856..02fd1a8 100644
  			camFollow.set(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
  			camFollow.x -= boyfriend.cameraPosition[0] - boyfriendCameraOffset[0] - addX;
  			camFollow.y += boyfriend.cameraPosition[1] + boyfriendCameraOffset[1] + addY;
-@@ -4596,7 +4618,7 @@ class PlayState extends MusicBeatState
+@@ -4599,7 +4621,7 @@ class PlayState extends MusicBeatState
  		var char:Character = opponentPlay ? boyfriend : dad;
  		if (note.gfNote) char = gf;
  		var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
@@ -168,7 +168,7 @@ index 56fd856..02fd1a8 100644
  		if(note.noteType == 'Hey!' && char.animOffsets.exists('hey')) {
  			char.playAnim('hey', true);
  			char.specialAnim = true;
-@@ -4698,7 +4720,7 @@ class PlayState extends MusicBeatState
+@@ -4701,7 +4723,7 @@ class PlayState extends MusicBeatState
  			healthDrained -= note.hitHealth * healthGain;
  
  			var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
@@ -177,7 +177,7 @@ index 56fd856..02fd1a8 100644
  			if(!note.noAnimation) {
  
  				/*if(note.gfNote)
-@@ -4969,6 +4991,7 @@ class PlayState extends MusicBeatState
+@@ -4972,6 +4994,7 @@ class PlayState extends MusicBeatState
  	}
  
  	override function destroy() {
@@ -185,7 +185,7 @@ index 56fd856..02fd1a8 100644
  		for (lua in luaArray) {
  			lua.call('onDestroy', []);
  			lua.stop();
-@@ -5254,6 +5277,13 @@ class PlayState extends MusicBeatState
+@@ -5258,6 +5281,13 @@ class PlayState extends MusicBeatState
  		setOnLuas('ratingFC', ratingFC);
  	}
  

@@ -4,13 +4,13 @@ Date: Sat, 2 Jul 2022 14:48:00 +0500
 Subject: [PATCH] Add visual option 'Health Bar Position' and make the health bar be able to move
 
 ---
- source/ClientPrefs.hx               |  7 ++++-
- source/PlayState.hx                 | 44 +++++++++++++++++++++++------
+ source/ClientPrefs.hx               |  5 ++++
+ source/PlayState.hx                 | 43 +++++++++++++++++++++++------
  source/options/VisualsUISubState.hx |  8 ++++++
- 3 files changed, 49 insertions(+), 10 deletions(-)
+ 3 files changed, 48 insertions(+), 8 deletions(-)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
-index 9995bdd..74f5817 100644
+index 10df0e3..46eff0a 100644
 --- a/source/ClientPrefs.hx
 +++ b/source/ClientPrefs.hx
 @@ -72,6 +72,7 @@ class ClientPrefs {
@@ -21,31 +21,29 @@ index 9995bdd..74f5817 100644
  
  	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
  	public static var keyBinds:Map<String, Array<FlxKey>> = [
-@@ -150,6 +151,7 @@ class ClientPrefs {
- 		FlxG.save.data.missShakeIntensity = missShakeIntensity;
- 		FlxG.save.data.scoreSystem = scoreSystem;
- 		FlxG.save.data.accuracySystem = accuracySystem;
-+		FlxG.save.data.healthBarType = FlxG.save.data.healthBarType;
+@@ -153,6 +154,7 @@ class ClientPrefs {
+ 		FlxG.save.data.missAnimsSounds = missAnimsSounds;
+ 		FlxG.save.data.advancedScoreTxt = advancedScoreTxt;
+ 		FlxG.save.data.scoreTxtUnderlayOpacity = scoreTxtUnderlayOpacity;
++		FlxG.save.data.healthBarType = healthBarType;
  	
  		FlxG.save.flush();
  
-@@ -291,7 +293,10 @@ class ClientPrefs {
- 		if(FlxG.save.data.accuracySystem != null) {
- 			accuracySystem = FlxG.save.data.accuracySystem;
+@@ -303,6 +305,9 @@ class ClientPrefs {
+ 		if(FlxG.save.data.scoreTxtUnderlayOpacity != null) {
+ 			scoreTxtUnderlayOpacity = FlxG.save.data.scoreTxtUnderlayOpacity;
  		}
--		
 +		if(FlxG.save.data.healthBarType != null) {
 +			healthBarType = FlxG.save.data.healthBarType;
 +		}
-+
+
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
- 		{
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index aca8050..a75c43a 100644
+index 4b22913..04b6a2c 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
-@@ -1185,7 +1185,7 @@ class PlayState extends MusicBeatState
+@@ -1186,7 +1186,7 @@ class PlayState extends MusicBeatState
  		healthBarBG.y = FlxG.height * 0.89;
  		healthBarBG.screenCenter(X);
  		healthBarBG.scrollFactor.set();
@@ -54,7 +52,7 @@ index aca8050..a75c43a 100644
  		healthBarBG.xAdd = -4;
  		healthBarBG.yAdd = -4;
  		add(healthBarBG);
-@@ -1195,25 +1195,26 @@ class PlayState extends MusicBeatState
+@@ -1196,25 +1196,26 @@ class PlayState extends MusicBeatState
  			'health', 0, 2);
  		healthBar.scrollFactor.set();
  		// healthBar
@@ -85,11 +83,10 @@ index aca8050..a75c43a 100644
  		scoreTxt.setFormat(Paths.font("vcr.ttf"), ClientPrefs.advancedScoreTxt ? 18 : 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
  		scoreTxt.scrollFactor.set();
  		scoreTxt.borderSize = 1.15;
-@@ -1239,7 +1240,11 @@ class PlayState extends MusicBeatState
- 		versionTxt.scrollFactor.set();
+@@ -1241,6 +1242,11 @@ class PlayState extends MusicBeatState
  		versionTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
  		add(versionTxt);
--
+ 
 +		if (ClientPrefs.healthBarType.startsWith('Vertical')) {
 +			healthBar.angle = 90;
 +			healthBar.x = ClientPrefs.healthBarType.endsWith('(left)') ? -245 : FlxG.width - 350;
@@ -98,7 +95,7 @@ index aca8050..a75c43a 100644
  		strumLineNotes.cameras = [camHUD];
  		grpNoteSplashes.cameras = [camHUD];
  		notes.cameras = [camHUD];
-@@ -3026,9 +3031,30 @@ class PlayState extends MusicBeatState
+@@ -3028,9 +3034,30 @@ class PlayState extends MusicBeatState
  
  		var iconOffset:Int = 26;
  
