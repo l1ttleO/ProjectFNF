@@ -1,0 +1,91 @@
+From 1f10cb395999bdd9b83f37a847319f564a02803e Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Fri, 8 Jul 2022 22:29:49 +0500
+Subject: [PATCH] Add smooth main menu transitions
+
+Co-authored-by: hosytaa <86255915+OneShotSank@users.noreply.github.com>
+---
+ source/MainMenuState.hx | 7 ++++++-
+ source/OutdatedState.hx | 4 +++-
+ source/TitleState.hx    | 4 ++++
+ 3 files changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/source/MainMenuState.hx b/source/MainMenuState.hx
+index f8fd43b..ce17b69 100644
+--- a/source/MainMenuState.hx
++++ b/source/MainMenuState.hx
+@@ -47,6 +47,7 @@ class MainMenuState extends MusicBeatState
+ 	var camFollow:FlxObject;
+ 	var camFollowPos:FlxObject;
+ 	var debugKeys:Array<FlxKey>;
++	var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));
+ 
+ 	override function create()
+ 	{
+@@ -75,7 +76,6 @@ class MainMenuState extends MusicBeatState
+ 		persistentUpdate = persistentDraw = true;
+ 
+ 		var yScroll:Float = Math.max(0.25 - (0.05 * (optionShit.length - 4)), 0.1);
+-		var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));
+ 		bg.scrollFactor.set(0, yScroll);
+ 		bg.setGraphicSize(Std.int(bg.width * 1.175));
+ 		bg.updateHitbox();
+@@ -231,6 +231,11 @@ class MainMenuState extends MusicBeatState
+ 									spr.kill();
+ 								}
+ 							});
++							FlxTween.tween(FlxG.camera, {zoom: 5}, 0.7, {ease: FlxEase.expoIn});
++							FlxTween.tween(bg, {angle: 45}, 0.7, {ease: FlxEase.expoIn});
++							FlxTween.tween(magenta, {angle: 45}, 0.7, {ease: FlxEase.expoIn});
++							FlxTween.tween(bg, {alpha: 0}, 0.7, {ease: FlxEase.expoIn});
++							FlxTween.tween(magenta, {alpha: 0}, 0.7, {ease: FlxEase.expoIn});
+ 						}
+ 						else
+ 						{
+diff --git a/source/OutdatedState.hx b/source/OutdatedState.hx
+index ea08be7..98da5c1 100644
+--- a/source/OutdatedState.hx
++++ b/source/OutdatedState.hx
+@@ -23,7 +23,7 @@ class OutdatedState extends MusicBeatState
+ 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+ 		add(bg);
+ 
+-		warnText = new FlxText(0, 0, FlxG.width,
++		warnText = new FlxText(1500, 0, FlxG.width,
+ 			"Sup bro, looks like you're running an   \n
+ 			outdated version of ProjectFNF (" + MainMenuState.projectFnfVersion + "),\n
+ 			please update to " + TitleState.updateVersion + "!\n
+@@ -34,6 +34,7 @@ class OutdatedState extends MusicBeatState
+ 		warnText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER);
+ 		warnText.screenCenter(Y);
+ 		add(warnText);
++		FlxTween.tween(warnText, {x: 0}, 1.2, {ease: flixel.tweens.FlxEase.expoInOut});
+ 	}
+ 
+ 	override function update(elapsed:Float)
+@@ -55,6 +56,7 @@ class OutdatedState extends MusicBeatState
+ 						MusicBeatState.switchState(new MainMenuState());
+ 					}
+ 				});
++				FlxTween.tween(warnText, {x: -1500}, 1.2, {ease: flixel.tweens.FlxEase.expoInOut});
+ 			}
+ 		}
+ 		super.update(elapsed);
+diff --git a/source/TitleState.hx b/source/TitleState.hx
+index 268a8b6..4dc6ef0 100644
+--- a/source/TitleState.hx
++++ b/source/TitleState.hx
+@@ -511,6 +511,10 @@ class TitleState extends MusicBeatState
+ 
+ 				FlxG.camera.flash(ClientPrefs.flashing ? FlxColor.WHITE : 0x4CFFFFFF, 1);
+ 				FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
++				if (logo != null) FlxTween.tween(logo, {y: -1500}, 3.2, {ease: FlxEase.expoInOut});
++				if (logoBl != null) FlxTween.tween(logoBl, {y: -1500}, 3.2, {ease: FlxEase.expoInOut});
++				FlxTween.tween(gfDance, {x: -1500}, 3.5, {ease: FlxEase.expoInOut});
++				FlxTween.tween(titleText, {y: 1500}, 3.5, {ease: FlxEase.expoInOut});
+ 
+ 				transitioning = true;
+ 				// FlxG.sound.music.stop();
+-- 
+2.34.1.windows.1
+
