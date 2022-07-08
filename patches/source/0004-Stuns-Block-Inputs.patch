@@ -1,7 +1,7 @@
 From 5585bb8fef9bbf8da64430d09d17cdbca205144b Mon Sep 17 00:00:00 2001
 From: l1ttleO <l1ttleofficial@outlook.com>
 Date: Mon, 27 Jun 2022 18:13:47 +0500
-Subject: [PATCH] Modifier 'Stuns Block Inputs'
+Subject: [PATCH] Add modifier 'Stuns Block Inputs'
 
 ---
  source/ClientPrefs.hx               |  5 +++++

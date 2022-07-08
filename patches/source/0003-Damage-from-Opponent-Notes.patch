@@ -1,7 +1,7 @@
 From acf82fb2a9ceae94a3173bfa5a20adcbb7733eae Mon Sep 17 00:00:00 2001
 From: l1ttleO <l1ttleofficial@outlook.com>
 Date: Mon, 27 Jun 2022 17:16:21 +0500
-Subject: [PATCH] Modifiers 'Damage from Opponent Notes' and 'Opponent Notes Can Kill'
+Subject: [PATCH] Add modifiers 'Damage from Opponent Notes' and 'Opponent Notes Can Kill'
 
 ---
  source/ClientPrefs.hx               | 13 +++++++++++++

@@ -1,0 +1,80 @@
+From 3fde6998c45b800e0d7c61001fd8ba9884c62886 Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Thu, 7 Jul 2022 14:14:30 +0500
+Subject: [PATCH] Add visual option 'Camera Zoom'
+
+---
+ source/ClientPrefs.hx               |  5 +++++
+ source/PlayState.hx                 |  2 +-
+ source/options/VisualsUISubState.hx | 12 ++++++++++++
+ 3 files changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
+index 29a08fc..96e10e0 100644
+--- a/source/ClientPrefs.hx
++++ b/source/ClientPrefs.hx
+@@ -81,6 +81,7 @@ class ClientPrefs {
+ 	public static var hideBf:Bool = false;
+ 	public static var missesDecreaseMaxHealth:Bool = false;
+ 	public static var vignetteStrength:Float = 0.7;
++	public static var cameraZoom:Float = 1.0;
+ 
+ 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+ 	public static var keyBinds:Map<String, Array<FlxKey>> = [
+@@ -169,6 +170,7 @@ class ClientPrefs {
+ 		FlxG.save.data.hideBf = hideBf;
+ 		FlxG.save.data.missesDecreaseMaxHealth = missesDecreaseMaxHealth;
+ 		FlxG.save.data.vignetteStrength = vignetteStrength;
++		FlxG.save.data.cameraZoom = cameraZoom;
+ 	
+ 		FlxG.save.flush();
+ 
+@@ -340,6 +342,9 @@ class ClientPrefs {
+ 		if(FlxG.save.data.vignetteStrength != null) {
+ 			vignetteStrength = FlxG.save.data.vignetteStrength;
+ 		}
++		if(FlxG.save.data.cameraZoom != null) {
++			cameraZoom = FlxG.save.data.cameraZoom;
++		}
+ 		
+ 		// flixel automatically saves your volume!
+ 		if(FlxG.save.data.volume != null)
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index a3465df..cc1ef03 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -507,7 +507,7 @@ class PlayState extends MusicBeatState
+ 			};
+ 		}
+ 
+-		defaultCamZoom = stageData.defaultZoom;
++		defaultCamZoom = ClientPrefs.cameraZoom != 1.0 ? ClientPrefs.cameraZoom : stageData.defaultZoom;
+ 		isPixelStage = stageData.isPixelStage;
+ 		BF_X = stageData.boyfriend[0];
+ 		BF_Y = stageData.boyfriend[1];
+diff --git a/source/options/VisualsUISubState.hx b/source/options/VisualsUISubState.hx
+index 658421c..493fdbd 100644
+--- a/source/options/VisualsUISubState.hx
++++ b/source/options/VisualsUISubState.hx
+@@ -151,6 +151,18 @@ class VisualsUISubState extends BaseOptionsMenu
+ 		option.maxValue = 1;
+ 		option.changeValue = 0.05;
+ 
++		var option:Option = new Option('Camera Zoom',
++			"Overrides the camera zoom value for all stages.\nSet to 1.0 to use the stage's zoom value",
++			'cameraZoom',
++			'float',
++			1);
++		addOption(option);
++		option.scrollSpeed = 1.3;
++		option.minValue = 0.1;
++		option.maxValue = 2.0;
++		option.changeValue = 0.1;
++		option.decimals = 1;
++
+ 		#if !mobile
+ 		var option:Option = new Option('FPS Counter',
+ 			'If unchecked, hides FPS Counter.',
+-- 
+2.34.1.windows.1
+
