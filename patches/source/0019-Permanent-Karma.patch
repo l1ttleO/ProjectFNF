@@ -15,7 +15,7 @@ index 1b0a287..3e7e0ee 100644
 +++ b/source/ClientPrefs.hx
 @@ -85,6 +85,8 @@ class ClientPrefs {
  	public static var tempMissPenalty:Float = 0;
- 	public static var tempMissPenaltyDPS:Float = 0;	
+ 	public static var tempMissPenaltyDPS:Float = 0;
  	public static var tempMissPenaltyCanKill:Bool = false;
 +	public static var permaMissPenaltyDPS:Float = 0;
 +	public static var permaMissPenaltyCanKill:Bool = false;

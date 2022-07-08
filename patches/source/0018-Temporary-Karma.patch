@@ -18,7 +18,7 @@ index 96e10e0..1b0a287 100644
  	public static var vignetteStrength:Float = 0.7;
  	public static var cameraZoom:Float = 1.0;
 +	public static var tempMissPenalty:Float = 0;
-+	public static var tempMissPenaltyDPS:Float = 0;	
++	public static var tempMissPenaltyDPS:Float = 0;
 +	public static var tempMissPenaltyCanKill:Bool = false;
  
  	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
