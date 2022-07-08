@@ -4,10 +4,10 @@ Date: Sat, 2 Jul 2022 14:48:00 +0500
 Subject: [PATCH] Add visual option 'Health Bar Position' and make the health bar be able to move
 
 ---
- source/ClientPrefs.hx               |  5 ++++
- source/PlayState.hx                 | 43 +++++++++++++++++++++++------
- source/options/VisualsUISubState.hx |  8 ++++++
- 3 files changed, 48 insertions(+), 8 deletions(-)
+ source/ClientPrefs.hx               |  5 +++
+ source/PlayState.hx                 | 47 ++++++++++++++++++++++++-----
+ source/options/VisualsUISubState.hx |  8 +++++
+ 3 files changed, 52 insertions(+), 8 deletions(-)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
 index 10df0e3..46eff0a 100644
@@ -40,7 +40,7 @@ index 10df0e3..46eff0a 100644
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 4b22913..04b6a2c 100644
+index 843149f..35ff44e 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
 @@ -1186,7 +1186,7 @@ class PlayState extends MusicBeatState
@@ -95,15 +95,13 @@ index 4b22913..04b6a2c 100644
  		strumLineNotes.cameras = [camHUD];
  		grpNoteSplashes.cameras = [camHUD];
  		notes.cameras = [camHUD];
-@@ -3028,9 +3034,30 @@ class PlayState extends MusicBeatState
+@@ -3028,9 +3034,34 @@ class PlayState extends MusicBeatState
  
  		var iconOffset:Int = 26;
  
 -		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
 -		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
 -
-+		//iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
-+		//iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
 +		var axis:Float = ClientPrefs.healthBarType == 'Horizontal' ? healthBar.x : FlxG.height * (ClientPrefs.downScroll ? 0.11 : 0.89);
 +		var newP1:Float = axis + ((healthBar.width * (FlxMath.remapToRange(healthPercentageBar, 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset);
 +		var oldP2:Float = axis + ((healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2);
@@ -115,6 +113,9 @@ index 4b22913..04b6a2c 100644
 +			if (healthPercentageBar > 100 || healthPercentageBar < 0 && !opponentPlay) {
 +				healthBar.offset.x = oldP2 - newP2;
 +				healthBarBG.offset.x = oldP2 - newP2;
++			} else {
++				healthBar.offset.x = 0;
++				healthBarBG.offset.x = 0;
 +			}
 +		} else {
 +			iconP1.x = healthBar.x + 210;
@@ -124,6 +125,9 @@ index 4b22913..04b6a2c 100644
 +			if (healthPercentageBar > 100 || healthPercentageBar < 0 && !opponentPlay) {
 +				healthBar.offset.y = oldP2 - newP2;
 +				healthBarBG.offset.y = oldP2 - newP2;
++			} else {
++				healthBar.offset.y = 0;
++				healthBarBG.offset.y = 0;
 +			}
 +		}
  		/*if (health > 2)

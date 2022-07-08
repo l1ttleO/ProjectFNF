@@ -4,13 +4,13 @@ Date: Fri, 8 Jul 2022 15:33:19 +0500
 Subject: [PATCH] Add modifiers 'Temporary Miss Penalty', 'Temporary Miss Penalty Can Kill' and 'Temporary Miss Penalty DPS'
 
 ---
- source/ClientPrefs.hx               | 15 +++++++++++++
- source/PlayState.hx                 | 13 ++++++++++--
- source/options/ModifiersSubState.hx | 33 +++++++++++++++++++++++++++++
- 3 files changed, 59 insertions(+), 2 deletions(-)
+ source/ClientPrefs.hx               | 15 ++++++++++++++
+ source/PlayState.hx                 | 15 ++++++++++++--
+ source/options/ModifiersSubState.hx | 32 +++++++++++++++++++++++++++++
+ 3 files changed, 60 insertions(+), 2 deletions(-)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
-index 96e10e0..2fc9db4 100644
+index 96e10e0..1b0a287 100644
 --- a/source/ClientPrefs.hx
 +++ b/source/ClientPrefs.hx
 @@ -82,6 +82,9 @@ class ClientPrefs {
@@ -18,8 +18,8 @@ index 96e10e0..2fc9db4 100644
  	public static var vignetteStrength:Float = 0.7;
  	public static var cameraZoom:Float = 1.0;
 +	public static var tempMissPenalty:Float = 0;
++	public static var tempMissPenaltyDPS:Float = 0;	
 +	public static var tempMissPenaltyCanKill:Bool = false;
-+	public static var tempMissPenaltyDPS:Float = 0;
  
  	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
  	public static var keyBinds:Map<String, Array<FlxKey>> = [
@@ -28,8 +28,8 @@ index 96e10e0..2fc9db4 100644
  		FlxG.save.data.vignetteStrength = vignetteStrength;
  		FlxG.save.data.cameraZoom = cameraZoom;
 +		FlxG.save.data.tempMissPenalty = tempMissPenalty;
-+		FlxG.save.data.tempMissPenaltyCanKill = tempMissPenaltyCanKill;
 +		FlxG.save.data.tempMissPenaltyDPS = tempMissPenaltyDPS;
++		FlxG.save.data.tempMissPenaltyCanKill = tempMissPenaltyCanKill;
  	
  		FlxG.save.flush();
  
@@ -40,17 +40,17 @@ index 96e10e0..2fc9db4 100644
 +		if(FlxG.save.data.tempMissPenalty != null) {
 +			tempMissPenalty = FlxG.save.data.tempMissPenalty;
 +		}
-+		if(FlxG.save.data.tempMissPenaltyCanKill != null) {
-+			tempMissPenaltyCanKill = FlxG.save.data.tempMissPenaltyCanKill;
-+		}
 +		if(FlxG.save.data.tempMissPenaltyDPS != null) {
 +			tempMissPenaltyDPS = FlxG.save.data.tempMissPenaltyDPS;
++		}
++		if(FlxG.save.data.tempMissPenaltyCanKill != null) {
++			tempMissPenaltyCanKill = FlxG.save.data.tempMissPenaltyCanKill;
 +		}
  		
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 77f5b8f..e8c4b12 100644
+index 379141a..6feefd0 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
 @@ -333,6 +333,7 @@ class PlayState extends MusicBeatState
@@ -61,17 +61,19 @@ index 77f5b8f..e8c4b12 100644
  	override public function create()
  	{
  		Paths.clearStoredMemory();
-@@ -3043,6 +3044,9 @@ class PlayState extends MusicBeatState
+@@ -3043,6 +3044,11 @@ class PlayState extends MusicBeatState
  
  		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
  		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
-+		var toRemove:Float = Math.min(tempMissPenalty, Math.min(ClientPrefs.tempMissPenaltyDPS * 0.02 * elapsed, ClientPrefs.tempMissPenaltyCanKill ? 0.3 : Math.max(0.001, health) - 0.001));
-+		health -= toRemove;
-+		tempMissPenalty -= toRemove;
++		var toRemove:Float = Math.min(tempMissPenalty, ClientPrefs.tempMissPenaltyDPS * 0.02 * elapsed);
++		if (health - toRemove > 0 || ClientPrefs.tempMissPenaltyCanKill) {
++			health -= toRemove;
++			tempMissPenalty -= toRemove;
++		}
  
  		if (health > maxHealth) health = maxHealth;
  		healthPercentageDisplay = health / 0.02; // Don't round this for smooth health bar movement
-@@ -4524,6 +4528,7 @@ class PlayState extends MusicBeatState
+@@ -4528,6 +4534,7 @@ class PlayState extends MusicBeatState
  		combo = 0;
  		health -= daNote.missHealth * healthLoss;
  		if (ClientPrefs.missesDecreaseMaxHealth) maxHealth -= daNote.missHealth * healthLoss;
@@ -79,7 +81,7 @@ index 77f5b8f..e8c4b12 100644
  		
  		if(instakillOnMiss)
  		{
-@@ -4586,6 +4591,7 @@ class PlayState extends MusicBeatState
+@@ -4590,6 +4597,7 @@ class PlayState extends MusicBeatState
  			}
  			health -= 0.05 * healthLoss;
  			if (ClientPrefs.missesDecreaseMaxHealth) maxHealth -= 0.05 * healthLoss;
@@ -87,7 +89,7 @@ index 77f5b8f..e8c4b12 100644
  			if(instakillOnMiss)
  			{
  				vocals.volume = 0;
-@@ -4734,8 +4740,11 @@ class PlayState extends MusicBeatState
+@@ -4738,8 +4746,11 @@ class PlayState extends MusicBeatState
  				if(combo > 9999) combo = 9999;
  				popUpScore(note);
  			}
@@ -102,31 +104,23 @@ index 77f5b8f..e8c4b12 100644
  			var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
  			if (SONG.notes[curSection].mustHitSection || ClientPrefs.hideOpponent) moveCamera(opponentPlay, animToPlay);
 diff --git a/source/options/ModifiersSubState.hx b/source/options/ModifiersSubState.hx
-index 7166f0c..d5b847d 100644
+index 7166f0c..f104321 100644
 --- a/source/options/ModifiersSubState.hx
 +++ b/source/options/ModifiersSubState.hx
-@@ -55,6 +55,39 @@ class ModifiersSubState extends BaseOptionsMenu
+@@ -55,6 +55,38 @@ class ModifiersSubState extends BaseOptionsMenu
  			false); // Default value
  		addOption(option);
  
 +		var option:Option = new Option('Temp Miss Penalty:', // Name
 +			'How much health will be slowly drained when missing\nHitting notes will not gain health, but will decrease the penalty', // Description
 +			'tempMissPenalty', // Save data variable name
-+			'float', // Variable type
++			'int', // Variable type
 +			0); // Default value
 +		option.displayFormat = "Damage x%v";
-+		option.scrollSpeed = 1.9;
++		option.scrollSpeed = 2.2;
 +		option.minValue = 0.0;
 +		option.maxValue = 25.0;
 +		option.changeValue = 1;
-+		option.decimals = 0;
-+		addOption(option);
-+
-+		var option:Option = new Option('Temp Miss Penalty Can Kill', // Name
-+			'If checked, temporary miss penalty can be lethal.', // Description
-+			'tempMissPenaltyCanKill', // Save data variable name
-+			'bool', // Variable type
-+			false); // Default value
 +		addOption(option);
 +
 +		var option:Option = new Option('Temp Miss Penalty DPS', // Name
@@ -135,11 +129,18 @@ index 7166f0c..d5b847d 100644
 +			'float', // Variable type
 +			0); // Default value
 +		option.displayFormat = "%v%";
-+		option.scrollSpeed = 1.6;
++		option.scrollSpeed = 1.8;
 +		option.minValue = 0.0;
 +		option.maxValue = 15.0;
 +		option.changeValue = 0.1;
 +		option.decimals = 1;
++		addOption(option);
++
++		var option:Option = new Option('Temp Miss Penalty Can Kill', // Name
++			'If checked, temporary miss penalty can be lethal.', // Description
++			'tempMissPenaltyCanKill', // Save data variable name
++			'bool', // Variable type
++			false); // Default value
 +		addOption(option);
 +
  		super();
