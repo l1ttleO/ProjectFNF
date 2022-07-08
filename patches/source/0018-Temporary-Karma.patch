@@ -5,9 +5,9 @@ Subject: [PATCH] Add modifiers 'Temporary Miss Penalty', 'Temporary Miss Penalty
 
 ---
  source/ClientPrefs.hx               | 15 +++++++++++++
- source/PlayState.hx                 | 12 +++++++++--
+ source/PlayState.hx                 | 13 ++++++++++--
  source/options/ModifiersSubState.hx | 33 +++++++++++++++++++++++++++++
- 3 files changed, 58 insertions(+), 2 deletions(-)
+ 3 files changed, 59 insertions(+), 2 deletions(-)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
 index 96e10e0..2fc9db4 100644
@@ -50,7 +50,7 @@ index 96e10e0..2fc9db4 100644
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index cc1ef03..e73ec50 100644
+index 77f5b8f..e8c4b12 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
 @@ -333,6 +333,7 @@ class PlayState extends MusicBeatState
@@ -79,7 +79,15 @@ index cc1ef03..e73ec50 100644
  		
  		if(instakillOnMiss)
  		{
-@@ -4734,8 +4739,11 @@ class PlayState extends MusicBeatState
+@@ -4586,6 +4591,7 @@ class PlayState extends MusicBeatState
+ 			}
+ 			health -= 0.05 * healthLoss;
+ 			if (ClientPrefs.missesDecreaseMaxHealth) maxHealth -= 0.05 * healthLoss;
++			tempMissPenalty += 0.05 * healthLoss * ClientPrefs.tempMissPenalty;
+ 			if(instakillOnMiss)
+ 			{
+ 				vocals.volume = 0;
+@@ -4734,8 +4740,11 @@ class PlayState extends MusicBeatState
  				if(combo > 9999) combo = 9999;
  				popUpScore(note);
  			}
