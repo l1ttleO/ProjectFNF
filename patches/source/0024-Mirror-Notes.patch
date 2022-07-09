@@ -1,0 +1,59 @@
+From c6d80e47475d9771bc3cd987cab987a995aebe66 Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Sat, 9 Jul 2022 15:15:44 +0500
+Subject: [PATCH] Add gameplay changers 'Mirror Player Notes' and 'Mirror Opponent Notes'
+
+---
+ source/ClientPrefs.hx              | 4 +++-
+ source/GameplayChangersSubstate.hx | 6 ++++++
+ source/PlayState.hx                | 2 ++
+ 3 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
+index b0e4035..157f10b 100644
+--- a/source/ClientPrefs.hx
++++ b/source/ClientPrefs.hx
+@@ -52,7 +52,9 @@ class ClientPrefs {
+ 		'botplay' => false,
+ 		'opponentplay' => false,
+ 		'startinghealth' => 0.5,
+-		'maxhealth' => 1
++		'maxhealth' => 1,
++		'mirrorplayer' => false,
++		'mirroropponent' => false
+ 	];
+ 
+ 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
+diff --git a/source/GameplayChangersSubstate.hx b/source/GameplayChangersSubstate.hx
+index e91ebb5..165aad9 100644
+--- a/source/GameplayChangersSubstate.hx
++++ b/source/GameplayChangersSubstate.hx
+@@ -109,6 +109,12 @@ class GameplayChangersSubstate extends MusicBeatSubstate
+ 
+ 		var option:GameplayOption = new GameplayOption('Play as Opponent', 'opponentplay', 'bool', false);
+ 		optionsArray.push(option);
++
++		var option:GameplayOption = new GameplayOption('Mirror Player Notes', 'mirrorplayer', 'bool', false);
++		optionsArray.push(option);
++
++		var option:GameplayOption = new GameplayOption('Mirror Opponent Notes', 'mirroropponent', 'bool', false);
++		optionsArray.push(option);
+ 	}
+ 
+ 	public function getOptionByName(name:String)
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index f75caba..fa829dc 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -2497,6 +2497,8 @@ class PlayState extends MusicBeatState
+ 				{
+ 					gottaHitNote = !section.mustHitSection;
+ 				}
++				if (gottaHitNote) { if (ClientPrefs.getGameplaySetting('mirrorplayer', false)) daNoteData = -(daNoteData - 3); }
++				else if (ClientPrefs.getGameplaySetting('mirroropponent', false)) daNoteData = -(daNoteData - 3);
+ 				if (opponentPlay) gottaHitNote = !gottaHitNote;
+ 
+ 				var oldNote:Note;
+-- 
+2.34.1.windows.1
+

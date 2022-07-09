@@ -19,8 +19,8 @@ index b3d20aa..1b690c4 100644
  		'botplay' => false,
 -		'opponentplay' => false
 +		'opponentplay' => false,
-+		'startingHealth' => 0.5,
-+		'maxHealth' => 1
++		'startinghealth' => 0.5,
++		'maxhealth' => 1
  	];
  
  	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
@@ -32,7 +32,7 @@ index dcdb16d..90b53ac 100644
  		option.displayFormat = '%vX';
  		optionsArray.push(option);
  
-+		var option:GameplayOption = new GameplayOption('Starting Health', 'startingHealth', 'percent', 0.5);
++		var option:GameplayOption = new GameplayOption('Starting Health', 'startinghealth', 'percent', 0.5);
 +		option.scrollSpeed = 1.7;
 +		option.minValue = 0.01;
 +		option.maxValue = 2;
@@ -40,7 +40,7 @@ index dcdb16d..90b53ac 100644
 +		option.displayFormat = '%v%';
 +		optionsArray.push(option);
 +
-+		var option:GameplayOption = new GameplayOption('Maximum Health', 'maxHealth', 'percent', 1);
++		var option:GameplayOption = new GameplayOption('Maximum Health', 'maxhealth', 'percent', 1);
 +		option.scrollSpeed = 1.7;
 +		option.minValue = 0.01;
 +		option.maxValue = 2;
@@ -67,8 +67,8 @@ index 8c86810..e3f20db 100644
  		practiceMode = ClientPrefs.getGameplaySetting('practice', false);
  		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
  		opponentPlay = ClientPrefs.getGameplaySetting('opponentplay', false);
-+		health = ClientPrefs.getGameplaySetting('startingHealth', 0.5) * 2.0;
-+		maxHealth = ClientPrefs.getGameplaySetting('maxHealth', 1) * 2.0;
++		health = ClientPrefs.getGameplaySetting('startinghealth', 0.5) * 2.0;
++		maxHealth = ClientPrefs.getGameplaySetting('maxhealth', 1) * 2.0;
  
  		// var gameCam:FlxCamera = FlxG.camera;
  		camGame = new FlxCamera();
