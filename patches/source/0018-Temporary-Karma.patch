@@ -10,7 +10,7 @@ Subject: [PATCH] Add modifiers 'Temporary Miss Penalty', 'Temporary Miss Penalty
  3 files changed, 60 insertions(+), 2 deletions(-)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
-index 96e10e0..1b0a287 100644
+index d8adc3c..ad0233f 100644
 --- a/source/ClientPrefs.hx
 +++ b/source/ClientPrefs.hx
 @@ -82,6 +82,9 @@ class ClientPrefs {
@@ -50,7 +50,7 @@ index 96e10e0..1b0a287 100644
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 379141a..6feefd0 100644
+index d0b5437..18e023e 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
 @@ -333,6 +333,7 @@ class PlayState extends MusicBeatState
@@ -102,7 +102,7 @@ index 379141a..6feefd0 100644
 +			healthDrained -= toAdd;
  
  			var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
- 			if (SONG.notes[curSection].mustHitSection || ClientPrefs.hideOpponent) moveCamera(opponentPlay, animToPlay);
+ 			if (SONG.notes[curSection].mustHitSection || opponentPlay ? ClientPrefs.hideBf : ClientPrefs.hideOpponent) moveCamera(opponentPlay, animToPlay);
 diff --git a/source/options/ModifiersSubState.hx b/source/options/ModifiersSubState.hx
 index 7166f0c..f104321 100644
 --- a/source/options/ModifiersSubState.hx

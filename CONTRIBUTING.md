@@ -45,7 +45,8 @@ This is a bit more complex:
 
 Assuming you did **not** apply all patches (if you did, run `art/revert-codebase.bat`):
 
-1. Apply the patch you want to modify using `git am patches\source\<FILENAME HERE>`
+1. Use `art/apply-patches-with-pauses.bat` to apply all patches up to the one you want to modify. Don't close the command prompt yet!
+1. Run `git reset @~`
 1. Modify the changes as you need
 1. Run 
 ```console
@@ -54,7 +55,7 @@ git commit -a --author "ORIGINAL_USERNAME <ORIGINAL_EMAIL> -m "ORIGINAL_MESSAGE
 YOUR_USERNAME: <description of your changes>
 > 
 > 
-Co-authored-by: YOUR_USERNAME <YOUR_EMAIL>"
+Co-authored-by: YOUR_USERNAME <YOUR_GITHUB_EMAIL>"
 ```
 Example: 
 ```console
@@ -66,4 +67,5 @@ BeastlyGhost: fixed a crash if this option is enabled mid-song
 Co-authored-by: BeastlyGhost <45212377+BeastlyGhost@users.noreply.github.com>
 ```
 1. Run the batch file `art/create-patch-from-commit.bat`, replace the patch you applied in step 1 with your just-baked file;
+1. Apply the remaining patches (NOTE: If you see `Falling back to a 3-way merge` and/or you encounter conflicts (fix them *before* replacing the patch), you must use `art/create-patch-from-commit.bat` to re-create the patch and replace it.)
 1. PR patch file back to this repository (push the **patch file**, not the commit the patch was created from).

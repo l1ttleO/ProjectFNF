@@ -69,7 +69,7 @@ index bdde794..b160b30 100644
  
  		#if windows
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 04b6a2c..8c86810 100644
+index 35ff44e..35253f5 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
 @@ -224,6 +224,7 @@ class PlayState extends MusicBeatState
@@ -134,7 +134,7 @@ index 04b6a2c..8c86810 100644
  					case 3:
  						countdownGo = new FlxSprite().loadGraphic(Paths.image(introAlts[2]));
  						countdownGo.cameras = [camHUD];
-@@ -3669,7 +3689,7 @@ class PlayState extends MusicBeatState
+@@ -3673,7 +3693,7 @@ class PlayState extends MusicBeatState
  
  			case 'Screen Shake':
  				var valuesArray:Array<String> = [value1, value2];
@@ -143,7 +143,7 @@ index 04b6a2c..8c86810 100644
  				for (i in 0...targetsArray.length) {
  					var split:Array<String> = valuesArray[i].split(',');
  					var duration:Float = 0;
-@@ -3829,6 +3849,7 @@ class PlayState extends MusicBeatState
+@@ -3833,6 +3853,7 @@ class PlayState extends MusicBeatState
  		if (direction.endsWith("RIGHT")) addX += ClientPrefs.cameraMoveIntensity;
  		if(isDad)
  		{
@@ -151,7 +151,7 @@ index 04b6a2c..8c86810 100644
  			camFollow.set(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
  			camFollow.x += dad.cameraPosition[0] + opponentCameraOffset[0] + addX;
  			camFollow.y += dad.cameraPosition[1] + opponentCameraOffset[1] + addY;
-@@ -3836,6 +3857,7 @@ class PlayState extends MusicBeatState
+@@ -3840,6 +3861,7 @@ class PlayState extends MusicBeatState
  		}
  		else
  		{
@@ -159,25 +159,25 @@ index 04b6a2c..8c86810 100644
  			camFollow.set(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
  			camFollow.x -= boyfriend.cameraPosition[0] - boyfriendCameraOffset[0] - addX;
  			camFollow.y += boyfriend.cameraPosition[1] + boyfriendCameraOffset[1] + addY;
-@@ -4599,7 +4621,7 @@ class PlayState extends MusicBeatState
+@@ -4603,7 +4625,7 @@ class PlayState extends MusicBeatState
  		var char:Character = opponentPlay ? boyfriend : dad;
  		if (note.gfNote) char = gf;
  		var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
 -		if (!SONG.notes[curSection].mustHitSection) moveCamera(!opponentPlay, animToPlay);
-+		if (!SONG.notes[curSection].mustHitSection || ClientPrefs.hideBf) moveCamera(!opponentPlay, animToPlay);
++		if (!SONG.notes[curSection].mustHitSection || opponentPlay ? ClientPrefs.hideOpponent : ClientPrefs.hideBf) moveCamera(!opponentPlay, animToPlay);
  		if(note.noteType == 'Hey!' && char.animOffsets.exists('hey')) {
  			char.playAnim('hey', true);
  			char.specialAnim = true;
-@@ -4701,7 +4723,7 @@ class PlayState extends MusicBeatState
+@@ -4705,7 +4727,7 @@ class PlayState extends MusicBeatState
  			healthDrained -= note.hitHealth * healthGain;
  
  			var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
 -			if (SONG.notes[curSection].mustHitSection) moveCamera(opponentPlay, animToPlay);
-+			if (SONG.notes[curSection].mustHitSection || ClientPrefs.hideOpponent) moveCamera(opponentPlay, animToPlay);
++			if (SONG.notes[curSection].mustHitSection || opponentPlay ? ClientPrefs.hideBf : ClientPrefs.hideOpponent) moveCamera(opponentPlay, animToPlay);
  			if(!note.noAnimation) {
  
  				/*if(note.gfNote)
-@@ -4972,6 +4994,7 @@ class PlayState extends MusicBeatState
+@@ -4976,6 +4998,7 @@ class PlayState extends MusicBeatState
  	}
  
  	override function destroy() {
@@ -185,7 +185,7 @@ index 04b6a2c..8c86810 100644
  		for (lua in luaArray) {
  			lua.call('onDestroy', []);
  			lua.stop();
-@@ -5258,6 +5281,13 @@ class PlayState extends MusicBeatState
+@@ -5262,6 +5285,13 @@ class PlayState extends MusicBeatState
  		setOnLuas('ratingFC', ratingFC);
  	}
  
