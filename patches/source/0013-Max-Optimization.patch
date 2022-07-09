@@ -69,7 +69,7 @@ index bdde794..b160b30 100644
  
  		#if windows
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 35ff44e..35253f5 100644
+index 35ff44e..8c4e680 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
 @@ -224,6 +224,7 @@ class PlayState extends MusicBeatState
@@ -164,7 +164,7 @@ index 35ff44e..35253f5 100644
  		if (note.gfNote) char = gf;
  		var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
 -		if (!SONG.notes[curSection].mustHitSection) moveCamera(!opponentPlay, animToPlay);
-+		if (!SONG.notes[curSection].mustHitSection || opponentPlay ? ClientPrefs.hideOpponent : ClientPrefs.hideBf) moveCamera(!opponentPlay, animToPlay);
++		if (!SONG.notes[curSection].mustHitSection || (opponentPlay ? ClientPrefs.hideOpponent : ClientPrefs.hideBf)) moveCamera(!opponentPlay, animToPlay);
  		if(note.noteType == 'Hey!' && char.animOffsets.exists('hey')) {
  			char.playAnim('hey', true);
  			char.specialAnim = true;
@@ -173,7 +173,7 @@ index 35ff44e..35253f5 100644
  
  			var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
 -			if (SONG.notes[curSection].mustHitSection) moveCamera(opponentPlay, animToPlay);
-+			if (SONG.notes[curSection].mustHitSection || opponentPlay ? ClientPrefs.hideBf : ClientPrefs.hideOpponent) moveCamera(opponentPlay, animToPlay);
++			if (SONG.notes[curSection].mustHitSection || (opponentPlay ? ClientPrefs.hideBf : ClientPrefs.hideOpponent)) moveCamera(opponentPlay, animToPlay);
  			if(!note.noAnimation) {
  
  				/*if(note.gfNote)

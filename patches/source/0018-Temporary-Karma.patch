@@ -50,7 +50,7 @@ index d8adc3c..ad0233f 100644
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index d0b5437..18e023e 100644
+index 864eeb7..673bca1 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
 @@ -333,6 +333,7 @@ class PlayState extends MusicBeatState
@@ -102,7 +102,7 @@ index d0b5437..18e023e 100644
 +			healthDrained -= toAdd;
  
  			var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
- 			if (SONG.notes[curSection].mustHitSection || opponentPlay ? ClientPrefs.hideBf : ClientPrefs.hideOpponent) moveCamera(opponentPlay, animToPlay);
+ 			if (SONG.notes[curSection].mustHitSection || (opponentPlay ? ClientPrefs.hideBf : ClientPrefs.hideOpponent)) moveCamera(opponentPlay, animToPlay);
 diff --git a/source/options/ModifiersSubState.hx b/source/options/ModifiersSubState.hx
 index 7166f0c..f104321 100644
 --- a/source/options/ModifiersSubState.hx
