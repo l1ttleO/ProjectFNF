@@ -163,8 +163,8 @@ index 35ff44e..8c4e680 100644
  		var char:Character = opponentPlay ? boyfriend : dad;
  		if (note.gfNote) char = gf;
  		var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
--		if (!SONG.notes[curSection].mustHitSection) moveCamera(!opponentPlay, animToPlay);
-+		if (!SONG.notes[curSection].mustHitSection || (opponentPlay ? ClientPrefs.hideOpponent : ClientPrefs.hideBf)) moveCamera(!opponentPlay, animToPlay);
+-		if (!SONG.notes[curSection].mustHitSection == !opponentPlay) moveCamera(!opponentPlay, animToPlay);
++		if (!SONG.notes[curSection].mustHitSection == !opponentPlay || (opponentPlay ? ClientPrefs.hideOpponent : ClientPrefs.hideBf)) moveCamera(!opponentPlay, animToPlay);
  		if(note.noteType == 'Hey!' && char.animOffsets.exists('hey')) {
  			char.playAnim('hey', true);
  			char.specialAnim = true;
@@ -172,8 +172,8 @@ index 35ff44e..8c4e680 100644
  			healthDrained -= note.hitHealth * healthGain;
  
  			var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
--			if (SONG.notes[curSection].mustHitSection) moveCamera(opponentPlay, animToPlay);
-+			if (SONG.notes[curSection].mustHitSection || (opponentPlay ? ClientPrefs.hideBf : ClientPrefs.hideOpponent)) moveCamera(opponentPlay, animToPlay);
+-			if (SONG.notes[curSection].mustHitSection == !opponentPlay) moveCamera(opponentPlay, animToPlay);
++			if (SONG.notes[curSection].mustHitSection == !opponentPlay || (opponentPlay ? ClientPrefs.hideBf : ClientPrefs.hideOpponent)) moveCamera(opponentPlay, animToPlay);
  			if(!note.noAnimation) {
  
  				/*if(note.gfNote)

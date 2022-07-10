@@ -79,7 +79,7 @@ index 8cead4e..99e2c94 100644
  		var char:Character = opponentPlay ? boyfriend : dad;
  		if (note.gfNote) char = gf;
  		var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
-+		if (!SONG.notes[curSection].mustHitSection) moveCamera(!opponentPlay, animToPlay);
++		if (!SONG.notes[curSection].mustHitSection == !opponentPlay) moveCamera(!opponentPlay, animToPlay);
  		if(note.noteType == 'Hey!' && char.animOffsets.exists('hey')) {
  			char.playAnim('hey', true);
  			char.specialAnim = true;
@@ -88,7 +88,7 @@ index 8cead4e..99e2c94 100644
  			healthDrained -= note.hitHealth * healthGain;
  
 +			var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
-+			if (SONG.notes[curSection].mustHitSection) moveCamera(opponentPlay, animToPlay);
++			if (SONG.notes[curSection].mustHitSection == !opponentPlay) moveCamera(opponentPlay, animToPlay);
  			if(!note.noAnimation) {
 -				var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
  
