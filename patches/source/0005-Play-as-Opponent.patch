@@ -6,8 +6,8 @@ Subject: [PATCH] Add gameplay changer 'Play as Opponent'
 Co-authored-by: BeastlyGhost <45212377+BeastlyGhost@users.noreply.github.com>
 ---
  source/GameplayChangersSubstate.hx |  3 ++
- source/PlayState.hx                | 58 ++++++++++++++++++------------
- 2 files changed, 39 insertions(+), 22 deletions(-)
+ source/PlayState.hx                | 59 +++++++++++++++++++-----------
+ 2 files changed, 40 insertions(+), 22 deletions(-)
 
 diff --git a/source/GameplayChangersSubstate.hx b/source/GameplayChangersSubstate.hx
 index 15ebe4d..dcdb16d 100644
@@ -24,7 +24,7 @@ index 15ebe4d..dcdb16d 100644
  
  	public function getOptionByName(name:String)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 4c2ee95..17723d2 100644
+index bd01eb4..ef62a67 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
 @@ -191,6 +191,7 @@ class PlayState extends MusicBeatState
@@ -83,16 +83,16 @@ index 4c2ee95..17723d2 100644
  			{
  				playerStrums.add(babyArrow);
  			}
-@@ -4342,7 +4348,7 @@ class PlayState extends MusicBeatState
- 			boyfriend.stunned = false;
- 		});
+@@ -4351,7 +4358,7 @@ class PlayState extends MusicBeatState
+ 			});
+ 		}
  
 -		var char:Character = boyfriend;
 +		var char:Character = opponentPlay ? dad : boyfriend;
  		if(daNote.gfNote) {
  			char = gf;
  		}
-@@ -4362,6 +4368,7 @@ class PlayState extends MusicBeatState
+@@ -4371,6 +4378,7 @@ class PlayState extends MusicBeatState
  
  		if (!boyfriend.stunned)
  		{
@@ -100,9 +100,9 @@ index 4c2ee95..17723d2 100644
  			health -= 0.05 * healthLoss;
  			if(instakillOnMiss)
  			{
-@@ -4393,8 +4400,8 @@ class PlayState extends MusicBeatState
- 				boyfriend.stunned = false;
+@@ -4412,8 +4420,8 @@ class PlayState extends MusicBeatState
  			});
+ 			}
  
 -			if(boyfriend.hasMissAnimations) {
 -				boyfriend.playAnim(singAnimations[Std.int(Math.abs(direction))] + 'miss', true);
@@ -111,7 +111,7 @@ index 4c2ee95..17723d2 100644
  			}
  			vocals.volume = 0;
  		}
-@@ -4406,10 +4413,13 @@ class PlayState extends MusicBeatState
+@@ -4425,10 +4433,13 @@ class PlayState extends MusicBeatState
  		if (Paths.formatToSongPath(SONG.song) != 'tutorial')
  			camZooming = true;
  
@@ -129,7 +129,7 @@ index 4c2ee95..17723d2 100644
  		} else if(!note.noAnimation) {
  			var altAnim:String = note.animSuffix;
  
-@@ -4420,15 +4430,15 @@ class PlayState extends MusicBeatState
+@@ -4439,15 +4450,15 @@ class PlayState extends MusicBeatState
  				}
  			}
  
@@ -148,7 +148,7 @@ index 4c2ee95..17723d2 100644
  				char.holdTimer = 0;
  			}
  		}
-@@ -4468,6 +4478,8 @@ class PlayState extends MusicBeatState
+@@ -4487,6 +4498,8 @@ class PlayState extends MusicBeatState
  				FlxG.sound.play(Paths.sound('hitsound'), ClientPrefs.hitsoundVolume);
  			}
  
@@ -157,7 +157,7 @@ index 4c2ee95..17723d2 100644
  			if(note.hitCausesMiss) {
  				noteMiss(note);
  				if(!note.noteSplashDisabled && !note.isSustainNote) {
-@@ -4478,9 +4490,9 @@ class PlayState extends MusicBeatState
+@@ -4497,9 +4510,9 @@ class PlayState extends MusicBeatState
  				{
  					switch(note.noteType) {
  						case 'Hurt Note': //Hurt note
@@ -170,7 +170,7 @@ index 4c2ee95..17723d2 100644
  							}
  					}
  				}
-@@ -4507,7 +4519,7 @@ class PlayState extends MusicBeatState
+@@ -4526,7 +4539,7 @@ class PlayState extends MusicBeatState
  			if(!note.noAnimation) {
  				var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
  
@@ -179,7 +179,7 @@ index 4c2ee95..17723d2 100644
  				{
  					if(gf != null)
  					{
-@@ -4519,13 +4531,15 @@ class PlayState extends MusicBeatState
+@@ -4538,13 +4551,15 @@ class PlayState extends MusicBeatState
  				{
  					boyfriend.playAnim(animToPlay + note.animSuffix, true);
  					boyfriend.holdTimer = 0;
@@ -200,7 +200,7 @@ index 4c2ee95..17723d2 100644
  					}
  
  					if(gf != null && gf.animOffsets.exists('cheer')) {
-@@ -4978,7 +4992,7 @@ class PlayState extends MusicBeatState
+@@ -4997,7 +5012,7 @@ class PlayState extends MusicBeatState
  	function StrumPlayAnim(isDad:Bool, id:Int, time:Float) {
  		var spr:StrumNote = null;
  		if(isDad) {

@@ -40,10 +40,10 @@ index 7361c8a..3368b24 100644
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 284434c..acd19dc 100644
+index 587e139..c6f233f 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
-@@ -4228,9 +4228,9 @@ class PlayState extends MusicBeatState
+@@ -4229,9 +4229,9 @@ class PlayState extends MusicBeatState
  				}
  				else{
  					callOnLuas('onGhostTap', [key]);
@@ -55,7 +55,7 @@ index 284434c..acd19dc 100644
  				}
  
  				// I dunno what you need this for but here you go
-@@ -4376,6 +4376,7 @@ class PlayState extends MusicBeatState
+@@ -4377,6 +4377,7 @@ class PlayState extends MusicBeatState
  				note.destroy();
  			}
  		});
@@ -63,7 +63,7 @@ index 284434c..acd19dc 100644
  		combo = 0;
  		health -= daNote.missHealth * healthLoss;
  		
-@@ -4408,22 +4409,34 @@ class PlayState extends MusicBeatState
+@@ -4418,22 +4419,34 @@ class PlayState extends MusicBeatState
  		}
  
  		FlxG.camera.shake(ClientPrefs.missShakeIntensity / 100, 0.5, null, true, singAnimations[Std.int(Math.abs(daNote.noteData))].endsWith('UP') || singAnimations[Std.int(Math.abs(daNote.noteData))].endsWith('DOWN') ? flixel.util.FlxAxes.Y : flixel.util.FlxAxes.X);
@@ -99,7 +99,7 @@ index 284434c..acd19dc 100644
  			health -= 0.05 * healthLoss;
  			if(instakillOnMiss)
  			{
-@@ -4445,7 +4458,7 @@ class PlayState extends MusicBeatState
+@@ -4455,7 +4468,7 @@ class PlayState extends MusicBeatState
  			totalPlayed++;
  			RecalculateRating(true);
  
@@ -108,8 +108,8 @@ index 284434c..acd19dc 100644
  			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
  			// FlxG.log.add('played imss note');
  
-@@ -4457,9 +4470,9 @@ class PlayState extends MusicBeatState
- 			});
+@@ -4477,9 +4490,9 @@ class PlayState extends MusicBeatState
+ 			}
  
  			FlxG.camera.shake(ClientPrefs.missShakeIntensity / 100, 0.5, null, true, singAnimations[Std.int(Math.abs(direction))].endsWith('UP') || singAnimations[Std.int(Math.abs(direction))].endsWith('DOWN') ? flixel.util.FlxAxes.Y : flixel.util.FlxAxes.X);
 -			if(char.hasMissAnimations) {

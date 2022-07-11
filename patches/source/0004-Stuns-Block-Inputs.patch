@@ -5,9 +5,9 @@ Subject: [PATCH] Add modifier 'Stuns Block Inputs'
 
 ---
  source/ClientPrefs.hx               |  5 +++++
- source/PlayState.hx                 | 14 ++++++++++----
+ source/PlayState.hx                 | 29 +++++++++++++++++++++++++----
  source/options/ModifiersSubState.hx | 13 +++++++++++++
- 3 files changed, 28 insertions(+), 4 deletions(-)
+ 3 files changed, 43 insertions(+), 4 deletions(-)
 
 diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
 index f2d6429..8026b40 100644
@@ -40,29 +40,43 @@ index f2d6429..8026b40 100644
  		// flixel automatically saves your volume!
  		if(FlxG.save.data.volume != null)
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index d66762a..4c2ee95 100644
+index d0a5d69..b02bec5 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
-@@ -4335,6 +4335,13 @@ class PlayState extends MusicBeatState
+@@ -4335,6 +4335,20 @@ class PlayState extends MusicBeatState
  		totalPlayed++;
  		RecalculateRating(true);
  
-+		boyfriend.stunned = true;
++		if (!boyfriend.stunned && ClientPrefs.stunsBlockInputs > 0) {
++			boyfriend.stunned = true;
++			for (note in notes) 
++				if (Conductor.songPosition + ClientPrefs.stunsBlockInputs * 1000 > note.strumTime + noteKillOffset)
++					{ note.copyAlpha = false; note.alpha = 0.3; }
++			for (note in unspawnNotes) 
++				if (Conductor.songPosition + ClientPrefs.stunsBlockInputs * 1000 > note.strumTime + noteKillOffset)
++					{ note.copyAlpha = false; note.alpha = 0.3; }
 +
-+		new FlxTimer().start(ClientPrefs.stunsBlockInputs, function(tmr:FlxTimer)
-+		{
-+			boyfriend.stunned = false;
-+		});
++			new FlxTimer().start(ClientPrefs.stunsBlockInputs, function(tmr:FlxTimer) {
++				boyfriend.stunned = false;
++			});
++		}
 +
  		var char:Character = boyfriend;
  		if(daNote.gfNote) {
  			char = gf;
-@@ -4379,13 +4386,12 @@ class PlayState extends MusicBeatState
+@@ -4379,13 +4393,20 @@ class PlayState extends MusicBeatState
  			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
  			// FlxG.log.add('played imss note');
  
 -			/*boyfriend.stunned = true;
++			if (!boyfriend.stunned && ClientPrefs.stunsBlockInputs > 0) {
 +			boyfriend.stunned = true;
++			for (note in notes) 
++				if (Conductor.songPosition + ClientPrefs.stunsBlockInputs * 1000 > note.strumTime + noteKillOffset)
++					{ note.copyAlpha = false; note.alpha = 0.3; }
++			for (note in unspawnNotes) 
++				if (Conductor.songPosition + ClientPrefs.stunsBlockInputs * 1000 > note.strumTime + noteKillOffset)
++					{ note.copyAlpha = false; note.alpha = 0.3; }
  
 -			// get stunned for 1/60 of a second, makes you able to
 -			new FlxTimer().start(1 / 60, function(tmr:FlxTimer)
@@ -71,6 +85,7 @@ index d66762a..4c2ee95 100644
  				boyfriend.stunned = false;
 -			});*/
 +			});
++			}
  
  			if(boyfriend.hasMissAnimations) {
  				boyfriend.playAnim(singAnimations[Std.int(Math.abs(direction))] + 'miss', true);
