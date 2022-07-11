@@ -293,7 +293,7 @@ index c29c99b..4b22913 100644
  		vocals.volume = 0;
  		if(!practiceMode && ClientPrefs.scoreSystem == 'Vanilla') songScore -= 10;
 +		if (ClientPrefs.scoreSystem == 'Vanilla') thScore += ratingsData[0].score;
-+		else thScore += maxScore * (practiceMode ? 0.5 : 1) * 0.5 / mustHitNoteCount;
++		else thScore += (maxScore * (practiceMode ? 0.5 : 1) * 0.5 / mustHitNoteCount) * 2;
  		bonus = 0;
  
  		totalPlayed++;
@@ -313,7 +313,7 @@ index c29c99b..4b22913 100644
  
  			if(!practiceMode && ClientPrefs.scoreSystem == 'Vanilla') songScore -= 10;
 +			if (ClientPrefs.scoreSystem == 'Vanilla') thScore += ratingsData[0].score;
-+			else thScore += maxScore * (practiceMode ? 0.5 : 1) * 0.5 / mustHitNoteCount;
++			else thScore += (maxScore * (practiceMode ? 0.5 : 1) * 0.5 / mustHitNoteCount) * 2;
  			bonus = 0;
  			if(!endingSong) {
  				songMisses++;

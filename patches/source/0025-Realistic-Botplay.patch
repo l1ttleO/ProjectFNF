@@ -1,0 +1,52 @@
+From 7b6433573fb96f91717dd23b2cc67beabb9212e6 Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Mon, 11 Jul 2022 23:25:57 +0500
+Subject: [PATCH] Make botplay act like a real player
+
+---
+ source/PlayState.hx | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index 55a8fb8..d4ab4c1 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -2322,7 +2322,7 @@ class PlayState extends MusicBeatState
+ 				new FlxTextFormatMarkerPair(blackFormat, '=')
+ 			]);
+ 
+-		if(ClientPrefs.scoreZoom && !miss && !cpuControlled)
++		if(ClientPrefs.scoreZoom && !miss/* && !cpuControlled*/)
+ 		{
+ 			if(scoreTxtTween != null) {
+ 				scoreTxtTween.cancel();
+@@ -3307,7 +3307,7 @@ class PlayState extends MusicBeatState
+ 						if(daNote.canBeHit) {
+ 							goodNoteHit(daNote);
+ 						}
+-					} else if(daNote.strumTime <= Conductor.songPosition || (daNote.isSustainNote && daNote.canBeHit && daNote.mustPress)) {
++					} else if(!daNote.ignoreNote && !daNote.hitCausesMiss && (daNote.strumTime <= Conductor.songPosition || (daNote.isSustainNote && daNote.canBeHit && daNote.mustPress))) {
+ 						goodNoteHit(daNote);
+ 					}
+ 				}
+@@ -3343,7 +3343,7 @@ class PlayState extends MusicBeatState
+ 				// Kill extremely late notes and cause misses
+ 				if (Conductor.songPosition > noteKillOffset + daNote.strumTime)
+ 				{
+-					if (daNote.mustPress && !cpuControlled &&!daNote.ignoreNote && !endingSong && (daNote.tooLate || !daNote.wasGoodHit)) {
++					if (daNote.mustPress && /*!cpuControlled &&*/!daNote.ignoreNote && !endingSong && (daNote.tooLate || !daNote.wasGoodHit)) {
+ 						noteMiss(daNote);
+ 					}
+ 
+@@ -4191,7 +4191,7 @@ class PlayState extends MusicBeatState
+ 			spawnNoteSplashOnNote(note);
+ 		}
+ 
+-		if(/*!practiceMode && */!cpuControlled) {
++		if(/*!practiceMode && !cpuControlled*/true) {
+ 			if (ClientPrefs.scoreSystem == 'osu!mania') {
+ 				bonus += daRating.hitBonus - daRating.hitPunishment;
+ 				if (bonus < 0) bonus = 0;
+-- 
+2.34.1.windows.1
+

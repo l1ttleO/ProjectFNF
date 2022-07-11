@@ -49,10 +49,10 @@ index d0a5d69..b02bec5 100644
  
 +		if (!boyfriend.stunned && ClientPrefs.stunsBlockInputs > 0) {
 +			boyfriend.stunned = true;
-+			for (note in notes) 
++			for (note in notes)
 +				if (Conductor.songPosition + ClientPrefs.stunsBlockInputs * 1000 > note.strumTime + noteKillOffset)
 +					{ note.copyAlpha = false; note.alpha = 0.3; }
-+			for (note in unspawnNotes) 
++			for (note in unspawnNotes)
 +				if (Conductor.songPosition + ClientPrefs.stunsBlockInputs * 1000 > note.strumTime + noteKillOffset)
 +					{ note.copyAlpha = false; note.alpha = 0.3; }
 +
@@ -71,10 +71,10 @@ index d0a5d69..b02bec5 100644
 -			/*boyfriend.stunned = true;
 +			if (!boyfriend.stunned && ClientPrefs.stunsBlockInputs > 0) {
 +			boyfriend.stunned = true;
-+			for (note in notes) 
++			for (note in notes)
 +				if (Conductor.songPosition + ClientPrefs.stunsBlockInputs * 1000 > note.strumTime + noteKillOffset)
 +					{ note.copyAlpha = false; note.alpha = 0.3; }
-+			for (note in unspawnNotes) 
++			for (note in unspawnNotes)
 +				if (Conductor.songPosition + ClientPrefs.stunsBlockInputs * 1000 > note.strumTime + noteKillOffset)
 +					{ note.copyAlpha = false; note.alpha = 0.3; }
  

@@ -1,0 +1,25 @@
+From 1b322cec1f712c3bf5303f698e75bb11383ec33f Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Tue, 12 Jul 2022 00:14:31 +0500
+Subject: [PATCH] Do not cause misses if hitting notes was impossible because of freezes
+
+---
+ source/PlayState.hx | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index d4ab4c1..31a8cb7 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -3343,7 +3343,7 @@ class PlayState extends MusicBeatState
+ 				// Kill extremely late notes and cause misses
+ 				if (Conductor.songPosition > noteKillOffset + daNote.strumTime)
+ 				{
+-					if (daNote.mustPress && /*!cpuControlled &&*/!daNote.ignoreNote && !endingSong && (daNote.tooLate || !daNote.wasGoodHit)) {
++					if (daNote.mustPress && /*!cpuControlled &&*/!daNote.ignoreNote && !endingSong && (daNote.tooLate || !daNote.wasGoodHit) && Conductor.songPosition - elapsed > daNote.strumTime) {
+ 						noteMiss(daNote);
+ 					}
+ 
+-- 
+2.34.1.windows.1
+
