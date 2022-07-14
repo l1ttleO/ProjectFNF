@@ -62,7 +62,7 @@ jobs:
           git am patches/source/*.patch
         shell: bash
       - name: Compile
-        run: haxelib run lime build Project.xml linux --app-version="4.0.0-${{ github.run_id}}"
+        run: haxelib run lime build Project.xml linux --app-version="4.0.0-${{ github.run_id}}" -D CHECK_FOR_UPDATES
       - name: Publish Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
@@ -111,7 +111,7 @@ jobs:
           git am patches/source/*.patch
         shell: bash
       - name: Compile
-        run: haxelib run lime build windows --app-version="4.0.0-${{ github.run_id}}"
+        run: haxelib run lime build windows --app-version="4.0.0-${{ github.run_id}}" -D CHECK_FOR_UPDATES
       - name: Publish Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
@@ -159,7 +159,7 @@ jobs:
           git am patches/source/*.patch
         shell: bash
       - name: Compile
-        run: haxelib run lime build mac --app-version="4.0.0-${{ github.run_id}}"
+        run: haxelib run lime build mac --app-version="4.0.0-${{ github.run_id}}" -D CHECK_FOR_UPDATES
       - name: Publish Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
