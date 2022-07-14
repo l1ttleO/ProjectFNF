@@ -12,8 +12,8 @@ Co-authored-by: Stilic <lateman-jpeg@outlook.fr>
  source/MainMenuState.hx |  5 +++++
  source/OutdatedState.hx |  6 +++---
  source/PlayState.hx     |  6 ++++++
- source/TitleState.hx    | 32 +++++++++++++++++++++++++++-----
- 8 files changed, 55 insertions(+), 15 deletions(-)
+ source/TitleState.hx    | 34 ++++++++++++++++++++++++++++------
+ 8 files changed, 56 insertions(+), 16 deletions(-)
 
 diff --git a/Project.xml b/Project.xml
 index 053db81..6b21dc6 100644
@@ -159,14 +159,14 @@ index 0dcfe7f..ea08be7 100644
  			else if(controls.BACK) {
  				leftState = true;
 diff --git a/source/PlayState.hx b/source/PlayState.hx
-index 2fc62c0..4ccf0dc 100644
+index 2fc62c0..e64822e 100644
 --- a/source/PlayState.hx
 +++ b/source/PlayState.hx
 @@ -1184,6 +1184,11 @@ class PlayState extends MusicBeatState
  			botplayTxt.y = timeBarBG.y - 78;
  		}
  
-+		var versionTxt:FlxText = new FlxText(4, FlxG.height - 24, 0, '${SONG.song} - ${CoolUtil.difficultyString()} | ProjectFNF v${MainMenuState.projectFnfVersion}', 12);
++		var versionTxt:FlxText = new FlxText(4, FlxG.height - 24, 0, '${SONG.song} - ${CoolUtil.difficultyString()} | ProjectFNF v${MainMenuState.projectFnfVersion}${TitleState.mustUpdate ? " [OUTDATED]" : ""}', 12);
 +		versionTxt.scrollFactor.set();
 +		versionTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 +		add(versionTxt);
@@ -183,9 +183,18 @@ index 2fc62c0..4ccf0dc 100644
  		// if (SONG.song == 'South')
  		// FlxG.camera.alpha = 0.7;
 diff --git a/source/TitleState.hx b/source/TitleState.hx
-index 1cd1b48..268a8b6 100644
+index 1cd1b48..bb0252d 100644
 --- a/source/TitleState.hx
 +++ b/source/TitleState.hx
+@@ -80,7 +80,7 @@ class TitleState extends MusicBeatState
+ 	var easterEggKeysBuffer:String = '';
+ 	#end
+ 
+-	var mustUpdate:Bool = false;
++	public static var mustUpdate:Bool = false;
+ 
+ 	var titleJSON:TitleData;
+ 
 @@ -136,12 +136,12 @@ class TitleState extends MusicBeatState
  		#if CHECK_FOR_UPDATES
  		if(ClientPrefs.checkForUpdates && !closedState) {
