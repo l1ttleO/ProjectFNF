@@ -162,9 +162,9 @@ function onTimerCompleted(tag, loops, loopsLeft)
 	-- loopsLeft = how many are remaining
 end
 function onCheckForAchievement(name)
-
+	
 	--deals with achievement checks
-
+	
 	--EX:
 --[[
   if name == 'sick-full-combo' and getProperty('bads') == 0 and getProperty('goods') == 0 and getProperty('shits') == 0 and getProperty('endingSong') then
@@ -176,7 +176,7 @@ function onCheckForAchievement(name)
   if name == 'halfway' and getSongPosition >  getPropertyFromClass('flixel.FlxG','sound.music.length')/2 then
     return Function_Continue
   end
-
-
+	
+	
 	]]--
 end

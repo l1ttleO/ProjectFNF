@@ -29,11 +29,10 @@ using StringTools;
 
 class OptionsState extends MusicBeatState
 {
-	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Modifiers'];
+	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay'];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
-	static var goToPlayState:Bool = false;
 
 	function openSelectedSubstate(label:String) {
 		switch(label) {
@@ -47,18 +46,9 @@ class OptionsState extends MusicBeatState
 				openSubState(new options.VisualsUISubState());
 			case 'Gameplay':
 				openSubState(new options.GameplaySettingsSubState());
-			case 'Modifiers':
-				openSubState(new options.ModifiersSubState());
 			case 'Adjust Delay and Combo':
 				LoadingState.loadAndSwitchState(new options.NoteOffsetState());
 		}
-	}
-
-	public function new(?goToPlayState:Bool)
-	{
-		super();
-		if (goToPlayState != null)
-			OptionsState.goToPlayState = goToPlayState;
 	}
 
 	var selectorLeft:Alphabet;
@@ -116,19 +106,14 @@ class OptionsState extends MusicBeatState
 
 		if (controls.BACK) {
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-			if (goToPlayState) {
-				StageData.loadDirectory(PlayState.SONG);
-				goToPlayState = false;
-				LoadingState.loadAndSwitchState(new PlayState(), true);
-			} else {
-				MusicBeatState.switchState(new MainMenuState());
-			}
+			MusicBeatState.switchState(new MainMenuState());
 		}
 
 		if (controls.ACCEPT) {
 			openSelectedSubstate(options[curSelected]);
 		}
 	}
+	
 	function changeSelection(change:Int = 0) {
 		curSelected += change;
 		if (curSelected < 0)

@@ -1,0 +1,300 @@
+From fb46afc437e2319a1f22f1b9ee47db475ef6523f Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Sun, 26 Jun 2022 23:01:51 +0500
+Subject: [PATCH] Add ProjectFNF branding
+
+Co-authored-by: Stilic <lateman-jpeg@outlook.fr>
+---
+ Project.xml             |  5 +++--
+ source/CreditsState.hx  |  6 ++++++
+ source/Discord.hx       |  6 +++---
+ source/Main.hx          |  4 ++--
+ source/MainMenuState.hx |  5 +++++
+ source/OutdatedState.hx |  6 +++---
+ source/PlayState.hx     |  6 ++++++
+ source/TitleState.hx    | 34 ++++++++++++++++++++++++++++------
+ 8 files changed, 56 insertions(+), 16 deletions(-)
+
+diff --git a/Project.xml b/Project.xml
+index 053db81..6b21dc6 100644
+--- a/Project.xml
++++ b/Project.xml
+@@ -2,7 +2,7 @@
+ <project>
+ 	<!-- _________________________ Application Settings _________________________ -->
+ 
+-	<app title="Friday Night Funkin': Psych Engine" file="PsychEngine" packageName="com.shadowmario.psychengine" package="com.shadowmario.psychengine" main="Main" version="0.2.8" company="ShadowMario" />
++	<app title="Friday Night Funkin': ProjectFNF" file="ProjectFNF" packageName="ru.l1ttleO.projectfnf" package="ru.l1ttleO.projectfnf" main="Main" version="0.2.8" company="l1ttleO" />
+ 
+ 	<!--Switch Export with Unique ApplicationID and Icon-->
+ 	<set name="APP_ID" value="0x0100f6c013bbc000" />
+@@ -48,7 +48,8 @@
+ 	<define name="LUA_ALLOWED" if="desktop" />
+ 	<define name="ACHIEVEMENTS_ALLOWED" />
+ 	<define name="VIDEOS_ALLOWED" if="web || windows" unless="32bits"/>
+-	<define name="PSYCH_WATERMARKS"/> <!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
++	<define name="PROJECTFNF_WATERMARKS"/> <!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
++	<define name="PSYCH_WATERMARKS" unless="PROJECTFNF_WATERMARKS"/> <!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
+ 	<define name="TITLE_SCREEN_EASTER_EGG" if="officialBuild"/> <!-- DELETE THE if="officialBuild" for enabling this on an unofficial build -->
+ 	<define name="CRASH_HANDLER" if="desktop release" />
+ 
+diff --git a/source/CreditsState.hx b/source/CreditsState.hx
+index e0eb466..499ec14 100644
+--- a/source/CreditsState.hx
++++ b/source/CreditsState.hx
+@@ -81,6 +81,12 @@ class CreditsState extends MusicBeatState
+ 		#end
+ 
+ 		var pisspoop:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
++			['ProjectFNF Team'],
++			['l1ttleO',             'none',             'Main Programmer of ProjectFNF',                       		'https://twitter.com/l1ttleO',          '00FFF7'],
++			['ProjectFNF Contributors'],
++			['BeastlyGhost',        'none',             'Cool new options and fixes',                               'https://twitter.com/Fan_de_RPG',       'CCDFFD'],
++			['OneShotSank',         'none',             'Main menu changes',                                  		'https://twitter.com/Scridescriptive',  'EFB66C'],
++			['Stilic',              'none',             'Minor changes',                                     	    'https://github.com/Stilic',            'FF2D32'],
+ 			['Psych Engine Team'],
+ 			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',								'https://twitter.com/Shadow_Mario_',	'444444'],
+ 			['RiverOaken',			'river',			'Main Artist/Animator of Psych Engine',							'https://twitter.com/RiverOaken',		'B42F71'],
+diff --git a/source/Discord.hx b/source/Discord.hx
+index adb081b..b4dc9a9 100644
+--- a/source/Discord.hx
++++ b/source/Discord.hx
+@@ -17,7 +17,7 @@ class DiscordClient
+ 	{
+ 		trace("Discord Client starting...");
+ 		DiscordRpc.start({
+-			clientID: "863222024192262205",
++			clientID: "906551435846619146",
+ 			onReady: onReady,
+ 			onError: onError,
+ 			onDisconnected: onDisconnected
+@@ -45,7 +45,7 @@ class DiscordClient
+ 			details: "In the Menus",
+ 			state: null,
+ 			largeImageKey: 'icon',
+-			largeImageText: "Psych Engine"
++			largeImageText: "ProjectFNF"
+ 		});
+ 	}
+ 
+@@ -82,7 +82,7 @@ class DiscordClient
+ 			details: details,
+ 			state: state,
+ 			largeImageKey: 'icon',
+-			largeImageText: "Engine Version: " + MainMenuState.psychEngineVersion,
++			largeImageText: "ProjectFNF Version: " + MainMenuState.projectFnfVersion,
+ 			smallImageKey : smallImageKey,
+ 			// Obtained times are in milliseconds so they are divided so Discord can use it
+ 			startTimestamp : Std.int(startTimestamp / 1000),
+diff --git a/source/Main.hx b/source/Main.hx
+index 56be353..7696de4 100644
+--- a/source/Main.hx
++++ b/source/Main.hx
+@@ -117,7 +117,7 @@ class Main extends Sprite
+ 		dateNow = dateNow.replace(" ", "_");
+ 		dateNow = dateNow.replace(":", "'");
+ 
+-		path = "./crash/" + "PsychEngine_" + dateNow + ".txt";
++		path = "./crash/" + "ProjectFNF_" + dateNow + ".txt";
+ 
+ 		for (stackItem in callStack)
+ 		{
+@@ -130,7 +130,7 @@ class Main extends Sprite
+ 			}
+ 		}
+ 
+-		errMsg += "\nUncaught Error: " + e.error + "\nPlease report this error to the GitHub page: https://github.com/ShadowMario/FNF-PsychEngine\n\n> Crash Handler written by: sqirra-rng";
++		errMsg += "\nUncaught Error: " + e.error + "\nPlease report this error to the GitHub page: https://github.com/l1ttleO/ProjectFNF\n\n> Crash Handler written by: sqirra-rng";
+ 
+ 		if (!FileSystem.exists("./crash/"))
+ 			FileSystem.createDirectory("./crash/");
+diff --git a/source/MainMenuState.hx b/source/MainMenuState.hx
+index 0a907c2..f8fd43b 100644
+--- a/source/MainMenuState.hx
++++ b/source/MainMenuState.hx
+@@ -25,6 +25,7 @@ using StringTools;
+ 
+ class MainMenuState extends MusicBeatState
+ {
++	public static var projectFnfVersion:String = '2.5';
+ 	public static var psychEngineVersion:String = '0.6.2'; //This is also used for Discord RPC
+ 	public static var curSelected:Int = 0;
+ 
+@@ -130,6 +131,10 @@ class MainMenuState extends MusicBeatState
+ 
+ 		FlxG.camera.follow(camFollowPos, null, 1);
+ 
++		var versionShit:FlxText = new FlxText(12, FlxG.height - 64, 0, "ProjectFNF v" + projectFnfVersion, 12);
++		versionShit.scrollFactor.set();
++		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
++		add(versionShit);
+ 		var versionShit:FlxText = new FlxText(12, FlxG.height - 44, 0, "Psych Engine v" + psychEngineVersion, 12);
+ 		versionShit.scrollFactor.set();
+ 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+diff --git a/source/OutdatedState.hx b/source/OutdatedState.hx
+index 0dcfe7f..ea08be7 100644
+--- a/source/OutdatedState.hx
++++ b/source/OutdatedState.hx
+@@ -25,11 +25,11 @@ class OutdatedState extends MusicBeatState
+ 
+ 		warnText = new FlxText(0, 0, FlxG.width,
+ 			"Sup bro, looks like you're running an   \n
+-			outdated version of Psych Engine (" + MainMenuState.psychEngineVersion + "),\n
++			outdated version of ProjectFNF (" + MainMenuState.projectFnfVersion + "),\n
+ 			please update to " + TitleState.updateVersion + "!\n
+ 			Press ESCAPE to proceed anyway.\n
+ 			\n
+-			Thank you for using the Engine!",
++			Thank you for using the Mod!",
+ 			32);
+ 		warnText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER);
+ 		warnText.screenCenter(Y);
+@@ -41,7 +41,7 @@ class OutdatedState extends MusicBeatState
+ 		if(!leftState) {
+ 			if (controls.ACCEPT) {
+ 				leftState = true;
+-				CoolUtil.browserLoad("https://github.com/ShadowMario/FNF-PsychEngine/releases");
++				CoolUtil.browserLoad("https://github.com/l1ttleO/ProjectFNF/releases/latest");
+ 			}
+ 			else if(controls.BACK) {
+ 				leftState = true;
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index 2fc62c0..e64822e 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -1184,6 +1184,11 @@ class PlayState extends MusicBeatState
+ 			botplayTxt.y = timeBarBG.y - 78;
+ 		}
+ 
++		var versionTxt:FlxText = new FlxText(4, FlxG.height - 24, 0, '${SONG.song} - ${CoolUtil.difficultyString()} | ProjectFNF v${MainMenuState.projectFnfVersion}${TitleState.mustUpdate ? " [OUTDATED]" : ""}', 12);
++		versionTxt.scrollFactor.set();
++		versionTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
++		add(versionTxt);
++
+ 		strumLineNotes.cameras = [camHUD];
+ 		grpNoteSplashes.cameras = [camHUD];
+ 		notes.cameras = [camHUD];
+@@ -1197,6 +1202,7 @@ class PlayState extends MusicBeatState
+ 		timeBarBG.cameras = [camHUD];
+ 		timeTxt.cameras = [camHUD];
+ 		doof.cameras = [camHUD];
++		versionTxt.cameras = [camHUD];
+ 
+ 		// if (SONG.song == 'South')
+ 		// FlxG.camera.alpha = 0.7;
+diff --git a/source/TitleState.hx b/source/TitleState.hx
+index 1cd1b48..bb0252d 100644
+--- a/source/TitleState.hx
++++ b/source/TitleState.hx
+@@ -80,7 +80,7 @@ class TitleState extends MusicBeatState
+ 	var easterEggKeysBuffer:String = '';
+ 	#end
+ 
+-	var mustUpdate:Bool = false;
++	public static var mustUpdate:Bool = false;
+ 
+ 	var titleJSON:TitleData;
+ 
+@@ -136,12 +136,12 @@ class TitleState extends MusicBeatState
+ 		#if CHECK_FOR_UPDATES
+ 		if(ClientPrefs.checkForUpdates && !closedState) {
+ 			trace('checking for update');
+-			var http = new haxe.Http("https://raw.githubusercontent.com/ShadowMario/FNF-PsychEngine/main/gitVersion.txt");
++			var http = new haxe.Http("https://raw.githubusercontent.com/l1ttleO/ProjectFNF/main/gitVersion.txt");
+ 
+ 			http.onData = function (data:String)
+ 			{
+ 				updateVersion = data.split('\n')[0].trim();
+-				var curVersion:String = MainMenuState.psychEngineVersion.trim();
++				var curVersion:String = MainMenuState.projectFnfVersion.trim();
+ 				trace('version online: ' + updateVersion + ', your version: ' + curVersion);
+ 				if(updateVersion != curVersion) {
+ 					trace('versions arent matching!');
+@@ -231,6 +231,7 @@ class TitleState extends MusicBeatState
+ 		#end
+ 	}
+ 
++	var logo:FlxSprite;
+ 	var logoBl:FlxSprite;
+ 	var gfDance:FlxSprite;
+ 	var danceLeft:Bool = false;
+@@ -283,6 +284,7 @@ class TitleState extends MusicBeatState
+ 		// bg.updateHitbox();
+ 		add(bg);
+ 
++		if (FileSystem.exists(Paths.modsImages('logoBumpin')) && !FileSystem.exists(Paths.modsImages('titlelogo'))) {
+ 		logoBl = new FlxSprite(titleJSON.titlex, titleJSON.titley);
+ 		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
+ 
+@@ -292,6 +294,10 @@ class TitleState extends MusicBeatState
+ 		logoBl.updateHitbox();
+ 		// logoBl.screenCenter();
+ 		// logoBl.color = FlxColor.BLACK;
++		} else {
++			logo = new FlxSprite(100, 50).loadGraphic(Paths.image('titlelogo'));
++			logo.antialiasing = ClientPrefs.globalAntialiasing;
++		}
+ 
+ 		swagShader = new ColorSwap();
+ 		gfDance = new FlxSprite(titleJSON.gfx, titleJSON.gfy);
+@@ -332,8 +338,14 @@ class TitleState extends MusicBeatState
+ 
+ 		add(gfDance);
+ 		gfDance.shader = swagShader.shader;
++		if (logoBl != null) {
+ 		add(logoBl);
+ 		logoBl.shader = swagShader.shader;
++		}
++		if (logo != null) {
++			add(logo);
++			logo.shader = swagShader.shader;
++		}
+ 
+ 		titleText = new FlxSprite(titleJSON.startx, titleJSON.starty);
+ 		#if (desktop && MODS_ALLOWED)
+@@ -623,6 +635,10 @@ class TitleState extends MusicBeatState
+ 		if(logoBl != null)
+ 			logoBl.animation.play('bump', true);
+ 
++		if (logo != null) {
++			logo.scale.set(1.05, 1.05);
++			FlxTween.tween(logo, {'scale.x': 0.95, 'scale.y': 0.95}, 0.1, {ease: FlxEase.bounceIn});
++		}
+ 		if(gfDance != null) {
+ 			danceLeft = !danceLeft;
+ 			if (danceLeft)
+@@ -640,14 +656,20 @@ class TitleState extends MusicBeatState
+ 					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+ 					FlxG.sound.music.fadeIn(4, 0, 0.7);
+ 				case 2:
+-					#if PSYCH_WATERMARKS
++					#if PROJECTFNF_WATERMARKS
++					createCoolText(['ProjectFNF by'], 15);
++					#elseif PSYCH_WATERMARKS
+ 					createCoolText(['Psych Engine by'], 15);
+ 					#else
+ 					createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
+ 					#end
+ 				// credTextShit.visible = true;
+ 				case 4:
+-					#if PSYCH_WATERMARKS
++					#if PROJECTFNF_WATERMARKS
++					addMoreText('l1ttleO', 15);
++					addMoreText('BeastlyGhost', 15);
++					addMoreText('aflac', 15);
++					#elseif PSYCH_WATERMARKS
+ 					addMoreText('Shadow Mario', 15);
+ 					addMoreText('RiverOaken', 15);
+ 					addMoreText('shubs', 15);
+@@ -662,7 +684,7 @@ class TitleState extends MusicBeatState
+ 				// credTextShit.text = 'In association \nwith';
+ 				// credTextShit.screenCenter();
+ 				case 6:
+-					#if PSYCH_WATERMARKS
++					#if (PROJECTFNF_WATERMARKS || PSYCH_WATERMARKS)
+ 					createCoolText(['Not associated', 'with'], -40);
+ 					#else
+ 					createCoolText(['In association', 'with'], -40);
+-- 
+2.34.1.windows.1
+

@@ -1,0 +1,122 @@
+From e0b6d5ba530c7f9f02e8dd55c3684d89fef60eb4 Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Tue, 28 Jun 2022 13:45:38 +0500
+Subject: [PATCH] Add visual option 'Move Camera in Note Direction'
+
+---
+ source/ClientPrefs.hx               |  5 +++++
+ source/PlayState.hx                 | 20 ++++++++++++++------
+ source/options/VisualsUISubState.hx | 12 ++++++++++++
+ 3 files changed, 31 insertions(+), 6 deletions(-)
+
+diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
+index 8026b40..dbe9f15 100644
+--- a/source/ClientPrefs.hx
++++ b/source/ClientPrefs.hx
+@@ -64,6 +64,7 @@ class ClientPrefs {
+ 	public static var damageFromOpponentNotes:Float = 0;
+ 	public static var opponentNotesCanKill:Bool = false;
+ 	public static var stunsBlockInputs:Float = 0;
++	public static var cameraMoveIntensity:Float = 0;
+ 
+ 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+ 	public static var keyBinds:Map<String, Array<FlxKey>> = [
+@@ -137,6 +138,7 @@ class ClientPrefs {
+ 		FlxG.save.data.damageFromOpponentNotes = damageFromOpponentNotes;
+ 		FlxG.save.data.opponentNotesCanKill = opponentNotesCanKill;
+ 		FlxG.save.data.stunsBlockInputs = stunsBlockInputs;
++		FlxG.save.data.cameraMoveIntensity = cameraMoveIntensity;
+ 	
+ 		FlxG.save.flush();
+ 
+@@ -263,6 +265,9 @@ class ClientPrefs {
+ 		if(FlxG.save.data.stunsBlockInputs != null) {
+ 			stunsBlockInputs = FlxG.save.data.stunsBlockInputs;
+ 		}
++		if(FlxG.save.data.cameraMoveIntensity != null) {
++			cameraMoveIntensity = FlxG.save.data.cameraMoveIntensity;
++		}
+ 		
+ 		// flixel automatically saves your volume!
+ 		if(FlxG.save.data.volume != null)
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index 8cead4e..99e2c94 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -3687,20 +3687,26 @@ class PlayState extends MusicBeatState
+ 	}
+ 
+ 	var cameraTwn:FlxTween;
+-	public function moveCamera(isDad:Bool)
++	public function moveCamera(isDad:Bool, ?direction:String = "")
+ 	{
++		var addX:Float = 0;
++		var addY:Float = 0;
++		if (direction.endsWith("UP")) addY -= ClientPrefs.cameraMoveIntensity;
++		if (direction.endsWith("DOWN")) addY += ClientPrefs.cameraMoveIntensity;
++		if (direction.endsWith("LEFT")) addX -= ClientPrefs.cameraMoveIntensity;
++		if (direction.endsWith("RIGHT")) addX += ClientPrefs.cameraMoveIntensity;
+ 		if(isDad)
+ 		{
+ 			camFollow.set(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
+-			camFollow.x += dad.cameraPosition[0] + opponentCameraOffset[0];
+-			camFollow.y += dad.cameraPosition[1] + opponentCameraOffset[1];
++			camFollow.x += dad.cameraPosition[0] + opponentCameraOffset[0] + addX;
++			camFollow.y += dad.cameraPosition[1] + opponentCameraOffset[1] + addY;
+ 			tweenCamIn();
+ 		}
+ 		else
+ 		{
+ 			camFollow.set(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
+-			camFollow.x -= boyfriend.cameraPosition[0] - boyfriendCameraOffset[0];
+-			camFollow.y += boyfriend.cameraPosition[1] + boyfriendCameraOffset[1];
++			camFollow.x -= boyfriend.cameraPosition[0] - boyfriendCameraOffset[0] - addX;
++			camFollow.y += boyfriend.cameraPosition[1] + boyfriendCameraOffset[1] + addY;
+ 
+ 			if (Paths.formatToSongPath(SONG.song) == 'tutorial' && cameraTwn == null && FlxG.camera.zoom != 1)
+ 			{
+@@ -4416,6 +4422,7 @@ class PlayState extends MusicBeatState
+ 		var char:Character = opponentPlay ? boyfriend : dad;
+ 		if (note.gfNote) char = gf;
+ 		var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
++		if (!SONG.notes[curSection].mustHitSection == !opponentPlay) moveCamera(!opponentPlay, animToPlay);
+ 		if(note.noteType == 'Hey!' && char.animOffsets.exists('hey')) {
+ 			char.playAnim('hey', true);
+ 			char.specialAnim = true;
+@@ -4516,8 +4523,9 @@ class PlayState extends MusicBeatState
+ 			health += note.hitHealth * healthGain;
+ 			healthDrained -= note.hitHealth * healthGain;
+ 
++			var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
++			if (SONG.notes[curSection].mustHitSection == !opponentPlay) moveCamera(opponentPlay, animToPlay);
+ 			if(!note.noAnimation) {
+-				var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
+ 
+ 				/*if(note.gfNote)
+ 				{
+diff --git a/source/options/VisualsUISubState.hx b/source/options/VisualsUISubState.hx
+index 9c798e4..4c67547 100644
+--- a/source/options/VisualsUISubState.hx
++++ b/source/options/VisualsUISubState.hx
+@@ -89,6 +89,18 @@ class VisualsUISubState extends BaseOptionsMenu
+ 		option.decimals = 1;
+ 		addOption(option);
+ 		
++		var option:Option = new Option('Camera Move Intensity',
++			'How far should the camera move when a note gets hit.',
++			'cameraMoveIntensity',
++			'int',
++			70);
++		option.displayFormat = "%v pixels";
++		option.scrollSpeed = 0;
++		option.minValue = 0;
++		option.maxValue = 200;
++		option.changeValue = 10;
++		addOption(option);
++		
+ 		#if !mobile
+ 		var option:Option = new Option('FPS Counter',
+ 			'If unchecked, hides FPS Counter.',
+-- 
+2.34.1.windows.1
+

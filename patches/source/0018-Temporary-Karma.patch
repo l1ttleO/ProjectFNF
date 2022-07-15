@@ -1,0 +1,151 @@
+From 8a765cf131ce1cb3fcf0c7bcc1c58ec8d59094be Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Fri, 8 Jul 2022 15:33:19 +0500
+Subject: [PATCH] Add modifiers 'Temporary Miss Penalty', 'Temporary Miss Penalty Can Kill' and 'Temporary Miss Penalty DPS'
+
+---
+ source/ClientPrefs.hx               | 15 ++++++++++++++
+ source/PlayState.hx                 | 15 ++++++++++++--
+ source/options/ModifiersSubState.hx | 32 +++++++++++++++++++++++++++++
+ 3 files changed, 60 insertions(+), 2 deletions(-)
+
+diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
+index d8adc3c..ad0233f 100644
+--- a/source/ClientPrefs.hx
++++ b/source/ClientPrefs.hx
+@@ -82,6 +82,9 @@ class ClientPrefs {
+ 	public static var missesDecreaseMaxHealth:Bool = false;
+ 	public static var vignetteStrength:Float = 0.7;
+ 	public static var cameraZoom:Float = 1.0;
++	public static var tempMissPenalty:Float = 0;
++	public static var tempMissPenaltyDPS:Float = 0;
++	public static var tempMissPenaltyCanKill:Bool = false;
+ 
+ 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+ 	public static var keyBinds:Map<String, Array<FlxKey>> = [
+@@ -171,6 +174,9 @@ class ClientPrefs {
+ 		FlxG.save.data.missesDecreaseMaxHealth = missesDecreaseMaxHealth;
+ 		FlxG.save.data.vignetteStrength = vignetteStrength;
+ 		FlxG.save.data.cameraZoom = cameraZoom;
++		FlxG.save.data.tempMissPenalty = tempMissPenalty;
++		FlxG.save.data.tempMissPenaltyDPS = tempMissPenaltyDPS;
++		FlxG.save.data.tempMissPenaltyCanKill = tempMissPenaltyCanKill;
+ 	
+ 		FlxG.save.flush();
+ 
+@@ -345,6 +351,15 @@ class ClientPrefs {
+ 		if(FlxG.save.data.cameraZoom != null) {
+ 			cameraZoom = FlxG.save.data.cameraZoom;
+ 		}
++		if(FlxG.save.data.tempMissPenalty != null) {
++			tempMissPenalty = FlxG.save.data.tempMissPenalty;
++		}
++		if(FlxG.save.data.tempMissPenaltyDPS != null) {
++			tempMissPenaltyDPS = FlxG.save.data.tempMissPenaltyDPS;
++		}
++		if(FlxG.save.data.tempMissPenaltyCanKill != null) {
++			tempMissPenaltyCanKill = FlxG.save.data.tempMissPenaltyCanKill;
++		}
+ 		
+ 		// flixel automatically saves your volume!
+ 		if(FlxG.save.data.volume != null)
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index 5bf1949..f15a0f0 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -333,6 +333,7 @@ class PlayState extends MusicBeatState
+ 
+ 	private var oldLQ:Bool = ClientPrefs.lowQuality; // Avoids loading things into RAM that won't be rendered
+ 	private var vignette:FlxSprite;
++	private var tempMissPenalty:Float = 0;
+ 	override public function create()
+ 	{
+ 		Paths.clearStoredMemory();
+@@ -3044,6 +3045,11 @@ class PlayState extends MusicBeatState
+ 
+ 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
+ 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
++		var toRemove:Float = Math.min(tempMissPenalty, ClientPrefs.tempMissPenaltyDPS * 0.02 * elapsed);
++		if (health - toRemove > 0 || ClientPrefs.tempMissPenaltyCanKill) {
++			health -= toRemove;
++			tempMissPenalty -= toRemove;
++		}
+ 
+ 		if (health > maxHealth) health = maxHealth;
+ 		healthPercentageDisplay = health / 0.02; // Don't round this for smooth health bar movement
+@@ -4529,6 +4535,7 @@ class PlayState extends MusicBeatState
+ 		combo = 0;
+ 		health -= daNote.missHealth * healthLoss;
+ 		if (ClientPrefs.missesDecreaseMaxHealth) maxHealth -= daNote.missHealth * healthLoss;
++		tempMissPenalty += daNote.missHealth * healthLoss * ClientPrefs.tempMissPenalty;
+ 		
+ 		if(instakillOnMiss)
+ 		{
+@@ -4591,6 +4598,7 @@ class PlayState extends MusicBeatState
+ 			}
+ 			health -= 0.05 * healthLoss;
+ 			if (ClientPrefs.missesDecreaseMaxHealth) maxHealth -= 0.05 * healthLoss;
++			tempMissPenalty += 0.05 * healthLoss * ClientPrefs.tempMissPenalty;
+ 			if(instakillOnMiss)
+ 			{
+ 				vocals.volume = 0;
+@@ -4739,8 +4747,11 @@ class PlayState extends MusicBeatState
+ 				if(combo > 9999) combo = 9999;
+ 				popUpScore(note);
+ 			}
+-			health += note.hitHealth * healthGain;
+-			healthDrained -= note.hitHealth * healthGain;
++			var toAdd:Float = note.hitHealth * healthGain;
++			toAdd -= Math.min(toAdd, tempMissPenalty);
++			tempMissPenalty -= note.hitHealth * healthGain - toAdd;
++			health += toAdd;
++			healthDrained -= toAdd;
+ 
+ 			var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
+ 			if (SONG.notes[curSection].mustHitSection == !opponentPlay || (opponentPlay ? ClientPrefs.hideBf : ClientPrefs.hideOpponent)) moveCamera(opponentPlay, animToPlay);
+diff --git a/source/options/ModifiersSubState.hx b/source/options/ModifiersSubState.hx
+index 7166f0c..f104321 100644
+--- a/source/options/ModifiersSubState.hx
++++ b/source/options/ModifiersSubState.hx
+@@ -55,6 +55,38 @@ class ModifiersSubState extends BaseOptionsMenu
+ 			false); // Default value
+ 		addOption(option);
+ 
++		var option:Option = new Option('Temp Miss Penalty:', // Name
++			'How much health will be slowly drained when missing\nHitting notes will not gain health, but will decrease the penalty', // Description
++			'tempMissPenalty', // Save data variable name
++			'int', // Variable type
++			0); // Default value
++		option.displayFormat = "Damage x%v";
++		option.scrollSpeed = 2.2;
++		option.minValue = 0.0;
++		option.maxValue = 25.0;
++		option.changeValue = 1;
++		addOption(option);
++
++		var option:Option = new Option('Temp Miss Penalty DPS', // Name
++			'How much health will temp miss penalty drain per second', // Description
++			'tempMissPenaltyDPS', // Save data variable name
++			'float', // Variable type
++			0); // Default value
++		option.displayFormat = "%v%";
++		option.scrollSpeed = 1.8;
++		option.minValue = 0.0;
++		option.maxValue = 15.0;
++		option.changeValue = 0.1;
++		option.decimals = 1;
++		addOption(option);
++
++		var option:Option = new Option('Temp Miss Penalty Can Kill', // Name
++			'If checked, temporary miss penalty can be lethal.', // Description
++			'tempMissPenaltyCanKill', // Save data variable name
++			'bool', // Variable type
++			false); // Default value
++		addOption(option);
++
+ 		super();
+ 	}
+ }
+-- 
+2.34.1.windows.1
+

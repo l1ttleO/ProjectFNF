@@ -1,0 +1,133 @@
+From f7f81b88c365c7db39dec0e749b62bf3b3bbf6c2 Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Fri, 8 Jul 2022 20:33:27 +0500
+Subject: [PATCH] Add visual options 'Player Lane Underlay Opacity' and 'Opponent Lane Underlay Opacity'
+
+Co-authored-by: BeastlyGhost <45212377+BeastlyGhost@users.noreply.github.com>
+---
+ source/ClientPrefs.hx               | 10 ++++++++++
+ source/PlayState.hx                 | 16 ++++++++++++++++
+ source/options/VisualsUISubState.hx | 24 ++++++++++++++++++++++++
+ 3 files changed, 50 insertions(+)
+
+diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
+index 45c62a5..edc90ec 100644
+--- a/source/ClientPrefs.hx
++++ b/source/ClientPrefs.hx
+@@ -87,6 +87,8 @@ class ClientPrefs {
+ 	public static var tempMissPenaltyCanKill:Bool = false;
+ 	public static var permaMissPenaltyDPS:Float = 0;
+ 	public static var permaMissPenaltyCanKill:Bool = false;
++	public static var playerLaneUnderlayOpacity:Float = 0;
++	public static var opponentLaneUnderlayOpacity:Float = 0;
+ 
+ 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+ 	public static var keyBinds:Map<String, Array<FlxKey>> = [
+@@ -181,6 +183,8 @@ class ClientPrefs {
+ 		FlxG.save.data.tempMissPenaltyCanKill = tempMissPenaltyCanKill;
+ 		FlxG.save.data.permaMissPenaltyDPS = permaMissPenaltyDPS;
+ 		FlxG.save.data.permaMissPenaltyCanKill = permaMissPenaltyCanKill;
++		FlxG.save.data.playerLaneUnderlayOpacity = playerLaneUnderlayOpacity;
++		FlxG.save.data.opponentLaneUnderlayOpacity = opponentLaneUnderlayOpacity;
+ 	
+ 		FlxG.save.flush();
+ 
+@@ -370,6 +374,12 @@ class ClientPrefs {
+ 		if(FlxG.save.data.permaMissPenaltyCanKill != null) {
+ 			permaMissPenaltyCanKill = FlxG.save.data.permaMissPenaltyCanKill;
+ 		}
++		if(FlxG.save.data.playerLaneUnderlayOpacity != null) {
++			playerLaneUnderlayOpacity = FlxG.save.data.playerLaneUnderlayOpacity;
++		}
++		if(FlxG.save.data.opponentLaneUnderlayOpacity != null) {
++			opponentLaneUnderlayOpacity = FlxG.save.data.opponentLaneUnderlayOpacity;
++		}
+ 		
+ 		// flixel automatically saves your volume!
+ 		if(FlxG.save.data.volume != null)
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index b78876f..3abbda3 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -334,6 +334,8 @@ class PlayState extends MusicBeatState
+ 	private var oldLQ:Bool = ClientPrefs.lowQuality; // Avoids loading things into RAM that won't be rendered
+ 	private var vignette:FlxSprite;
+ 	private var tempMissPenalty:Float = 0;
++	private var playerLaneUnderlay:FlxSprite;
++	private var opponentLaneUnderlay:FlxSprite;
+ 	override public function create()
+ 	{
+ 		Paths.clearStoredMemory();
+@@ -1056,6 +1058,16 @@ class PlayState extends MusicBeatState
+ 		if(ClientPrefs.downScroll) strumLine.y = FlxG.height - 150;
+ 		strumLine.scrollFactor.set();
+ 
++		playerLaneUnderlay = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height, FlxColor.BLACK);
++		playerLaneUnderlay.alpha = ClientPrefs.playerLaneUnderlayOpacity;
++		playerLaneUnderlay.scrollFactor.set();
++		add(playerLaneUnderlay);
++
++		opponentLaneUnderlay = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height, FlxColor.BLACK);
++		opponentLaneUnderlay.alpha = ClientPrefs.opponentLaneUnderlayOpacity;
++		opponentLaneUnderlay.scrollFactor.set();
++		if (!ClientPrefs.middleScroll) add(opponentLaneUnderlay);
++
+ 		var showTime:Bool = (ClientPrefs.timeBarType != 'Disabled');
+ 		timeTxt = new FlxText(STRUM_X + (FlxG.width / 2) - 248, 19, 400, "", 32);
+ 		timeTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+@@ -1275,6 +1287,8 @@ class PlayState extends MusicBeatState
+ 		timeBar.cameras = [camHUD];
+ 		timeBarBG.cameras = [camHUD];
+ 		timeTxt.cameras = [camHUD];
++		playerLaneUnderlay.cameras = [camHUD];
++		opponentLaneUnderlay.cameras = [camHUD];
+ 		doof.cameras = [camHUD];
+ 		versionTxt.cameras = [camHUD];
+ 
+@@ -2046,6 +2060,8 @@ class PlayState extends MusicBeatState
+ 
+ 			generateStaticArrows(0);
+ 			generateStaticArrows(1);
++			playerLaneUnderlay.x = playerStrums.members[0].x - 25;
++			opponentLaneUnderlay.x = opponentStrums.members[0].x - 25;
+ 			for (i in 0...playerStrums.length) {
+ 				setOnLuas('defaultPlayerStrumX' + i, playerStrums.members[i].x);
+ 				setOnLuas('defaultPlayerStrumY' + i, playerStrums.members[i].y);
+diff --git a/source/options/VisualsUISubState.hx b/source/options/VisualsUISubState.hx
+index 493fdbd..63da804 100644
+--- a/source/options/VisualsUISubState.hx
++++ b/source/options/VisualsUISubState.hx
+@@ -163,6 +163,30 @@ class VisualsUISubState extends BaseOptionsMenu
+ 		option.changeValue = 0.1;
+ 		option.decimals = 1;
+ 
++		var option:Option = new Option('Player Lane Underlay Opacity',
++			'How opaque should be an underlay for the player lane.',
++			'playerLaneUnderlayOpacity',
++			'percent',
++			0);
++		addOption(option);
++		option.scrollSpeed = 1.6;
++		option.minValue = 0.0;
++		option.maxValue = 1;
++		option.changeValue = 0.1;
++		option.decimals = 1;
++
++		var option:Option = new Option('Opponent Lane Underlay Opacity',
++			'How opaque should be an underlay for the opponent lane.',
++			'opponentLaneUnderlayOpacity',
++			'percent',
++			0);
++		addOption(option);
++		option.scrollSpeed = 1.6;
++		option.minValue = 0.0;
++		option.maxValue = 1;
++		option.changeValue = 0.1;
++		option.decimals = 1;
++
+ 		#if !mobile
+ 		var option:Option = new Option('FPS Counter',
+ 			'If unchecked, hides FPS Counter.',
+-- 
+2.34.1.windows.1
+

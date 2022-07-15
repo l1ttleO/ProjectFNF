@@ -1,0 +1,98 @@
+From 65d937a91d966b17c0e0e004c64ef3cedd22f079 Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Tue, 28 Jun 2022 17:06:18 +0500
+Subject: [PATCH] Add visual option 'Shake on Miss'
+
+---
+ source/ClientPrefs.hx               |  5 +++++
+ source/PlayState.hx                 |  2 ++
+ source/options/VisualsUISubState.hx | 16 ++++++++++++++++
+ 3 files changed, 23 insertions(+)
+
+diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
+index dbe9f15..683c4e3 100644
+--- a/source/ClientPrefs.hx
++++ b/source/ClientPrefs.hx
+@@ -65,6 +65,7 @@ class ClientPrefs {
+ 	public static var opponentNotesCanKill:Bool = false;
+ 	public static var stunsBlockInputs:Float = 0;
+ 	public static var cameraMoveIntensity:Float = 0;
++	public static var missShakeIntensity:Float = 0;
+ 
+ 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+ 	public static var keyBinds:Map<String, Array<FlxKey>> = [
+@@ -139,6 +140,7 @@ class ClientPrefs {
+ 		FlxG.save.data.opponentNotesCanKill = opponentNotesCanKill;
+ 		FlxG.save.data.stunsBlockInputs = stunsBlockInputs;
+ 		FlxG.save.data.cameraMoveIntensity = cameraMoveIntensity;
++		FlxG.save.data.missShakeIntensity = missShakeIntensity;
+ 	
+ 		FlxG.save.flush();
+ 
+@@ -268,6 +270,9 @@ class ClientPrefs {
+ 		if(FlxG.save.data.cameraMoveIntensity != null) {
+ 			cameraMoveIntensity = FlxG.save.data.cameraMoveIntensity;
+ 		}
++		if(FlxG.save.data.missShakeIntensity != null) {
++			missShakeIntensity = FlxG.save.data.missShakeIntensity;
++		}
+ 		
+ 		// flixel automatically saves your volume!
+ 		if(FlxG.save.data.volume != null)
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index 960d983..13635e5 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -4369,6 +4369,7 @@ class PlayState extends MusicBeatState
+ 			char = gf;
+ 		}
+ 
++		FlxG.camera.shake(ClientPrefs.missShakeIntensity / 100, 0.5, null, true, singAnimations[Std.int(Math.abs(daNote.noteData))].endsWith('UP') || singAnimations[Std.int(Math.abs(daNote.noteData))].endsWith('DOWN') ? flixel.util.FlxAxes.Y : flixel.util.FlxAxes.X);
+ 		if(char != null && !daNote.noMissAnimation && char.hasMissAnimations)
+ 		{
+ 			var animToPlay:String = singAnimations[Std.int(Math.abs(daNote.noteData))] + 'miss' + daNote.animSuffix;
+@@ -4426,6 +4427,7 @@ class PlayState extends MusicBeatState
+ 			});
+ 			}
+ 
++			FlxG.camera.shake(ClientPrefs.missShakeIntensity / 100, 0.5, null, true, singAnimations[Std.int(Math.abs(direction))].endsWith('UP') || singAnimations[Std.int(Math.abs(direction))].endsWith('DOWN') ? flixel.util.FlxAxes.Y : flixel.util.FlxAxes.X);
+ 			if(char.hasMissAnimations) {
+ 				char.playAnim(singAnimations[Std.int(Math.abs(direction))] + 'miss', true);
+ 			}
+diff --git a/source/options/VisualsUISubState.hx b/source/options/VisualsUISubState.hx
+index 4c67547..476abf1 100644
+--- a/source/options/VisualsUISubState.hx
++++ b/source/options/VisualsUISubState.hx
+@@ -101,6 +101,18 @@ class VisualsUISubState extends BaseOptionsMenu
+ 		option.changeValue = 10;
+ 		addOption(option);
+ 		
++		var option:Option = new Option('Miss Shake Intensity',
++			'How much does the screen shake when missing a note',
++			'missShakeIntensity',
++			'float',
++			0.3);
++		option.scrollSpeed = 0.5;
++		option.minValue = 0.0;
++		option.maxValue = 2;
++		option.changeValue = 0.1;
++		option.onChange = onChangeMissShakeIntensity;
++		addOption(option);
++		
+ 		#if !mobile
+ 		var option:Option = new Option('FPS Counter',
+ 			'If unchecked, hides FPS Counter.',
+@@ -142,6 +154,10 @@ class VisualsUISubState extends BaseOptionsMenu
+ 
+ 		changedMusic = true;
+ 	}
++	function onChangeMissShakeIntensity()
++	{
++		FlxG.camera.shake(ClientPrefs.missShakeIntensity / 100);
++	}
+ 
+ 	override function destroy()
+ 	{
+-- 
+2.34.1.windows.1
+

@@ -47,7 +47,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			'bool',
 			false);
 		addOption(option);
-
+		
 		var option:Option = new Option('Time Bar:',
 			"What should the Time Bar display?",
 			'timeBarType',
@@ -63,7 +63,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			true);
 		addOption(option);
 
-		var option:Option = new Option('Camera Zooms on Beat Hit',
+		var option:Option = new Option('Camera Zooms',
 			"If unchecked, the camera won't zoom in on a beat hit.",
 			'camZooms',
 			'bool',
@@ -74,11 +74,11 @@ class VisualsUISubState extends BaseOptionsMenu
 			"If unchecked, disables the Score text zooming\neverytime you hit a note.",
 			'scoreZoom',
 			'bool',
-			false);
+			true);
 		addOption(option);
 
-		var option:Option = new Option('Health Bar Opacity',
-			'How opaque should the health bar and icons be.',
+		var option:Option = new Option('Health Bar Transparency',
+			'How much transparent should the health bar and icons be.',
 			'healthBarAlpha',
 			'percent',
 			1);
@@ -88,60 +88,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.changeValue = 0.1;
 		option.decimals = 1;
 		addOption(option);
-
-		var option:Option = new Option('Lane Underlay Opacity',
-			'How opaque should be a black underlay for note lanes.',
-			'laneUnderlayOpacity',
-			'percent',
-			0);
-		option.scrollSpeed = 1.6;
-		option.minValue = 0.0;
-		option.maxValue = 1;
-		option.changeValue = 0.1;
-		option.decimals = 1;
-		addOption(option);
-
-		var option:Option = new Option('Move Camera in Note Direction', "If checked, the camera will move in note's direction", 'moveCameraInNoteDirection',
-			'bool', true);
-		addOption(option);
-
-		var option:Option = new Option('Shake On Miss', "If checked, the camera will shake when you miss", 'shakeOnMiss',
-			'bool', true);
-		addOption(option);
-
-		var option:Option = new Option('Enable Vignette', "If checked, a vignette effect will appear and change depending on your health.", 'enableVignette',
-			'bool', false);
-		addOption(option);
-
-		var option:Option = new Option('Advanced Score Text', "If checked, you will see health, accuracy and theoretical best score", 'advancedScoreTxt', 'bool', true);
-		addOption(option);
-
-		var option:Option = new Option('Camera Zoom:', 'Sets the camera zoom value\nSet to 1 for default value', 'cameraZoom', 'float', 1);
-		option.displayFormat = "%vx";
-		option.changeValue = 0.01;
-		option.scrollSpeed = 0.2;
-		option.minValue = 0.5;
-		option.maxValue = 2;
-		option.decimals = 2;
-		addOption(option);
-
-		var option:Option = new Option('Fixed Combo Sprite Position',
-			'If checked, note judgement and combo count sprites will not move together with the camera', 'fixedComboSprPos', 'bool', true);
-		addOption(option);
-
-		var option:Option = new Option('Vertical Health Bar:',
-			'Enables and sets the location of the vertical health bar', 'verticalHealthBar', 'string', 'Disabled',
-			['Left', 'Right', 'Disabled']);
-		addOption(option);
-
-		var option:Option = new Option('Score Text Underlay Opacity', 'How opaque should be a black underlay for score text.', 'scoreTxtUnderlayOpacity', 'percent', 30);
-		option.scrollSpeed = 1.6;
-		option.minValue = 0.0;
-		option.maxValue = 1;
-		option.changeValue = 0.1;
-		option.decimals = 1;
-		addOption(option);
-
+		
 		#if !mobile
 		var option:Option = new Option('FPS Counter',
 			'If unchecked, hides FPS Counter.',
@@ -151,7 +98,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 		option.onChange = onChangeFPSCounter;
 		#end
-
+		
 		var option:Option = new Option('Pause Screen Song:',
 			"What song do you prefer for the Pause Screen?",
 			'pauseMusic',
@@ -160,6 +107,15 @@ class VisualsUISubState extends BaseOptionsMenu
 			['None', 'Breakfast', 'Tea Time']);
 		addOption(option);
 		option.onChange = onChangePauseMusic;
+		
+		#if CHECK_FOR_UPDATES
+		var option:Option = new Option('Check for Updates',
+			'On Release builds, turn this on to check for updates when you start the game.',
+			'checkForUpdates',
+			'bool',
+			true);
+		addOption(option);
+		#end
 
 		super();
 	}

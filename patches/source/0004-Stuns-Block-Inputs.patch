@@ -1,0 +1,118 @@
+From 5585bb8fef9bbf8da64430d09d17cdbca205144b Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Mon, 27 Jun 2022 18:13:47 +0500
+Subject: [PATCH] Add modifier 'Stuns Block Inputs'
+
+---
+ source/ClientPrefs.hx               |  5 +++++
+ source/PlayState.hx                 | 29 +++++++++++++++++++++++++----
+ source/options/ModifiersSubState.hx | 13 +++++++++++++
+ 3 files changed, 43 insertions(+), 4 deletions(-)
+
+diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
+index f2d6429..8026b40 100644
+--- a/source/ClientPrefs.hx
++++ b/source/ClientPrefs.hx
+@@ -63,6 +63,7 @@ class ClientPrefs {
+ 	// ProjectFNF
+ 	public static var damageFromOpponentNotes:Float = 0;
+ 	public static var opponentNotesCanKill:Bool = false;
++	public static var stunsBlockInputs:Float = 0;
+ 
+ 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+ 	public static var keyBinds:Map<String, Array<FlxKey>> = [
+@@ -135,6 +136,7 @@ class ClientPrefs {
+ 
+ 		FlxG.save.data.damageFromOpponentNotes = damageFromOpponentNotes;
+ 		FlxG.save.data.opponentNotesCanKill = opponentNotesCanKill;
++		FlxG.save.data.stunsBlockInputs = stunsBlockInputs;
+ 	
+ 		FlxG.save.flush();
+ 
+@@ -258,6 +260,9 @@ class ClientPrefs {
+ 		if(FlxG.save.data.opponentNotesCanKill != null) {
+ 			opponentNotesCanKill = FlxG.save.data.opponentNotesCanKill;
+ 		}
++		if(FlxG.save.data.stunsBlockInputs != null) {
++			stunsBlockInputs = FlxG.save.data.stunsBlockInputs;
++		}
+ 		
+ 		// flixel automatically saves your volume!
+ 		if(FlxG.save.data.volume != null)
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index d0a5d69..b02bec5 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -4335,6 +4335,20 @@ class PlayState extends MusicBeatState
+ 		totalPlayed++;
+ 		RecalculateRating(true);
+ 
++		if (!boyfriend.stunned && ClientPrefs.stunsBlockInputs > 0) {
++			boyfriend.stunned = true;
++			for (note in notes)
++				if (Conductor.songPosition + ClientPrefs.stunsBlockInputs * 1000 > note.strumTime + noteKillOffset)
++					{ note.copyAlpha = false; note.alpha = 0.3; }
++			for (note in unspawnNotes)
++				if (Conductor.songPosition + ClientPrefs.stunsBlockInputs * 1000 > note.strumTime + noteKillOffset)
++					{ note.copyAlpha = false; note.alpha = 0.3; }
++
++			new FlxTimer().start(ClientPrefs.stunsBlockInputs, function(tmr:FlxTimer) {
++				boyfriend.stunned = false;
++			});
++		}
++
+ 		var char:Character = boyfriend;
+ 		if(daNote.gfNote) {
+ 			char = gf;
+@@ -4379,13 +4393,20 @@ class PlayState extends MusicBeatState
+ 			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
+ 			// FlxG.log.add('played imss note');
+ 
+-			/*boyfriend.stunned = true;
++			if (!boyfriend.stunned && ClientPrefs.stunsBlockInputs > 0) {
++			boyfriend.stunned = true;
++			for (note in notes)
++				if (Conductor.songPosition + ClientPrefs.stunsBlockInputs * 1000 > note.strumTime + noteKillOffset)
++					{ note.copyAlpha = false; note.alpha = 0.3; }
++			for (note in unspawnNotes)
++				if (Conductor.songPosition + ClientPrefs.stunsBlockInputs * 1000 > note.strumTime + noteKillOffset)
++					{ note.copyAlpha = false; note.alpha = 0.3; }
+ 
+-			// get stunned for 1/60 of a second, makes you able to
+-			new FlxTimer().start(1 / 60, function(tmr:FlxTimer)
++			new FlxTimer().start(ClientPrefs.stunsBlockInputs, function(tmr:FlxTimer)
+ 			{
+ 				boyfriend.stunned = false;
+-			});*/
++			});
++			}
+ 
+ 			if(boyfriend.hasMissAnimations) {
+ 				boyfriend.playAnim(singAnimations[Std.int(Math.abs(direction))] + 'miss', true);
+diff --git a/source/options/ModifiersSubState.hx b/source/options/ModifiersSubState.hx
+index 25ee861..6115798 100644
+--- a/source/options/ModifiersSubState.hx
++++ b/source/options/ModifiersSubState.hx
+@@ -35,6 +35,19 @@ class ModifiersSubState extends BaseOptionsMenu
+ 			false); // Default value
+ 		addOption(option);
+ 
++		var option:Option = new Option('Stuns Block Inputs', // Name
++			'For how long are inputs blocked after a miss', // Description
++			'stunsBlockInputs', // Save data variable name
++			'float', // Variable type
++			0); // Default value
++		option.displayFormat = "%v seconds";
++		option.scrollSpeed = 1.7;
++		option.minValue = 0.0;
++		option.maxValue = 5.0;
++		option.changeValue = 0.1;
++		option.decimals = 1;
++		addOption(option);
++
+ 		super();
+ 	}
+ }
+-- 
+2.34.1.windows.1
+

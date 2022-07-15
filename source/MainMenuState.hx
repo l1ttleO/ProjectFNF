@@ -25,13 +25,13 @@ using StringTools;
 
 class MainMenuState extends MusicBeatState
 {
-	public static var projectFnfVersion:String = '2.4.1';
-	public static var psychEngineVersion:String = '0.5.2h'; //This is also used for Discord RPC
+	public static var psychEngineVersion:String = '0.6.2'; //This is also used for Discord RPC
 	public static var curSelected:Int = 0;
 
 	var menuItems:FlxTypedGroup<FlxSprite>;
 	private var camGame:FlxCamera;
 	private var camAchievement:FlxCamera;
+	
 	var optionShit:Array<String> = [
 		'story_mode',
 		'freeplay',
@@ -47,10 +47,11 @@ class MainMenuState extends MusicBeatState
 	var camFollowPos:FlxObject;
 	var debugKeys:Array<FlxKey>;
 
-	var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));
-
 	override function create()
 	{
+		#if MODS_ALLOWED
+		Paths.pushGlobalMods();
+		#end
 		WeekData.loadTheFirstEnabledMod();
 
 		#if desktop
@@ -73,6 +74,7 @@ class MainMenuState extends MusicBeatState
 		persistentUpdate = persistentDraw = true;
 
 		var yScroll:Float = Math.max(0.25 - (0.05 * (optionShit.length - 4)), 0.1);
+		var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));
 		bg.scrollFactor.set(0, yScroll);
 		bg.setGraphicSize(Std.int(bg.width * 1.175));
 		bg.updateHitbox();
@@ -94,7 +96,7 @@ class MainMenuState extends MusicBeatState
 		magenta.antialiasing = ClientPrefs.globalAntialiasing;
 		magenta.color = 0xFFfd719b;
 		add(magenta);
-
+		
 		// magenta.scrollFactor.set();
 
 		menuItems = new FlxTypedGroup<FlxSprite>();
@@ -128,11 +130,7 @@ class MainMenuState extends MusicBeatState
 
 		FlxG.camera.follow(camFollowPos, null, 1);
 
-		var versionShit:FlxText = new FlxText(12, FlxG.height - 70, 0, "ProjectFNF v" + projectFnfVersion, 12);
-		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(versionShit);
-		var versionShit:FlxText = new FlxText(12, FlxG.height - 47, 0, "Psych Engine v" + psychEngineVersion + "", 12);
+		var versionShit:FlxText = new FlxText(12, FlxG.height - 44, 0, "Psych Engine v" + psychEngineVersion, 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
@@ -177,6 +175,7 @@ class MainMenuState extends MusicBeatState
 		if (FlxG.sound.music.volume < 0.8)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+			if(FreeplayState.vocals != null) FreeplayState.vocals.volume += 0.5 * elapsed;
 		}
 
 		var lerpVal:Float = CoolUtil.boundTo(elapsed * 7.5, 0, 1);
@@ -220,11 +219,6 @@ class MainMenuState extends MusicBeatState
 					{
 						if (curSelected != spr.ID)
 						{
-							FlxTween.tween(FlxG.camera, {zoom: 5}, 0.8, {ease: FlxEase.expoIn});
-							FlxTween.tween(bg, {angle: 45}, 0.8, {ease: FlxEase.expoIn});
-							FlxTween.tween(magenta, {angle: 45}, 0.8, {ease: FlxEase.expoIn});
-							FlxTween.tween(bg, {alpha: 0}, 0.8, {ease: FlxEase.expoIn});
-							FlxTween.tween(magenta, {alpha: 0}, 0.8, {ease: FlxEase.expoIn});
 							FlxTween.tween(spr, {alpha: 0}, 0.4, {
 								ease: FlxEase.quadOut,
 								onComplete: function(twn:FlxTween)
@@ -303,12 +297,5 @@ class MainMenuState extends MusicBeatState
 				spr.centerOffsets();
 			}
 		});
-	}
-
-	override function beatHit()
-	{
-		super.beatHit();
-		if (curBeat % 4 == 0 && ClientPrefs.camZooms)
-			FlxG.camera.zoom = 1.015;
 	}
 }

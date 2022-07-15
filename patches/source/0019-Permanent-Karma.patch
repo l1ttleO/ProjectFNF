@@ -1,0 +1,95 @@
+From a654a04258dd85ad9d594cc0c13ec2d0e2ba1b24 Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Fri, 8 Jul 2022 18:50:52 +0500
+Subject: [PATCH] Add modifiers 'Permanent Miss Penalty DPS' and 'Permanent Miss Penalty Can Kill'
+
+---
+ source/ClientPrefs.hx               | 10 ++++++++++
+ source/PlayState.hx                 |  4 ++++
+ source/options/ModifiersSubState.hx | 20 ++++++++++++++++++++
+ 3 files changed, 34 insertions(+)
+
+diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
+index 1b0a287..3e7e0ee 100644
+--- a/source/ClientPrefs.hx
++++ b/source/ClientPrefs.hx
+@@ -85,6 +85,8 @@ class ClientPrefs {
+ 	public static var tempMissPenalty:Float = 0;
+ 	public static var tempMissPenaltyDPS:Float = 0;
+ 	public static var tempMissPenaltyCanKill:Bool = false;
++	public static var permaMissPenaltyDPS:Float = 0;
++	public static var permaMissPenaltyCanKill:Bool = false;
+ 
+ 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+ 	public static var keyBinds:Map<String, Array<FlxKey>> = [
+@@ -177,6 +179,8 @@ class ClientPrefs {
+ 		FlxG.save.data.tempMissPenalty = tempMissPenalty;
+ 		FlxG.save.data.tempMissPenaltyDPS = tempMissPenaltyDPS;
+ 		FlxG.save.data.tempMissPenaltyCanKill = tempMissPenaltyCanKill;
++		FlxG.save.data.permaMissPenaltyDPS = permaMissPenaltyDPS;
++		FlxG.save.data.permaMissPenaltyCanKill = permaMissPenaltyCanKill;
+ 	
+ 		FlxG.save.flush();
+ 
+@@ -360,6 +364,12 @@ class ClientPrefs {
+ 		if(FlxG.save.data.tempMissPenaltyCanKill != null) {
+ 			tempMissPenaltyCanKill = FlxG.save.data.tempMissPenaltyCanKill;
+ 		}
++		if(FlxG.save.data.permaMissPenaltyDPS != null) {
++			permaMissPenaltyDPS = FlxG.save.data.permaMissPenaltyDPS;
++		}
++		if(FlxG.save.data.permaMissPenaltyCanKill != null) {
++			permaMissPenaltyCanKill = FlxG.save.data.permaMissPenaltyCanKill;
++		}
+ 		
+ 		// flixel automatically saves your volume!
+ 		if(FlxG.save.data.volume != null)
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index 6feefd0..b78876f 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -3050,6 +3050,10 @@ class PlayState extends MusicBeatState
+ 			tempMissPenalty -= toRemove;
+ 		}
+ 
++		var damage:Float = ClientPrefs.permaMissPenaltyDPS * 0.02 * elapsed * songMisses;
++		if ((notes.length > 0 || unspawnNotes.length > 0 || eventNotes.length > 0) && (health - damage > 0 || ClientPrefs.permaMissPenaltyCanKill))
++			health -= damage;
++
+ 		if (health > maxHealth) health = maxHealth;
+ 		healthPercentageDisplay = health / 0.02; // Don't round this for smooth health bar movement
+ 		healthPercentageBar = opponentPlay ? Math.max(0, Math.min(100, 100 - healthPercentageDisplay)) : healthPercentageDisplay;
+diff --git a/source/options/ModifiersSubState.hx b/source/options/ModifiersSubState.hx
+index f104321..e32ce58 100644
+--- a/source/options/ModifiersSubState.hx
++++ b/source/options/ModifiersSubState.hx
+@@ -87,6 +87,26 @@ class ModifiersSubState extends BaseOptionsMenu
+ 			false); // Default value
+ 		addOption(option);
+ 
++		var option:Option = new Option('Perma Miss Penalty DPS', // Name
++			'How much health will be drained every second', // Description
++			'permaMissPenaltyDPS', // Save data variable name
++			'float', // Variable type
++			0); // Default value
++		option.displayFormat = "+%v%";
++		option.scrollSpeed = 1.6;
++		option.minValue = 0.0;
++		option.maxValue = 15.0;
++		option.changeValue = 0.1;
++		option.decimals = 1;
++		addOption(option);
++
++		var option:Option = new Option('Perma Miss Penalty Can Kill', // Name
++			'If checked, permanent miss penalty can be lethal.', // Description
++			'permaMissPenaltyCanKill', // Save data variable name
++			'bool', // Variable type
++			false); // Default value
++		addOption(option);
++
+ 		super();
+ 	}
+ }
+-- 
+2.34.1.windows.1
+

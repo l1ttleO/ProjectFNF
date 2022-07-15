@@ -9,12 +9,13 @@ import Controls;
 class ClientPrefs {
 	public static var downScroll:Bool = false;
 	public static var middleScroll:Bool = false;
+	public static var opponentStrums:Bool = true;
 	public static var showFPS:Bool = true;
 	public static var flashing:Bool = true;
 	public static var globalAntialiasing:Bool = true;
 	public static var noteSplashes:Bool = true;
 	public static var lowQuality:Bool = false;
-	public static var framerate:Int = 120;
+	public static var framerate:Int = 60;
 	public static var cursing:Bool = true;
 	public static var violence:Bool = true;
 	public static var camZooms:Bool = true;
@@ -24,15 +25,16 @@ class ClientPrefs {
 	public static var imagesPersist:Bool = false;
 	public static var ghostTapping:Bool = true;
 	public static var timeBarType:String = 'Time Left';
-	public static var scoreZoom:Bool = false;
+	public static var scoreZoom:Bool = true;
 	public static var noReset:Bool = false;
 	public static var healthBarAlpha:Float = 1;
 	public static var controllerMode:Bool = false;
 	public static var hitsoundVolume:Float = 0;
 	public static var pauseMusic:String = 'Tea Time';
+	public static var checkForUpdates:Bool = true;
 	public static var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
-		'scrolltype' => 'multiplicative',
+		'scrolltype' => 'multiplicative', 
 		// anyone reading this, amod is multiplicative speed mod, cmod is constant speed mod, and xmod is bpm based speed mod.
 		// an amod example would be chartSpeed * multiplier
 		// cmod would just be constantSpeed = chartSpeed
@@ -51,35 +53,8 @@ class ClientPrefs {
 		'opponentplay' => false
 	];
 
-	public static var opponentNotesDoDamage:Bool = false;
-	public static var opponentNotesCanKill:Bool = false;
-	public static var damageFromOpponentNotes:Float = 1;
-	public static var stunsBlockInputs:Bool = false;
-	public static var shakeOnMiss:Bool = true;
-	public static var advancedScoreTxt:Bool = true;
-	public static var playMissAnimations:Bool = true;
-	public static var maxOptimization:Bool = false;
-	public static var missesLowerMaxHealth:Bool = false;
-	public static var hardMode:Bool = false;
-	public static var moveCameraInNoteDirection:Bool = true;
-	public static var enableVignette:Bool = false;
-	public static var enableQolBalanceChanges:Bool = true;
-	public static var cameraZoom:Float = 1;
-	public static var noteOpacityChangesWithHealth:String = 'Disabled';
-	public static var karma:String = 'Disabled';
-	public static var karmaCanKill:Bool = false;
-	public static var laneUnderlayOpacity:Float = 0;
-	public static var fixedComboSprPos:Bool = true;
-	public static var verticalHealthBar:String = 'Disabled';
-	public static var scoreSystem:String = 'Vanilla';
-	public static var accuracySystem:String = 'Psych';
-	public static var scoreTxtUnderlayOpacity:Float = 0.3;
-
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
-	public static var keSustains:Bool = false; // i was bored, okay?
-
 	public static var ratingOffset:Int = 0;
-	public static var maxWindow:Int = 15;
 	public static var sickWindow:Int = 45;
 	public static var goodWindow:Int = 90;
 	public static var badWindow:Int = 135;
@@ -92,19 +67,21 @@ class ClientPrefs {
 		'note_down'		=> [S, DOWN],
 		'note_up'		=> [W, UP],
 		'note_right'	=> [D, RIGHT],
+		
 		'ui_left'		=> [A, LEFT],
 		'ui_down'		=> [S, DOWN],
 		'ui_up'			=> [W, UP],
 		'ui_right'		=> [D, RIGHT],
+		
 		'accept'		=> [SPACE, ENTER],
 		'back'			=> [BACKSPACE, ESCAPE],
 		'pause'			=> [ENTER, ESCAPE],
 		'reset'			=> [R, NONE],
-
+		
 		'volume_mute'	=> [ZERO, NONE],
 		'volume_up'		=> [NUMPADPLUS, PLUS],
 		'volume_down'	=> [NUMPADMINUS, MINUS],
-
+		
 		'debug_1'		=> [SEVEN, NONE],
 		'debug_2'		=> [EIGHT, NONE]
 	];
@@ -118,6 +95,7 @@ class ClientPrefs {
 	public static function saveSettings() {
 		FlxG.save.data.downScroll = downScroll;
 		FlxG.save.data.middleScroll = middleScroll;
+		FlxG.save.data.opponentStrums = opponentStrums;
 		FlxG.save.data.showFPS = showFPS;
 		FlxG.save.data.flashing = flashing;
 		FlxG.save.data.globalAntialiasing = globalAntialiasing;
@@ -139,46 +117,22 @@ class ClientPrefs {
 		FlxG.save.data.comboOffset = comboOffset;
 		FlxG.save.data.achievementsMap = Achievements.achievementsMap;
 		FlxG.save.data.henchmenDeath = Achievements.henchmenDeath;
-		FlxG.save.data.hitsoundVolume = hitsoundVolume;
-		FlxG.save.data.pauseMusic = pauseMusic;
 
 		FlxG.save.data.ratingOffset = ratingOffset;
-		FlxG.save.data.maxWindow = maxWindow;
 		FlxG.save.data.sickWindow = sickWindow;
 		FlxG.save.data.goodWindow = goodWindow;
 		FlxG.save.data.badWindow = badWindow;
 		FlxG.save.data.safeFrames = safeFrames;
 		FlxG.save.data.gameplaySettings = gameplaySettings;
 		FlxG.save.data.controllerMode = controllerMode;
-
-		FlxG.save.data.opponentNotesDoDamage = opponentNotesDoDamage;
-		FlxG.save.data.opponentNotesCanKill = opponentNotesCanKill;
-		FlxG.save.data.damageFromOpponentNotes = damageFromOpponentNotes;
-		FlxG.save.data.stunsBlockInputs = stunsBlockInputs;
-		FlxG.save.data.shakeOnMiss = shakeOnMiss;
-		FlxG.save.data.advancedScoreTxt = advancedScoreTxt;
-		FlxG.save.data.playMissAnimations = playMissAnimations;
-		FlxG.save.data.maxOptimization = maxOptimization;
-		FlxG.save.data.missesLowerMaxHealth = missesLowerMaxHealth;
-		FlxG.save.data.hardMode = hardMode;
-		FlxG.save.data.moveCameraInNoteDirection = moveCameraInNoteDirection;
-		FlxG.save.data.enableVignette = enableVignette;
-		FlxG.save.data.enableQolBalanceChanges = enableQolBalanceChanges;
-		FlxG.save.data.cameraZoom = cameraZoom;
-		FlxG.save.data.noteOpacityChangesWithHealth = noteOpacityChangesWithHealth;
-		FlxG.save.data.karma = karma;
-		FlxG.save.data.karmaCanKill = karmaCanKill;
-		FlxG.save.data.laneUnderlayOpacity = laneUnderlayOpacity;
-		FlxG.save.data.fixedComboSprPos = fixedComboSprPos;
-		FlxG.save.data.verticalHealthBar = verticalHealthBar;
-		FlxG.save.data.scoreSystem = scoreSystem;
-		FlxG.save.data.accuracySystem = accuracySystem;
-		FlxG.save.data.scoreTxtUnderlayOpacity = scoreTxtUnderlayOpacity;
-
+		FlxG.save.data.hitsoundVolume = hitsoundVolume;
+		FlxG.save.data.pauseMusic = pauseMusic;
+		FlxG.save.data.checkForUpdates = checkForUpdates;
+	
 		FlxG.save.flush();
 
 		var save:FlxSave = new FlxSave();
-		save.bind('controls_v2', 'ninjamuffin99'); // Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
+		save.bind('controls_v2', 'ninjamuffin99'); //Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
 		save.data.customControls = keyBinds;
 		save.flush();
 		FlxG.log.add("Settings saved!");
@@ -190,6 +144,9 @@ class ClientPrefs {
 		}
 		if(FlxG.save.data.middleScroll != null) {
 			middleScroll = FlxG.save.data.middleScroll;
+		}
+		if(FlxG.save.data.opponentStrums != null) {
+			opponentStrums = FlxG.save.data.opponentStrums;
 		}
 		if(FlxG.save.data.showFPS != null) {
 			showFPS = FlxG.save.data.showFPS;
@@ -255,12 +212,9 @@ class ClientPrefs {
 		if(FlxG.save.data.comboOffset != null) {
 			comboOffset = FlxG.save.data.comboOffset;
 		}
-
+		
 		if(FlxG.save.data.ratingOffset != null) {
 			ratingOffset = FlxG.save.data.ratingOffset;
-		}
-		if(FlxG.save.data.maxWindow != null){
-			maxWindow = FlxG.save.data.maxWindow;
 		}
 		if(FlxG.save.data.sickWindow != null) {
 			sickWindow = FlxG.save.data.sickWindow;
@@ -291,7 +245,7 @@ class ClientPrefs {
 				gameplaySettings.set(name, value);
 			}
 		}
-
+		
 		// flixel automatically saves your volume!
 		if(FlxG.save.data.volume != null)
 		{
@@ -301,98 +255,11 @@ class ClientPrefs {
 		{
 			FlxG.sound.muted = FlxG.save.data.mute;
 		}
+		if (FlxG.save.data.checkForUpdates != null)
+		{
+			checkForUpdates = FlxG.save.data.checkForUpdates;
+		}
 
-		if (FlxG.save.data.opponentNotesDoDamage != null)
-		{
-			opponentNotesDoDamage = FlxG.save.data.opponentNotesDoDamage;
-		}
-		if (FlxG.save.data.opponentNotesCanKill != null)
-		{
-			opponentNotesCanKill = FlxG.save.data.opponentNotesCanKill;
-		}
-		if (FlxG.save.data.damageFromOpponentNotes != null)
-		{
-			damageFromOpponentNotes = FlxG.save.data.damageFromOpponentNotes;
-		}
-		if (FlxG.save.data.stunsBlockInputs != null)
-		{
-			stunsBlockInputs = FlxG.save.data.stunsBlockInputs;
-		}
-		if (FlxG.save.data.shakeOnMiss != null)
-		{
-			shakeOnMiss = FlxG.save.data.shakeOnMiss;
-		}
-		if (FlxG.save.data.advancedScoreTxt != null)
-		{
-			advancedScoreTxt = FlxG.save.data.advancedScoreTxt;
-		}
-		if (FlxG.save.data.playMissAnimations != null)
-		{
-			playMissAnimations = FlxG.save.data.playMissAnimations;
-		}
-		if (FlxG.save.data.maxOptimization != null)
-		{
-			maxOptimization = FlxG.save.data.maxOptimization;
-		}
-		if (FlxG.save.data.missesLowerMaxHealth != null) {
-			missesLowerMaxHealth = FlxG.save.data.missesLowerMaxHealth;
-		}
-		if (FlxG.save.data.hardMode != null)
-		{
-			hardMode = FlxG.save.data.hardMode;
-		}
-		if (FlxG.save.data.moveCameraInNoteDirection != null)
-		{
-			moveCameraInNoteDirection = FlxG.save.data.moveCameraInNoteDirection;
-		}
-		if (FlxG.save.data.enableVignette != null)
-		{
-			enableVignette = FlxG.save.data.enableVignette;
-		}
-		if (FlxG.save.data.enableQolBalanceChanges != null)
-		{
-			enableQolBalanceChanges = FlxG.save.data.enableQolBalanceChanges;
-		}
-		if (FlxG.save.data.cameraZoom != null)
-		{
-			cameraZoom = FlxG.save.data.cameraZoom;
-		}
-		if (FlxG.save.data.noteOpacityChangesWithHealth != null)
-		{
-			noteOpacityChangesWithHealth = FlxG.save.data.noteOpacityChangesWithHealth;
-		}
-		if (FlxG.save.data.karma != null)
-		{
-			karma = FlxG.save.data.karma;
-		}
-		if (FlxG.save.data.karmaCanKill != null)
-		{
-			karmaCanKill = FlxG.save.data.karmaCanKill;
-		}
-		if (FlxG.save.data.laneUnderlayOpacity != null)
-		{
-			laneUnderlayOpacity = FlxG.save.data.laneUnderlayOpacity;
-		}
-		if (FlxG.save.data.fixedComboSprPos != null)
-		{
-			fixedComboSprPos = FlxG.save.data.fixedComboSprPos;
-		}
-		if (FlxG.save.data.verticalHealthBar != null)
-		{
-			verticalHealthBar = FlxG.save.data.verticalHealthBar;
-		}
-		if (FlxG.save.data.scoreSystem != null)
-		{
-			scoreSystem = FlxG.save.data.scoreSystem;
-		}
-		if (FlxG.save.data.accuracySystem != null)
-		{
-			accuracySystem = FlxG.save.data.accuracySystem;
-		}
-		if (FlxG.save.data.scoreTxtUnderlayOpacity != null)
-		{
-			scoreTxtUnderlayOpacity = FlxG.save.data.scoreTxtUnderlayOpacity;
-		}
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v2', 'ninjamuffin99');
 		if(save != null && save.data.customControls != null) {

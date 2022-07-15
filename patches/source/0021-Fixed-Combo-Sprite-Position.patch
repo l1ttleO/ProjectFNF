@@ -1,0 +1,117 @@
+From b3fe6062b8cbaaf3f37cc2ee5770a95dadd2aa42 Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Fri, 8 Jul 2022 21:42:32 +0500
+Subject: [PATCH] Add visual option 'Fixed Combo Sprite Position'
+
+Co-authored-by: BeastlyGhost <45212377+BeastlyGhost@users.noreply.github.com>
+---
+ source/ClientPrefs.hx               |  5 +++++
+ source/PlayState.hx                 | 12 +++++++++---
+ source/options/VisualsUISubState.hx |  7 +++++++
+ 3 files changed, 21 insertions(+), 3 deletions(-)
+
+diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
+index edc90ec..b0e4035 100644
+--- a/source/ClientPrefs.hx
++++ b/source/ClientPrefs.hx
+@@ -89,6 +89,7 @@ class ClientPrefs {
+ 	public static var permaMissPenaltyCanKill:Bool = false;
+ 	public static var playerLaneUnderlayOpacity:Float = 0;
+ 	public static var opponentLaneUnderlayOpacity:Float = 0;
++	public static var fixedComboSprPos:Bool = false;
+ 
+ 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+ 	public static var keyBinds:Map<String, Array<FlxKey>> = [
+@@ -185,6 +186,7 @@ class ClientPrefs {
+ 		FlxG.save.data.permaMissPenaltyCanKill = permaMissPenaltyCanKill;
+ 		FlxG.save.data.playerLaneUnderlayOpacity = playerLaneUnderlayOpacity;
+ 		FlxG.save.data.opponentLaneUnderlayOpacity = opponentLaneUnderlayOpacity;
++		FlxG.save.data.fixedComboSprPos = fixedComboSprPos;
+ 	
+ 		FlxG.save.flush();
+ 
+@@ -380,6 +382,9 @@ class ClientPrefs {
+ 		if(FlxG.save.data.opponentLaneUnderlayOpacity != null) {
+ 			opponentLaneUnderlayOpacity = FlxG.save.data.opponentLaneUnderlayOpacity;
+ 		}
++		if(FlxG.save.data.fixedComboSprPos != null) {
++			fixedComboSprPos = FlxG.save.data.fixedComboSprPos;
++		}
+ 		
+ 		// flixel automatically saves your volume!
+ 		if(FlxG.save.data.volume != null)
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index 3abbda3..f75caba 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -4221,7 +4221,7 @@ class PlayState extends MusicBeatState
+ 		}
+ 
+ 		rating.loadGraphic(Paths.image(pixelShitPart1 + daRating.image + pixelShitPart2));
+-		rating.cameras = [camHUD];
++		rating.cameras = [ClientPrefs.fixedComboSprPos ? camHUD : (ClientPrefs.hideAllSprites ? camChars : camGame)];
+ 		rating.screenCenter();
+ 		rating.x = coolText.x - 40;
+ 		rating.y -= 60;
+@@ -4229,18 +4229,22 @@ class PlayState extends MusicBeatState
+ 		rating.velocity.y -= FlxG.random.int(140, 175);
+ 		rating.velocity.x -= FlxG.random.int(0, 10);
+ 		rating.visible = (!ClientPrefs.hideHud && showRating);
++		if (ClientPrefs.fixedComboSprPos) {
+ 		rating.x += ClientPrefs.comboOffset[0];
+ 		rating.y -= ClientPrefs.comboOffset[1];
++		}
+ 
+ 		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'combo' + pixelShitPart2));
+-		comboSpr.cameras = [camHUD];
++		comboSpr.cameras = [ClientPrefs.fixedComboSprPos ? camHUD : (ClientPrefs.hideAllSprites ? camChars : camGame)];
+ 		comboSpr.screenCenter();
+ 		comboSpr.x = coolText.x;
+ 		comboSpr.acceleration.y = FlxG.random.int(200, 300);
+ 		comboSpr.velocity.y -= FlxG.random.int(140, 160);
+ 		comboSpr.visible = (!ClientPrefs.hideHud && showCombo);
++		if (ClientPrefs.fixedComboSprPos) {
+ 		comboSpr.x += ClientPrefs.comboOffset[0];
+ 		comboSpr.y -= ClientPrefs.comboOffset[1];
++		}
+ 		comboSpr.y += 60;
+ 		comboSpr.velocity.x += FlxG.random.int(1, 10);
+ 
+@@ -4280,13 +4284,15 @@ class PlayState extends MusicBeatState
+ 		for (i in seperatedScore)
+ 		{
+ 			var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'num' + Std.int(i) + pixelShitPart2));
+-			numScore.cameras = [camHUD];
++			numScore.cameras = [ClientPrefs.fixedComboSprPos ? camHUD : (ClientPrefs.hideAllSprites ? camChars : camGame)];
+ 			numScore.screenCenter();
+ 			numScore.x = coolText.x + (43 * daLoop) - 90;
+ 			numScore.y += 80;
+ 
++			if (ClientPrefs.fixedComboSprPos) {
+ 			numScore.x += ClientPrefs.comboOffset[2];
+ 			numScore.y -= ClientPrefs.comboOffset[3];
++			}
+ 
+ 			if (!PlayState.isPixelStage)
+ 			{
+diff --git a/source/options/VisualsUISubState.hx b/source/options/VisualsUISubState.hx
+index 63da804..c399500 100644
+--- a/source/options/VisualsUISubState.hx
++++ b/source/options/VisualsUISubState.hx
+@@ -187,6 +187,13 @@ class VisualsUISubState extends BaseOptionsMenu
+ 		option.changeValue = 0.1;
+ 		option.decimals = 1;
+ 
++		var option:Option = new Option('Fixed Combo Sprite Position', //Name
++			"If unchecked, your rating and combo number will be a part of the game world\nand won't follow the camera.", //Description
++			'fixedComboSprPos', //Save data variable name
++			'bool', //Variable type
++			false); //Default value
++		addOption(option);
++
+ 		#if !mobile
+ 		var option:Option = new Option('FPS Counter',
+ 			'If unchecked, hides FPS Counter.',
+-- 
+2.34.1.windows.1
+

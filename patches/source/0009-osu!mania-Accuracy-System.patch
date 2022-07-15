@@ -1,0 +1,93 @@
+From 5f4e75a818a8ffffb346c4c77f7e766118ffbfc7 Mon Sep 17 00:00:00 2001
+From: l1ttleO <l1ttleofficial@outlook.com>
+Date: Fri, 1 Jul 2022 16:28:35 +0500
+Subject: [PATCH] Add gameplay option 'osu!mania accuracy system'
+
+---
+ source/ClientPrefs.hx                      | 5 +++++
+ source/PlayState.hx                        | 8 +++++++-
+ source/options/GameplaySettingsSubState.hx | 8 ++++++++
+ 3 files changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/source/ClientPrefs.hx b/source/ClientPrefs.hx
+index 0d8d6ab..7361c8a 100644
+--- a/source/ClientPrefs.hx
++++ b/source/ClientPrefs.hx
+@@ -68,6 +68,7 @@ class ClientPrefs {
+ 	public static var cameraMoveIntensity:Float = 0;
+ 	public static var missShakeIntensity:Float = 0;
+ 	public static var scoreSystem:String = 'Vanilla';
++	public static var accuracySystem:String = 'Psych';
+ 
+ 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+ 	public static var keyBinds:Map<String, Array<FlxKey>> = [
+@@ -145,6 +146,7 @@ class ClientPrefs {
+ 		FlxG.save.data.cameraMoveIntensity = cameraMoveIntensity;
+ 		FlxG.save.data.missShakeIntensity = missShakeIntensity;
+ 		FlxG.save.data.scoreSystem = scoreSystem;
++		FlxG.save.data.accuracySystem = accuracySystem;
+ 	
+ 		FlxG.save.flush();
+ 
+@@ -283,6 +285,9 @@ class ClientPrefs {
+ 		if(FlxG.save.data.scoreSystem != null) {
+ 			scoreSystem = FlxG.save.data.scoreSystem;
+ 		}
++		if(FlxG.save.data.accuracySystem != null) {
++			accuracySystem = FlxG.save.data.accuracySystem;
++		}
+ 		
+ 		// flixel automatically saves your volume!
+ 		if(FlxG.save.data.volume != null)
+diff --git a/source/PlayState.hx b/source/PlayState.hx
+index 6d32ad0..a268128 100644
+--- a/source/PlayState.hx
++++ b/source/PlayState.hx
+@@ -324,7 +324,7 @@ class PlayState extends MusicBeatState
+ 		];
+ 
+ 		//Ratings
+-		ratingsData.push(new Rating('max')); //default rating
++		if(ClientPrefs.scoreSystem == 'osu!mania' || ClientPrefs.accuracySystem.startsWith('osu!mania')) ratingsData.push(new Rating('max')); //default rating
+ 
+ 		var rating:Rating = new Rating('sick');
+ 		rating.hitValue = 300;
+@@ -5082,10 +5082,16 @@ class PlayState extends MusicBeatState
+ 				ratingName = '?';
+ 			else
+ 			{
++				if (!ClientPrefs.accuracySystem.startsWith('osu!mania')) {
+ 				// Rating Percent
+ 				ratingPercent = Math.min(1, Math.max(0, totalNotesHit / totalPlayed));
+ 				//trace((totalNotesHit / totalPlayed) + ', Total: ' + totalPlayed + ', notes hit: ' + totalNotesHit);
+ 
++				} else {
++					var isStrictAcc:Bool = ClientPrefs.accuracySystem.endsWith('(strict)');
++					var maxesAndSicks:Int = isStrictAcc ? 305 * maxs + 300 * sicks : 300 * (maxs + sicks);
++					ratingPercent = (maxesAndSicks + 200 * goods + 100 * bads + 50 * shits) / ((isStrictAcc ? 305 : 300) * totalPlayed);
++				}
+ 				// Rating Name
+ 				if(ratingPercent >= 1)
+ 				{
+diff --git a/source/options/GameplaySettingsSubState.hx b/source/options/GameplaySettingsSubState.hx
+index 3d93cf1..ad4a839 100644
+--- a/source/options/GameplaySettingsSubState.hx
++++ b/source/options/GameplaySettingsSubState.hx
+@@ -98,6 +98,14 @@ class GameplaySettingsSubState extends BaseOptionsMenu
+ 			['osu!mania', 'Vanilla']);
+ 		addOption(option);
+ 
++		var option:Option = new Option('Accuracy system:',
++			"What accuracy system do you prefer?\nStrict requires MFC for 100%, normal requires just SFC",
++			'accuracySystem',
++			'string',
++			'Psych',
++			['osu!mania (strict)', 'osu!mania (normal)', 'Psych']);
++		addOption(option);
++
+ 		var option:Option = new Option('Rating Offset',
+ 			'Changes how late/early you have to hit for a "Sick!"\nHigher values mean you have to hit later.',
+ 			'ratingOffset',
+-- 
+2.34.1.windows.1
+

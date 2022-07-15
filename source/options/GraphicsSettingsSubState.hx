@@ -44,13 +44,6 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			false); //Default value
 		addOption(option);
 
-		var option:Option = new Option('Max Optimization', // Name
-			'If checked, hides everything but the HUD, massively increasing performance', // Description
-			'maxOptimization', // Save data variable name
-			'bool', // Variable type
-			false); // Default value
-		addOption(option);
-
 		var option:Option = new Option('Anti-Aliasing',
 			'If unchecked, disables anti-aliasing, increases performance\nat the cost of sharper visuals.',
 			'globalAntialiasing',
@@ -65,8 +58,9 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			"Pretty self explanatory, isn't it?",
 			'framerate',
 			'int',
-			120);
+			60);
 		addOption(option);
+
 		option.minValue = 60;
 		option.maxValue = 240;
 		option.displayFormat = '%v FPS';
